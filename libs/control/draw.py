@@ -11,8 +11,8 @@ SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "\shapes"
 '''
 shapes to add to library
 
-2D: circle, square, lollipop, stirrup, gear, arrow, 2-arrow, 3-arrow, 4-arrow, IK, FK, pentagon, hexagon, triangle
-3D: sphere, cube, 3-pyramid, 4-pyramid, tri-prism, cylinder?, 3D-gear, 3D-circle, 3D-square, 
+2D: gear, 3-arrow, IK, FK, pentagon, hexagon
+3D: 3-pyramid, tri-prism, cylinder?, 3D-gear, 3D-circle, 3D-square, 
 '''
 
 class Draw:
@@ -34,7 +34,7 @@ class Draw:
     axis: axis along which to draw the control shape
     scale: size of control
     '''
-    def create_curve(self, name='default', shape='circle', axis='y', scale=1):
+    def create_curve(self, name=None, shape='circle', axis='y', scale=1):
         file_path = "{}/{}".format(SHAPE_DIR, shape)
         if os.path.isfile(file_path):
             json_file = open(file_path, 'r')
@@ -43,6 +43,8 @@ class Draw:
         else:
             mc.error("Shape does not exist in library. You must write shape to library before creating.")
 
+        if not name:
+            name = shape + '1'
         for i, shp in enumerate(curve_dict):
             info = curve_dict[shp]
             point_info = []
@@ -75,7 +77,7 @@ class Draw:
     '''
     saves curve to shapes library
 
-    param control: control/curve to be saved to library
+    param control: control/curve to be saved to library (can be selection)
     param name: name under which to save the curve in the library
     param force: if true, will guarantee to overwrite existing shape with same name, otherwise will not overwrite
     '''
