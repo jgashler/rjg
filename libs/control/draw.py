@@ -8,6 +8,13 @@ reload(rCommon)
 
 SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "\shapes"
 
+'''
+shapes to add to library
+
+2D: circle, square, lollipop, stirrup, gear, arrow, 2-arrow, 3-arrow, 4-arrow, IK, FK, pentagon, hexagon, triangle
+3D: sphere, cube, 3-pyramid, 4-pyramid, tri-prism, cylinder?, 3D-gear, 3D-circle, 3D-square, 
+'''
+
 class Draw:
     def __init__(self, curve=None) -> None:
         if curve:

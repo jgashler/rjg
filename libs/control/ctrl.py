@@ -45,6 +45,9 @@ class Control(rDraw.Draw, rGroup.Group):
         else:
             self.get_control()
 
+    '''
+    creates a control, adds padding, and sets SRT position, tags control with information
+    '''
     def create(self):
         self.create_curve(name=self.ctrl_name, shape=self.shape, axis=self.axis, scale=self.ctrl_scale)
         self.ctrl = self.curve
@@ -70,7 +73,9 @@ class Control(rDraw.Draw, rGroup.Group):
             mc.parent(self.top, self.parent)
         self.tag_control()
 
-
+    '''
+    from a control's ctrlDict attribute, regenerate Control object for use in other functions
+    '''
     def get_control(self):
         tag_dict = mc.getAttr(self.ctrl + ".ctrlDict")
         self.control_dict = ast.literal_eval(tag_dict)
@@ -93,7 +98,9 @@ class Control(rDraw.Draw, rGroup.Group):
             self.top = self.group_list[-1]
             self.bot = self.group_list[0]
 
-
+    '''
+    adds a tag attribute to the control based on its object attributes. allows it to be turned back into a Control object
+    '''
     def tag_control(self):
         self.control_dict = {
                              "shape" : self.shape,

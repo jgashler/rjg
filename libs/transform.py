@@ -1,6 +1,15 @@
 import maya.cmds as mc
 from importlib import reload
 
+'''
+moves all transform attributes of node to those specified
+
+param node: node to transform
+param translate: object, list, or tuple. if list or tuple, must be of length 3 (x, y, z) and translate will be changed to those values in world space
+                 if object, node will inherit all worldspace translate values of the object
+param rotate: same as translate, but applied to node's rotation
+param scale: same as translate, but applied to node's scale
+'''
 def match_pose(node, translate=None, rotate=None, scale=None):
     print(type(translate))
 
