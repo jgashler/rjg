@@ -11,7 +11,7 @@ SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "\shapes"
 '''
 shapes to add to library
 
-2D: 3-arrow, IK, FK, pentagon, hexagon
+2D: 3-arrow, IK, FK
 3D: 3-pyramid, tri-prism, cylinder?, 3D-circle, 3D-square, 
 '''
 
@@ -92,6 +92,8 @@ class Draw:
         if color:
             print("coloring " + color)
             self.color_curve(self.curve, color)
+
+        mc.select(clear=True)
 
     def color_curve(self, curve, color):
         if isinstance(color, tuple) or isinstance(color, list):
