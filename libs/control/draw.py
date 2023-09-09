@@ -11,8 +11,8 @@ SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "\shapes"
 '''
 shapes to add to library
 
-2D: gear, 3-arrow, IK, FK, pentagon, hexagon
-3D: 3-pyramid, tri-prism, cylinder?, 3D-gear, 3D-circle, 3D-square, 
+2D: 3-arrow, IK, FK, pentagon, hexagon
+3D: 3-pyramid, tri-prism, cylinder?, 3D-circle, 3D-square, 
 '''
 
 class Draw:
@@ -24,6 +24,22 @@ class Draw:
         else:
             self.curve = None
 
+        self.color_dict = {'red' : [1, 0, 0],
+                           'green' : [0, 1, 0],
+                           'blue' : [0, 0, 1],
+                           'yellow' : [1, 1, 0],
+                           'magenta' : [1, 0, 1],
+                           'cyan' : [0, 1, 1],
+                           'black' : [0, 0, 0],
+                           'white' : [1, 1, 1],
+                           'grey25' : [.25, .25, .25],
+                           'grey50' : [.5, .5, .5],
+                           'grey75' : [.75, .75, .75],
+                           'orange' : [1, .5, 0],
+                           'light_blue' : [0, .5, 1],
+                           'purple' : [.35, 0, .35],
+                           'brown' : [.65, .16, .16]}
+
 
 
     '''
@@ -34,7 +50,7 @@ class Draw:
     axis: axis along which to draw the control shape
     scale: size of control
     '''
-    def create_curve(self, name=None, shape='circle', axis='y', scale=1):
+    def create_curve(self, name=None, shape='circle', color=None, axis='y', scale=1):
         file_path = "{}/{}".format(SHAPE_DIR, shape)
         if os.path.isfile(file_path):
             json_file = open(file_path, 'r')
@@ -68,10 +84,30 @@ class Draw:
             if i == 0:
                 mc.rename(shp, self.curve + "Shape")
             else:
-                mc.rename(shp, self.shape + "{}_{}".format(self.curve, i))
+                mc.rename(shp, self.curve + "{}_{}".format(self.curve, i))
 
         if axis != 'y':
             self.set_axis(axis)
+
+        if color:
+            print("coloring " + color)
+            self.color_curve(self.curve, color)
+
+    def color_curve(self, curve, color):
+        if isinstance(color, tuple) or isinstance(color, list):
+            if len(color) == 3:
+                mc.color(curve, rgb=color)
+            else:
+                mc.error('Color must be in 0-1 RGB format, i.e. [1, 0, 0].')
+
+        elif isinstance(color, str):
+            if color in self.color_dict:
+                mc.color(curve, rgb=self.color_dict[color])
+            else:
+                mc.error("Color '" + color + "' not found in color_dict.")
+
+        else:
+            mc.error("Unable to change control color. Please enter 0-1 RGB value as list, or a string containing color name.")
 
 
     '''
