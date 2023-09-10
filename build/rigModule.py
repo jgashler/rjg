@@ -41,12 +41,12 @@ class RigModule(rBase.RigBase):
             self.ctrl_scale=scale_factor
 
     def part_hierarchy(self):
-        self.part_group = self.rig_group(name=self.base_name, parent=self.rig)
-        self.module_group = self.rig_group(name=self.base_name + "_MODULE", parent=self.part_group)
-        self.control_group = self.rig_group(name=self.base_name + "_CONTROL", parent=self.part_group)
+        self.part_grp = self.rig_group(name=self.base_name, parent=self.rig)
+        self.module_grp = self.rig_group(name=self.base_name + "_MODULE", parent=self.part_grp)
+        self.control_grp = self.rig_group(name=self.base_name + "_CONTROL", parent=self.part_grp)
 
         if self.part != 'root':
-            self.global_scale = rAttr.Attribute(node=self.part_group, type='double', value=1, keyable=True, name='globalScale')
+            self.global_scale = rAttr.Attribute(node=self.part_grp, type='double', value=1, keyable=True, name='globalScale')
         
     def tag_bind_joints(self, joints):
         if not isinstance(joints, list):

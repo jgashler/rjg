@@ -21,7 +21,7 @@ class Chain:
         self.name = name
         self.split_jnt_dict = None
 
-    def create_from_transforms(self, parent_contstraint=True, orient_constraint=False, point_constraint=False, scale_constraint=False, connect_scale=True, parent=False, static=False, pad='auto')
+    def create_from_transforms(self, parent_contstraint=True, orient_constraint=False, point_constraint=False, scale_constraint=False, connect_scale=True, parent=False, static=False, pad='auto'):
         pose_dict = rXform.read_pose(self.transform_list)
         if pad == 'auto':
             pad = len(str(len(self.transform_list))) + 1
@@ -44,7 +44,7 @@ class Chain:
                 p_jnt = jnt
 
             rXform.set_pose(jnt, pose_dict[pose])
-            self.joints.append[jnt]
+            self.joints.append(jnt)
 
         if parent:
             mc.parent(self.joints[0], parent)

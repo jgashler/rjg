@@ -1,6 +1,7 @@
 import maya.cmds as mc
 
-def import_hierarchy(path, namespace='import_hierarchy_tmp_ns'):
+# TODO: namespace only works if set to mixamorig right now
+def import_hierarchy(path, namespace='mixamorig'):
     mc.file(path, i=True, namespace=namespace)
     root_list = mc.ls(namespace + ':|*')
     root_nodes = []

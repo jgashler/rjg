@@ -4,9 +4,12 @@ from importlib import reload
 import rjg.build.rigModule as rModule
 import rjg.build.chain as rChain
 import rjg.libs.control.ctrl as rCtrl
+reload(rModule)
+reload(rChain)
+reload(rCtrl)
 
 class Root(rModule.RigModule):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, global_shape='gnomon', root_shape='pacman'):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, global_shape='gear_2D', root_shape='circle'):
         super(Root, self).__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
         if self.guide_list:
@@ -40,7 +43,7 @@ class Root(rModule.RigModule):
 
 
     def output_rig(self):
-        root_jnt_grp = mc.group(parent=self.module_group, empty=True, name=self.base_name + '_JNT_GRP')
+        root_jnt_grp = mc.group(parent=self.module_grp, empty=True, name=self.base_name + '_JNT_GRP')
         mc.matchTransform(root_jnt_grp, self.root_02.ctrl)
         self.root_joint = mc.joint(root_jnt_grp, name=self.root_02.ctrl.replace('CTRL', 'JNT'))
 
