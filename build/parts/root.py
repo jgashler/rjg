@@ -12,7 +12,7 @@ reload(rCtrl)
 Class for root joint and control.
 '''
 class Root(rModule.RigModule):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, global_shape='gear_2D', root_shape='circle'):
+    def __init__(self, side=None, part='root', guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, global_shape='gear_2D', root_shape='circle'):
         super(Root, self).__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
         if self.guide_list:
