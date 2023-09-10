@@ -12,6 +12,9 @@ reload(rAttr)
 reload(rXform)
 #reload(rMath)
 
+'''
+Class used to create joint chains from a list of transforms.
+'''
 class Chain:
     def __init__(self, transform_list=None, label_chain=True, side='M', suffix='JNT', name='default'):
         self.transform_list = transform_list
@@ -28,6 +31,7 @@ class Chain:
         if not pad and len(self.transform_list) > 1:
             mc.error("Must use padding on chains with more than one joint to avoid naming conflicts.")
 
+        # place joints at each position in the transform list
         self.joints = []
         for i, pose in enumerate(pose_dict):
             if pad:
@@ -46,11 +50,13 @@ class Chain:
             rXform.set_pose(jnt, pose_dict[pose])
             self.joints.append(jnt)
 
+        # if there is another part of main skeleton to be parent, parent now
         if parent:
             mc.parent(self.joints[0], parent)
 
         mc.makeIdentity(self.joints[0], apply=True)
 
+        # set contstraints
         if not static:
             if point_constraint or orient_constraint:
                 parent_contstraint = False
@@ -87,6 +93,9 @@ class Chain:
         if self.label_chain:
             self.label_side(self.joints)
 
+    '''
+    Adds an attribute to joints depending on their side.
+    '''
     def label_side(self, chain):
         for jnt in chain:
             if any(self.side[0] == side for side in ['M', 'm', 'C', 'c', 'Md', 'md', 'Ct', 'ct']):

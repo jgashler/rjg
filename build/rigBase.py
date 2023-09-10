@@ -4,6 +4,9 @@ from importlib import reload
 import rjg.libs.file as rFile
 reload(rFile)
 
+'''
+Base class for rigModule. Contains base hierarchy for rig and loads in the model and guides.
+'''
 class RigBase():
     def __init__(self, model_path=None, guide_path=None):
         self.model_path = model_path
@@ -28,6 +31,7 @@ class RigBase():
 
     def load_guide(self):
         self.guide_roots = rFile.import_hierarchy(self.guide_path)
+        # should this be the child something?
 
     def rig_group(self, empty=True, name=None, **kwargs):
         if not mc.objExists(name):

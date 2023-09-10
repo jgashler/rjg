@@ -8,6 +8,9 @@ reload(rModule)
 reload(rChain)
 reload(rCtrl)
 
+'''
+Class for root joint and control.
+'''
 class Root(rModule.RigModule):
     def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, global_shape='gear_2D', root_shape='circle'):
         super(Root, self).__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
@@ -29,6 +32,9 @@ class Root(rModule.RigModule):
         self.output_rig()
         self.skeleton()
 
+    '''
+    Sets up root controls and parents them to each other properly.
+    '''
     def control_rig(self):
         if self.root_pose == (0, 0, 0):
             group_type = None
@@ -42,6 +48,9 @@ class Root(rModule.RigModule):
         self.root_02 = rCtrl.Control(parent=self.root_01.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_02', axis='y', group_type='main', rig_type='root_02', translate=self.root_pose, rotate=self.root_pose, ctrl_scale=self.ctrl_scale * 0.4)
 
 
+    '''
+    Places root joint and constrains it to the innermost root control.
+    '''
     def output_rig(self):
         root_jnt_grp = mc.group(parent=self.module_grp, empty=True, name=self.base_name + '_JNT_GRP')
         mc.matchTransform(root_jnt_grp, self.root_02.ctrl)
@@ -51,6 +60,9 @@ class Root(rModule.RigModule):
         mc.scaleConstraint(self.root_02.ctrl, self.root_joint, mo=True)
 
 
+    '''
+    Maybe unnecessary, except to be consistent with other parts.
+    '''
     def skeleton(self):
         bind_joints = []
         root_chain = rChain.Chain(transform_list=[self.root_joint], side=self.side, suffix='JNT', name=self.part)

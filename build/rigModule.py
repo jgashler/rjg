@@ -9,8 +9,11 @@ reload(rBase)
 reload(rAttr)
 reload(rCommon)
 
+'''
+Base class for all buildable parts. Adds to base hierarchy the part hierarchy for modules and controls.
+'''
 class RigModule(rBase.RigBase):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None):
+    def __init__(self, side='M', part='default', guide_list=None, ctrl_scale=None, model_path=None, guide_path=None):
         super(RigModule, self).__init__(model_path=model_path, guide_path=guide_path)
 
         self.side = side
@@ -18,10 +21,6 @@ class RigModule(rBase.RigBase):
         self.guide_list = guide_list
         self.ctrl_scale = ctrl_scale
 
-        if not side:
-            self.side = 'M'
-        if not part:
-            self.part = 'default'
         self.base_name = '{}_{}'.format(self.part, self.side)
 
         if self.guide_list:
@@ -32,6 +31,7 @@ class RigModule(rBase.RigBase):
         super(RigModule, self).create_module()
         self.part_hierarchy()
 
+        # set ctrl_scale to model's bounding box
         if not self.ctrl_scale:
             bb = rCommon.get_bounding_box(self.model)
             if abs(bb[0]) > abs(bb[1]):

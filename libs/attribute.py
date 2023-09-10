@@ -12,7 +12,6 @@ class Attribute:
         self.keyable = keyable
         self.lock = lock
 
-        # not sure if python allows this
         self.hasMinValue = True if min else False
         self.hasMaxValue = True if max else False
 
