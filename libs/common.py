@@ -32,3 +32,8 @@ def get_transform(node):
     
     else:
         return None
+    
+def get_bounding_box(nodes):
+    x1, y1, z1, x2, y2, z2 = mc.exactWorldBoundingBox(nodes, calculateExactly=True)
+
+    return x1, y1, z1, x2, y2, z2
