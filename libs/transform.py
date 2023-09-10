@@ -1,5 +1,6 @@
 import maya.cmds as mc
 from importlib import reload
+from collections import OrderedDict
 
 '''
 moves all transform attributes of node to those specified
@@ -51,3 +52,15 @@ def match_pose(node, translate=None, rotate=None, scale=None):
         mc.xform(node, worldSpace=True, scalen=src)
     else:
         mc.error("Input for scale not valid. Please give coordinates or provide a valid object.")
+
+def read_pose(nodes):
+    if not isinstance(nodes, list):
+        nodes = [nodes]
+    pose_dict = OrderedDict()
+
+    for node in nodes:
+        pose_dict[node] = mc.xform(node, q=True, worldSpace=True, matrix=True)
+    return pose_dict
+
+def set_pose(node, matrix):
+    mc.xform(node, worldSpace=True, matrix=matrix)
