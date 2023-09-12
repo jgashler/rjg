@@ -1,2 +1,4 @@
 __pycache__/
 .vscode/
+curve_writer.py
+ninja_build.py
