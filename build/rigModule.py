@@ -14,7 +14,8 @@ Base class for all buildable parts. Adds to base hierarchy the part hierarchy fo
 '''
 class RigModule(rBase.RigBase):
     def __init__(self, side='M', part='default', guide_list=None, ctrl_scale=None, model_path=None, guide_path=None):
-        super(RigModule, self).__init__(model_path=model_path, guide_path=guide_path)
+        print("Building " +part)
+        super().__init__(model_path=model_path, guide_path=guide_path)
 
         self.side = side
         self.part = part
@@ -28,7 +29,7 @@ class RigModule(rBase.RigBase):
                 guide_list = [guide_list]
 
     def create_module(self):
-        super(RigModule, self).create_module()
+        super().create_module()
         self.part_hierarchy()
 
         # set ctrl_scale to model's bounding box
