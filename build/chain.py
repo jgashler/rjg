@@ -5,12 +5,12 @@ import rjg.libs.control.ctrl as rCtrl
 import rjg.libs.common as rCommon
 import rjg.libs.attribute as rAttr
 import rjg.libs.transform as rXform
-#import rjg.libs.math as rMath
+import rjg.libs.math as rMath
 reload(rCtrl)
 reload(rCommon)
 reload(rAttr)
 reload(rXform)
-#reload(rMath)
+reload(rMath)
 
 '''
 Class used to create joint chains from a list of transforms.
@@ -88,7 +88,7 @@ class Chain:
                     if connect_scale:
                         mc.connectAttr(src + '.scale', jnt + '.scale')
 
-        # self.get_chain_lengths()
+        self.get_chain_lengths()
 
         if self.label_chain:
             self.label_side(self.joints)
@@ -106,5 +106,17 @@ class Chain:
                 mc.setAttr(jnt + '.side', 2)
             else:
                 mc.setAttr(jnt + '.side', 3)
+
+    def get_chain_lengths(self):
+        self.bone_lengths = []
+
+        for i in range(len(self.joints)-1):
+            a = self.joints[i]
+            b = self.joints[i+1]
+
+            bone_len = rMath.distance_between(point_a=a, point_b=b)
+            self.bone_lengths.append(bone_len)
+
+        self.chain_length = sum(self.bone_lengths)
             
 
