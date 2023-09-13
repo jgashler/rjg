@@ -39,3 +39,40 @@ class Attribute:
 
     def add_double(self):
         mc.addAttr(self.node, attributeType='double', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+
+    def lock_and_hide(self, node=None, translate=True, rotate=True, scale=True,
+                      visibility=True, attribute_list=None):
+        if not node:
+            node = self.node
+
+        for axis in 'XYZ':
+            if translate:
+                if isinstance(translate, str) and axis not in translate:
+                    continue
+                else:
+                    pass
+                mc.setAttr('{}.translate{}'.format(node, axis), lock=True)
+                mc.setAttr('{}.translate{}'.format(node, axis), keyable=False)
+            if rotate:
+                if isinstance(rotate, str) and axis not in rotate:
+                    continue
+                else:
+                    pass
+                mc.setAttr('{}.rotate{}'.format(node, axis), lock=True)
+                mc.setAttr('{}.rotate{}'.format(node, axis), keyable=False)
+            if scale:
+                if isinstance(scale, str) and axis not in scale:
+                    continue
+                else:
+                    pass
+                mc.setAttr('{}.scale{}'.format(node, axis), lock=True)
+                mc.setAttr('{}.scale{}'.format(node, axis), keyable=False)
+
+        if visibility:
+            mc.setAttr(node + '.visibility', lock=True)
+            mc.setAttr(node + '.visibility', keyable=False)
+
+        if attribute_list:
+            for attr in attribute_list:
+                mc.setAttr('{}.{}'.format(node, attr), lock=True)
+                mc.setAttr('{}.{}'.format(node, attr), keyable=False)
