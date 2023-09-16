@@ -184,6 +184,130 @@ class Chain:
             mc.connectAttr(mdl + '.output', jnt + '.rotateY')
             t_val += t_i
 
+    def bend_chain(self, bone, ctrl_scale, spans=16, mirror=False, global_scale=None):
+        if mirror:
+            mirror = -1
+        else:
+            mirror = 1
+        seg_jnt_list = self.split_jnt_dict[bone]
+        end_jnt = mc.listRelatives(bone, type='joint')
+        end_jnt = [ej for ej in end_jnt if ej not in seg_jnt_list][0]
 
-            
+        s = mc.xform(bone, q=True, ws=True, t=True)
+        e = mc.xform(end_jnt, q=True, ws=True, t=True)
+        m = [(s[axis] + e[axis]) / float(2) for axis in range(3)]
+
+        pos_list = [s]
+        for i in range(1, 6):
+            pos = [s[axis] + (i * ((e[axis] - s[axis]) / 6)) for axis in range(3)]
+            pos_list.append(pos)
+        pos_list.append(e)
+        b_crv = mc.curve(point=pos_list, degree=3, bezier=True, knot=[0, 0, 0, 1, 1, 1, 2, 2, 2])
+        b_crv = mc.rename(bone.replace('JNT', 'bezier_CRV'))
+
+        j_crv = mc.curve(editPoint=[s, e], degree=1)
+        j_crv = mc.rename(bone.replace('JNT', 'bend_CRV'))
+        mc.rebuildCurve(j_crv, replaceOriginal=True, rebuildType=0, endKnots=1, keepRange=0, keepControlPoints=False, keepEndPoints=False, keepTangents=False, spans=spans, degree=3)
+
+        loc_list = []
+        seg_inc = 1 / float(len(seg_jnt_list))
+        for i, jnt in enumerate(seg_jnt_list):
+            if jnt != seg_jnt_list[-1]:
+                next = seg_jnt_list[i+1]
+            else:
+                next = end_jnt
+            loc = mc.spaceLocator(name=jnt.replace('JNT', 'pos_LOC'))[0]
+            pci = mc.createNode('pointOnCurveInfo', name=jnt.replace('JNT', 'PCI'))
+            mc.connectAttr(j_crv + 'Shape.worldSpace[0]', pci + '.inputCurve')
+            mc.connectAttr(pci + '.position', loc + '.translate')
+            mc.setAttr(pci + '.parameter', seg_inc * i)
+            mc.pointConstraint(loc, jnt)
+
+            mc.setAttr(jnt + '.rotateOrder', 1)
+            mc.aimConstraint(next, jnt, aimVector=[0, mirror, 0], upVector=[0, 0, 1], worldUpType='none', skip='y')
+            loc_list.append(loc)
+
+        for i, jnt in enumerate(seg_jnt_list):
+            if jnt != seg_jnt_list[-1]:
+                next = seg_jnt_list[i+1]
+            else:
+                next = end_jnt
+            dist = mc.createNode('distanceBetween', name=jnt.replace('JNT', 'DIST'))
+            mdn = mc.createNode('multiplyDivide', name=jnt.replace('JNT', 'MDN'))
+
+            mc.setAttr(mdn + '.operation', 2)
+            mc.connectAttr(loc_list[i] + '.worldMatrix[0]', dist + '.inMatrix1')
+            mc.connectAttr(next + '.worldMatrix[0]', dist + '.inMatrix2')
+            mc.connectAttr(dist + '.distance', mdn + '.input1X')
+            d = mc.getAttr(dist + '.distance')
+
+            if global_scale:
+                mdl = mc.createNode('multDoubleLinear', name=jnt.replace('JNT', 'MDL'))
+                mc.connectAttr(global_scale, mdl + '.input1')
+                mc.connectAttr(mdl + '.output', mdn + '.input2X')
+                mc.setAttr(mdl + '.input2', d)
+            else:
+                mc.setAttr(mdn + '.input2X', d)
+            mc.connectAttr(mdn + '.outputX', jnt + '.scaleY')
+
+        rig_grp = mc.group(b_crv, j_crv, loc_list, name=bone.replace('JNT', 'bendy_rig_GRP'))
+        ctrl_grp = mc.group(empty=True, name=bone.replace('JNT', 'CTRL_GRP'))
+        mc.matchTransform(ctrl_grp, bone)
+        mc.hide(rig_grp)
+
+        mc.setAttr(rig_grp + '.inheritsTransform', 0)
+        mc.setAttr(ctrl_grp + '.inheritsTransform', 0)
+
+        dcm = mc.createNode('decomposeMatrix', name=bone.replace('JNT', 'DCM'))
+        mc.connectAttr(bone + '.worldMatrix[0]', dcm + '.inputMatrix')
+        for attr in ['translate', 'rotate', 'scale']:
+            mc.connectAttr(dcm + '.output' + attr.capitalize(), ctrl_grp + '.' + attr)
+        
+        attr_util = rAttr.Attribute(add=False)
+        mid_ctrl = rCtrl.Control(parent=ctrl_grp, shape='circle', side=None, suffix='CTRL', name=bone.replace('JNT', 'bendy'), axis='y', group_type='main', 
+                                 rig_type='bendy', translate=m, rotate=bone, ctrl_scale=ctrl_scale*0.8)
+        s_tan = rCtrl.Control(parent=ctrl_grp, shape='square', side=None, suffix='CTRL', name=bone.replace('JNT', 'start_tangent'), axis='y', group_type=2, 
+                                 rig_type='tangent', translate=b_crv + '.cv[1]', rotate=bone, ctrl_scale=ctrl_scale*0.6)
+        e_tan = rCtrl.Control(parent=ctrl_grp, shape='square', side=None, suffix='CTRL', name=bone.replace('JNT', 'end_tangent'), axis='y', group_type=2, 
+                                 rig_type='tangent', translate=b_crv + '.cv[5]', rotate=bone, ctrl_scale=ctrl_scale*0.6)
+        
+        attr_util.lock_and_hide(node=mid_ctrl.ctrl, translate=False, rotate=False, scale='XZ')
+        attr_util.lock_and_hide(node=s_tan.ctrl, translate=False)
+        attr_util.lock_and_hide(node=e_tan.ctrl, translate=False)
+
+        curvature = rAttr.Attribute(node=mid_ctrl.ctrl, type='double', value=1, min=0.001, max=3, keyable=True, name='curvature')
+        tangent_vis = rAttr.Attribute(node=mid_ctrl.ctrl, type='bool', value=False, keyable=True, name='tangentVisibility')
+        mc.connectAttr(tangent_vis.attr, s_tan.top + '.visibility')
+        mc.connectAttr(tangent_vis.attr, e_tan.top + '.visibility')
+
+        mc.xform(mid_ctrl.top, ws=True, pivots=s)
+        mc.xform(s_tan.top, ws=True, pivots=s)
+        mc.xform(e_tan.top, ws=True, pivots=e)
+        print(s_tan.control_dict)
+        mc.xform(s_tan.control_dict['rig_groups'][0], ws=True, pivots=s)
+        mc.xform(e_tan.control_dict['rig_groups'][0], ws=True, pivots=e)
+
+        mc.wire(j_crv, wire=b_crv, dropoffDistance=[0, 5000], crossingEffect=0, localInfluence=0, name=j_crv + '_wire')
+
+        mc.cluster(b_crv + '.cv[0]', bindState=True, weightedNode=(bone, bone), name=b_crv + '_start_CLS')
+        mc.cluster(b_crv + '.cv[1]', bindState=True, weightedNode=(s_tan.ctrl, s_tan.ctrl), name=b_crv + '_start_tangent_CLS')
+        mc.cluster(b_crv + '.cv[2:4]', bindState=True, weightedNode=(mid_ctrl.ctrl, mid_ctrl.ctrl), name=b_crv + '_mid_CLS')
+        mc.cluster(b_crv + '.cv[5]', bindState=True, weightedNode=(e_tan.ctrl, e_tan.ctrl), name=b_crv + '_end_tangent_CLS')
+        mc.cluster(b_crv + '.cv[6]', bindState=True, weightedNode=(bone, bone), name=b_crv + '_end_CLS')
+
+        sb_cls = mc.cluster(b_crv + 'BaseWire.cv[1]', name=b_crv + '_base_start_CLS')[1]
+        eb_cls = mc.cluster(b_crv + 'BaseWire.cv[5]', name=b_crv + '_base_end_CLS')[1]
+
+        mc.xform(sb_cls, ws=True, pivots=s)
+        mc.xform(eb_cls, ws=True, pivots=e)
+        mc.parent(sb_cls, eb_cls, rig_grp)
+
+        for axis in 'xyz':
+            mc.connectAttr(curvature.attr, sb_cls + '.s' + axis)
+            mc.connectAttr(curvature.attr, eb_cls + '.s' + axis)
+        mc.connectAttr(curvature.attr, s_tan.top + '.sy')
+        mc.connectAttr(curvature.attr, e_tan.top + '.sy')
+
+        return {'control':ctrl_grp, 'module':rig_grp}
+
 
