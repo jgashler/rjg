@@ -35,7 +35,7 @@ class Finger(rModule.RigModule, rFk.Fk):
 
     def control_rig(self):
         self.build_fk_controls()
-        mc.parent(self.fk_ctrls[0], self.control_group)
+        mc.parent(self.fk_ctrls[0].ctrl, self.control_grp)
 
     def output_rig(self):
         self.build_fk_chain()
@@ -46,7 +46,7 @@ class Finger(rModule.RigModule, rFk.Fk):
         fk_chain.create_from_transforms(parent=self.skel, scale_constraint=False)
 
         if self.remove_last:
-            mc.delete(self.fk_ctrks[-1].top)
+            mc.delete(self.fk_ctrls[-1].top)
             self.bind_joints = fk_chain.joints[:-1]
         else:
             self.bind_joints = fk_chain.joints
