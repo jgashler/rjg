@@ -283,7 +283,7 @@ class Chain:
         mc.xform(mid_ctrl.top, ws=True, pivots=s)
         mc.xform(s_tan.top, ws=True, pivots=s)
         mc.xform(e_tan.top, ws=True, pivots=e)
-        print(s_tan.control_dict)
+        #print(s_tan.control_dict)
         mc.xform(s_tan.control_dict['rig_groups'][0], ws=True, pivots=s)
         mc.xform(e_tan.control_dict['rig_groups'][0], ws=True, pivots=e)
 

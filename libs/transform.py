@@ -12,7 +12,7 @@ param rotate: same as translate, but applied to node's rotation
 param scale: same as translate, but applied to node's scale
 '''
 def match_pose(node, translate=None, rotate=None, scale=None):
-    print(type(translate))
+    #print(type(translate))
 
     if isinstance(translate, list) or isinstance(translate, tuple):
         if len(translate) == 3:
