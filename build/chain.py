@@ -24,7 +24,7 @@ class Chain:
         self.name = name
         self.split_jnt_dict = None
 
-    def create_from_transforms(self, parent_contstraint=True, orient_constraint=False, point_constraint=False, scale_constraint=False, connect_scale=True, parent=False, static=False, pad='auto'):
+    def create_from_transforms(self, parent_constraint=True, orient_constraint=False, point_constraint=False, scale_constraint=False, connect_scale=True, parent=False, static=False, pad='auto'):
         pose_dict = rXform.read_pose(self.transform_list)
         if pad == 'auto':
             pad = len(str(len(self.transform_list))) + 1
@@ -59,11 +59,11 @@ class Chain:
         # set contstraints
         if not static:
             if point_constraint or orient_constraint:
-                parent_contstraint = False
+                parent_constraint = False
 
             self.constraints = []
             for src, jnt in zip(pose_dict, self.joints):
-                if parent_contstraint:
+                if parent_constraint:
                     pac = mc.parentConstraint(src, jnt, mo=True)[0]
                     self.constraints.append(pac)
                 elif orient_constraint and point_constraint:
@@ -310,4 +310,31 @@ class Chain:
 
         return {'control':ctrl_grp, 'module':rig_grp}
 
+    def create_blend_chain(self, switch_node, chain_a, chain_b, translate=True, rotate=True, scale=True):
+        self.create_from_transforms(static=True)
 
+        self.switch = rAttr.Attribute(node=switch_node, type='double', min=0, max=1, keyable=True, name='switch')
+
+        i = 0
+        for a, b in zip(chain_a, chain_b):
+            bcn_name = self.joints[i].replace(self.suffix, '')
+            if translate:
+                bcn = mc.createNode('blendColors', name=bcn_name + '_translate_BCN')
+                mc.connectAttr(a + '.t', bcn + '.color1')
+                mc.connectAttr(b + '.t', bcn + '.color2')
+                mc.connectAttr(self.switch.attr, bcn + '.blender')
+                mc.connectAttr(bcn + '.output', self.joints[i] + '.t')
+            if rotate:
+                bcn = mc.createNode('blendColors', name=bcn_name + '_rotate_BCN')
+                mc.connectAttr(a + '.r', bcn + '.color1')
+                mc.connectAttr(b + '.r', bcn + '.color2')
+                mc.connectAttr(self.switch.attr, bcn + '.blender')
+                mc.connectAttr(bcn + '.output', self.joints[i] + '.r')
+            if scale:
+                bcn = mc.createNode('blendColors', name=bcn_name + '_scale_BCN')
+                mc.connectAttr(a + '.s', bcn + '.color1')
+                mc.connectAttr(b + '.s', bcn + '.color2')
+                mc.connectAttr(self.switch.attr, bcn + '.blender')
+                mc.connectAttr(bcn + '.output', self.joints[i] + '.s')
+
+            i += 1
