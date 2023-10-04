@@ -64,3 +64,12 @@ def read_pose(nodes):
 
 def set_pose(node, matrix):
     mc.xform(node, worldSpace=True, matrix=matrix)
+
+def findPosOnCurve(curve, u_val):
+    pci = mc.createNode("pointOnCurveInfo", n='tmp_pci')
+    mc.connectAttr(curve + 'Shape.worldSpace[0]', pci + '.inputCurve')
+    mc.setAttr(pci + '.turnOnPercentage', 1)
+    mc.setAttr(pci + '.parameter', u_val)
+    pos = mc.getAttr(pci + '.position')[0]
+    mc.delete(pci)
+    return pos
