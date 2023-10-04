@@ -10,6 +10,8 @@ import rjg.build.parts.bipedLimb as rBipedLimb
 import rjg.build.parts.clavicle as rClavicle
 import rjg.build.parts.hand as rHand
 import rjg.build.parts.foot as rFoot
+import rjg.build.parts.spine as rSpine
+import rjg.build.parts.neck as rNeck
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -19,6 +21,8 @@ reload(rBipedLimb)
 reload(rClavicle)
 reload(rHand)
 reload(rFoot)
+reload(rSpine)
+reload(rNeck)
 
 MODULE_DICT = {'root' : rRoot.Root,
                'hip' : rHip.Hip, 
@@ -27,7 +31,9 @@ MODULE_DICT = {'root' : rRoot.Root,
                'biped_limb' : rBipedLimb.BipedLimb,
                'clavicle' : rClavicle.Clavicle,
                'hand' : rHand.Hand,
-               'foot' : rFoot.Foot}
+               'foot' : rFoot.Foot,
+               'spine' : rSpine.Spine,
+               'neck' : rNeck.Neck}
 
 def build_module(module_type, **kwargs):
     # creates object from module_type class (kwargs carrying any info specific to that class)
