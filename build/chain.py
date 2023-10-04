@@ -338,3 +338,65 @@ class Chain:
                 mc.connectAttr(bcn + '.output', self.joints[i] + '.s')
 
             i += 1
+
+    def create_from_curve(self, joint_num=5, curve=None, aim_vector=(0, 1, 0), up_vector=(0, 0, 1), world_up_vector=(0, 0, 1), stretch=None):
+        if not curve:
+            mc.error('Please provide a valid curve along which to build joints.')
+
+        self.joints = []
+
+        pad = len(str(joint_num)) + 1
+        inc = 1 / (joint_num + 1)
+        par = None
+
+        for i in range(joint_num):
+            name_list = [self.name, self.side, str(i + 1).zfill(pad), self.suffix]
+            joint_name = '_'.join(name_list)
+
+            joint = mc.joint(None, name=joint_name)
+            pos = rXform.findPosOnCurve(curve, i * inc)
+            mc.setAttr(joint + '.translate', *pos)
+
+            if par:
+                aim = mc.aimConstraint(joint, par, aim=aim_vector, upVector=up_vector, worldUpType='vector', worldUpVector=world_up_vector)
+                mc.delete(aim)
+                mc.parent(joint, par)
+
+            par = joint
+            self.joints.append(joint)
+
+        mc.makeIdentity(self.joints[0], rotate=0, apply=True)
+        mc.setAttr(self.joints[-1] + '.jointOrient', 0, 0, 0)
+
+        if self.label_chain:
+            self.label_side(self.joints)
+
+
+
+def stretch_segment(jnt, start, end, stretch_driver=None, global_scale=None):
+    dist = mc.createNode("distanceBetween", name=jnt.replace('JNT', 'DIST'))
+    mdn = mc.createNode("multiplyDivide", name=jnt.replace('JNT', 'MDN'))
+
+    mc.setAttr(mdn + '.operation', 2)
+    mc.connectAttr(start + '.worldMatrix[0]', dist + '.inMatrix1')
+    mc.connectAttr(end + '.worldMatrix[0]', dist + '.inMatrix2')
+    mc.connectAttr(dist + '.distance', mdn + '.input1X')
+    d = mc.getAttr(dist + '.distance')
+
+    if global_scale:
+        mdl = mc.createNode('multDoubleLinear', name=jnt.replace('JNT', 'MDL'))
+        mc.connectAttr(global_scale, mdl + '.input1')
+        mc.connectAttr(mdl + '.output', mdn + '.input2X')
+        mc.setAttr(mdl + '.input2', d)
+    else:
+        mc.setAttr(mdn + '.input2', d)
+
+    if stretch_driver:
+        bta = mc.createNode('blendTwoAttr', name=jnt.replace('JNT', 'BTA'))
+        mc.setAttr(bta + '.input[0]', 1)
+        mc.connectAttr(mdn + '.outputX', bta + '.input[1]')
+        mc.connectAttr(stretch_driver, bta + '.attributesBlender')
+        mc.connectAttr(bta + '.output', jnt + '.scaleY')
+    else:
+        mc.connectAttr(mdn + '.outputX', jnt + '.scaleY')
+    
