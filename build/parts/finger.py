@@ -35,7 +35,6 @@ class Finger(rModule.RigModule, rFk.Fk):
 
     def control_rig(self):
         self.build_fk_controls()
-        #print(self.fk_ctrls[0].ctrl)
         mc.parent(self.fk_ctrls[0].top, self.control_grp)
 
     def output_rig(self):
