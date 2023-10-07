@@ -28,6 +28,13 @@ Skin
 - Set up a way to save and retrieve skin weights files easily.
 - Something more sophisticated? Think about this...
 
+UI
+- Select model and guides files from file browser.
+- Pass guide names in here instead of the script.
+- Select/deselect which components to place/replace.
+- Save/load control color scheme (dict to and from json)
+- Picker
+
 
 ### License
 
