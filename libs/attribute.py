@@ -2,7 +2,7 @@ import maya.cmds as mc
 from importlib import reload
 
 class Attribute:
-    def __init__(self, add=True, type=None, node=None, name=None, value=None, enum_list=None, lock=False, min=None, max=None, keyable=None):
+    def __init__(self, add=True, type=None, node=None, name=None, value=None, enum_list=None, lock=False, min=None, max=None, keyable=None, children_name=None):
         self.type = type
         self.node = node
         self.name = name
@@ -12,6 +12,7 @@ class Attribute:
         self.max = max
         self.keyable = keyable
         self.lock = lock
+        self.children_name = children_name
 
         self.hasMinValue = True if min is not None else False
         self.hasMaxValue = True if max is not None else False
@@ -30,7 +31,8 @@ class Attribute:
                      'double' : self.add_double,
                      'bool' : self.add_bool,
                      'enum' : self.add_enum,
-                     'separator' : self.add_separator,}
+                     'separator' : self.add_separator,
+                     'double3' : self.add_double3}
         type_dict[self.type]()
 
     def add_string(self):
@@ -44,6 +46,18 @@ class Attribute:
         if not self.value:
             self.value=0
         mc.addAttr(self.node, attributeType='double', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+
+    def add_double3(self):
+        mc.addAttr(self.node, attributeType='double3', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, keyable=self.keyable, longName=self.name)
+        for child in self.children_name:
+            mc.addAttr(self.node, parent=self.name, attributeType='double', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name + child)
+            
+        for child in self.children_name:    
+            child_attr = self.attr + child
+            if self.hasMinValue:
+                mc.addAttr(child_attr, edit=True, min=self.min)
+            if self.hasMaxValue:
+                mc.addAttr(child_attr, edit=True, max=self.max)
 
     def add_enum(self):
         if self.enum_list:
