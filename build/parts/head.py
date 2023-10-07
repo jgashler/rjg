@@ -38,6 +38,8 @@ class Head(rModule.RigModule):
     def control_rig(self):
         self.head_01 = rCtrl.Control(parent=self.control_grp, shape=self.head_shape, side=self.side, suffix='CTRL', name=self.part + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
         self.head_02 = rCtrl.Control(parent=self.control_grp, shape=self.head_shape, side=self.side, suffix='CTRL', name=self.part + '_02', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.3)
+        self.head_01.tag_as_controller()
+        self.head_02.tag_as_controller(parent=self.head_01)
 
     def output_rig(self):
         head_jnt_grp = mc.group(parent=self.module_grp, empty=True, name=self.base_name + '_JNT_GRP')

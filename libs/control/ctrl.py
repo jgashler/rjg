@@ -114,4 +114,30 @@ class Control(rDraw.Draw, rGroup.Group):
                             }
         tag_string = str(self.control_dict)
 
-        rAttr.Attribute(type='string', node=self.ctrl, name='ctrlDict', value=tag_string, lock=True)            
+        rAttr.Attribute(type='string', node=self.ctrl, name='ctrlDict', value=tag_string, lock=True)    
+
+    #TODO figure out how to set, query pickwalk targets    
+    def tag_as_controller(self, new=True, parent=None, query=False):
+        # return info on controller
+        if query:
+            q_dict = {}
+            q_dict['controller'] = mc.getAttr(self.ctrl.message)
+            if q_dict['controller']:
+                q_dict['parent'] = mc.getAttr(q_dict['controller'] + '.parent')
+
+            return q_dict
+
+        # create new tag
+        if new:
+            ctrl_tag = mc.createNode('controller', name=self.ctrl + '_TAG')
+            mc.connectAttr(self.ctrl + '.message', ctrl_tag + '.controllerObject')
+
+        # get existing tag (for adding a parent)
+        else:
+            ctrl_tag = mc.getAttr(self.ctrl + '.message')
+            if not ctrl_tag:
+                mc.error("Tag does not exist")
+
+        # set parent
+        if parent:
+            mc.connectAttr(parent.ctrl + '.message', ctrl_tag + '.parent')
