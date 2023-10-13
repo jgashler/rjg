@@ -36,7 +36,7 @@ class Hand(rModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         self.hand_01 = rCtrl.Control(parent=self.control_grp, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_01', axis='y', group_type='main', 
@@ -76,5 +76,5 @@ class Hand(rModule.RigModule):
         self.tag_bind_joints(self.bind_joints)
 
     def add_plugs(self):
-        pass
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("arm_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
 

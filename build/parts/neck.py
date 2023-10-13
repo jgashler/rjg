@@ -36,7 +36,7 @@ class Neck(rModule.RigModule, rSpline.Spline):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         self.build_spline_ctrls()
@@ -126,3 +126,6 @@ class Neck(rModule.RigModule, rSpline.Spline):
 
         self.bind_joints = neck_chain.joints
         self.tag_bind_joints(self.bind_joints[-1])
+
+    def add_plugs(self):
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])

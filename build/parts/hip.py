@@ -24,7 +24,7 @@ class Hip(rModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         self.hip_01 = rCtrl.Control(parent=self.control_grp, shape=self.hip_shape, side=self.side, suffix='CTRL', name=self.part + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
@@ -53,4 +53,7 @@ class Hip(rModule.RigModule):
         name_list = ['world', 'global', 'root', 'default_value']
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.hip_01.ctrl + "_parent", children_name=name_list)
+
+    def add_plugs(self):
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['root_M_JNT'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
         

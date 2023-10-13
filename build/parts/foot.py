@@ -53,7 +53,7 @@ class Foot(rModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         attr_util = rAttr.Attribute(add=False)
@@ -192,5 +192,5 @@ class Foot(rModule.RigModule):
         self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
-        pass
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("leg_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
 

@@ -39,7 +39,7 @@ class IkChain(rModule.RigModule, rIk.Ik):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        # self.add_plugs()
+        self.add_plugs()
 
         if self.pv_guide:
             mc.parent(self.guide_group, self.control_grp)
@@ -85,3 +85,6 @@ class IkChain(rModule.RigModule, rIk.Ik):
         ik_chain.create_from_transforms(orient_constraint=True, point_constraint=True, scale_constraint=False, parent=self.skel)
         self.bind_joints = ik_chain.joints
         self.tag_bind_joints(self.bind_joints[:-1])
+
+    def add_plugs(self):
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['insert ik chain plug here'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])

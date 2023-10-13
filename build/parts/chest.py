@@ -23,7 +23,7 @@ class Chest(rModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         self.chest_01 = rCtrl.Control(parent=self.control_grp, shape=self.chest_shape, side=self.side, suffix='CTRL', name=self.part + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
@@ -43,5 +43,9 @@ class Chest(rModule.RigModule):
         self.bind_joints = chest_chain.joints
 
         self.tag_bind_joints(self.bind_joints)
+
+    def add_plugs(self):
+        # skeleton plugs
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("spine_M_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
         

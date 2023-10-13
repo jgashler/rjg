@@ -86,7 +86,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         # fk
@@ -318,3 +318,13 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
         rAttr.Attribute(node=self.part_grp, type='plug',
                          value=ik_ctrl, name='transferAttributes',
                          children_name=[self.main_ctrl.ctrl])
+        
+    def add_plugs(self):
+        if self.part == 'leg':
+            par = 'hip_M_JNT'
+        elif self.part == 'arm':
+            par = 'clavicle_' + self.side + '_02_JNT'
+        else:
+            par = 'insert limb plug here'
+
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[par], name='skeletonPlugs', childrenName=[self.bind_joints[0]])

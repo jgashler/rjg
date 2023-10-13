@@ -36,7 +36,7 @@ class fk_chain(rModule.RigModule, rFk.Fk):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         self.build_fk_ctrls()
@@ -57,3 +57,6 @@ class fk_chain(rModule.RigModule, rFk.Fk):
             self.bind_joints = fk_chain.joints
 
         self.tag_bind_joints(self.bind_joints)
+
+    def add_plugs(self):
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['insert fk chain plug here'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])

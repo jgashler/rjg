@@ -24,8 +24,8 @@ class Clavicle(rModule.RigModule):
 
         self.control_rig()
         self.output_rig()
-        #self.skeleton()
-        #self.add_plugs()
+        self.skeleton()
+        self.add_plugs()
 
     def control_rig(self):
         if self.local_orient:
@@ -141,17 +141,5 @@ class Clavicle(rModule.RigModule):
         self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
-        # add skeleton plugs
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=['Cn_chest_JNT'], name='skeletonPlugs',
-                         children_name=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
 
-        # add parentConstraint rig plugs
-        driver_list = ['Cn_chest_02_JNT',
-                       'Cn_chest_02_JNT']
-        driven_list = [self.side + '_clavicle_CTRL_CNST_GRP',
-                       self.side + '_clavicle_CNST_GRP']
-
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=driver_list, name='pacRigPlugs',
-                         children_name=driven_list)
