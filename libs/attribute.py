@@ -32,8 +32,14 @@ class Attribute:
                      'bool' : self.add_bool,
                      'enum' : self.add_enum,
                      'separator' : self.add_separator,
-                     'double3' : self.add_double3}
+                     'double3' : self.add_double3,
+                     'plug' : self.add_plug}
         type_dict[self.type]()
+
+        if self.type == 'plug':
+            self.value = self.children_name
+        else:
+            self.value = mc.getAttr(self.attr)
 
     def add_string(self):
         mc.addAttr(self.node, longName=self.name, dataType='string')
@@ -67,6 +73,13 @@ class Attribute:
     def add_separator(self):
         mc.addAttr(self.node, attributeType='enum', enumName='________', keyable=False, longName=self.name)
         mc.setAttr(self.attr, cb=True)
+
+    def add_plug(self):
+        mc.addAttr(self.node, numberOfChildren=len(self.children_name), attributeType='compound', longName=self.name)
+        for child in self.children_name:
+            mc.addAttr(self.node, longName=child, dt='string', parent=self.name)
+        for plug, val in zip(mc.listAttr(self.attr)[1:], self.value):
+            mc.setAttr(self.node + '.' + plug, val, type='string')
 
     def lock_and_hide(self, node=None, translate=True, rotate=True, scale=True,
                       visibility=True, attribute_list=None):
