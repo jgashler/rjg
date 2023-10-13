@@ -25,6 +25,8 @@ class Hand(rModule.RigModule):
                                        ctrl_scale=ctrl_scale,
                                        model_path=model_path,
                                        guide_path=guide_path)
+        
+        self.base_name = self.part + '_' + self.side
 
         self.local_orient = local_orient
 
@@ -39,13 +41,13 @@ class Hand(rModule.RigModule):
         self.add_plugs()
 
     def control_rig(self):
-        self.hand_01 = rCtrl.Control(parent=self.control_grp, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_01', axis='y', group_type='main', 
+        self.hand_01 = rCtrl.Control(parent=self.control_grp, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', 
                                      rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
-        self.hand_02 = rCtrl.Control(parent=self.hand_01.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_02', axis='y', group_type='main', 
+        self.hand_02 = rCtrl.Control(parent=self.hand_01.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', 
                                      rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 0.85)
-        self.hand_local = rCtrl.Control(parent=self.hand_02.ctrl, shape='quad_arrow', side=self.side, suffix='CTRL', name=self.part + '_local', axis='y', group_type='main', 
+        self.hand_local = rCtrl.Control(parent=self.hand_02.ctrl, shape='quad_arrow', side=None, suffix='CTRL', name=self.base_name + '_local', axis='y', group_type='main', 
                                      rig_type='secondary', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
-        self.hand_fk = rCtrl.Control(parent=self.control_grp, shape='circle', side=self.side, suffix='CTRL', name=self.part + '_fk', axis='y', group_type='main', 
+        self.hand_fk = rCtrl.Control(parent=self.control_grp, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_fk', axis='y', group_type='main', 
                                      rig_type='fk', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
         
     def output_rig(self):
@@ -70,11 +72,11 @@ class Hand(rModule.RigModule):
 
     def skeleton(self):
         jnt = mc.joint(self.skel, name=self.base_name + '_JNT')
-        mc.parentConstraint(self.blend_chain.joints[0], jnt, mo=True)
+        mc.parentConstraint(self.blend_chain.joints[0], jnt, mo=False)
         mc.connectAttr(self.blend_chain.joints[0] + '.scale', jnt + '.scale')
         self.bind_joints = [jnt]
         self.tag_bind_joints(self.bind_joints)
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("arm_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("arm_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 

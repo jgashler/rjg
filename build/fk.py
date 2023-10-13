@@ -52,7 +52,7 @@ class Fk:
             num = str(i+1).zfill(self.pad)
             if pose == self.guide_list[0]:
                 par = None
-            fk = rCtrl.Control(parent=par, shape=self.fk_shape, side=self.side, suffix='CTRL', name=self.part + "_" + num + "_fk", axis='y', group_type='main', 
+            fk = rCtrl.Control(parent=par, shape=self.fk_shape, side=None, suffix='CTRL', name=self.base_name + "_" + num + "_fk", axis='y', group_type='main', 
                        rig_type='fk', translate=pose, rotate=pose, ctrl_scale=self.ctrl_scale)
             par = fk.ctrl
             self.fk_ctrls.append(fk)
@@ -61,14 +61,14 @@ class Fk:
             self.output_ctrls = self.fk_ctrls
 
             if self.gimbal:
-                gim = rCtrl.Control(parent=par, shape=self.gimbal_shape, side=self.side, suffix='CTRL', name=self.part + "_" + num + "_gimbal", axis='y', group_type='main', 
+                gim = rCtrl.Control(parent=par, shape=self.gimbal_shape, side=None, suffix='CTRL', name=self.base_name + "_" + num + "_gimbal", axis='y', group_type='main', 
                        rig_type='gimbal', translate=pose, rotate=pose, ctrl_scale=self.ctrl_scale*0.8)
                 par = gim.ctrl
                 self.gim_ctrls.append(gim)
                 self.output_ctrls = self.gim_ctrls
 
             if self.offset:
-                ofst = rCtrl.Control(parent=par, shape=self.offset_shape, side=self.side, suffix='CTRL', name=self.part + "_" + num + "_offset", axis='y', group_type='main', 
+                ofst = rCtrl.Control(parent=par, shape=self.offset_shape, side=None, suffix='CTRL', name=self.base_name + "_" + num + "_offset", axis='y', group_type='main', 
                        rig_type='offset', translate=pose, rotate=pose, ctrl_scale=self.ctrl_scale*0.55)
                 self.ofst_ctrls.append(ofst)
                 self.output_ctrls = self.ofst_ctrls
