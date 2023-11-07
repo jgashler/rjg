@@ -1,4 +1,5 @@
 import maya.cmds as mc
+import maya.api.OpenMaya as om
 from importlib import reload
 
 import rjg.libs.attribute as rAttr
@@ -6,6 +7,36 @@ import rjg.libs.math as rMath
 reload(rAttr)
 reload(rMath)
 
+def clean_pv_guide(guide_list=None, name=None, suffix=None, slide_pv=None, offset_pv=2, delete_setup=True):
+    if not suffix:
+        suffix = 'guide'
+    if not name:
+        name = guide_list[0] + '_' + suffix
+
+    vecA = om.MVector(mc.xform(guide_list[0], t=True, q=True, ws=True))
+    vecC = om.MVector(mc.xform(guide_list[-1], t=True, q=True, ws=True))
+    if len(guide_list)%2 == 0:
+        vecB = vec_midpoint(guide_list[len(guide_list//2)], guide_list[len(guide_list//2-1)])
+    else:
+        vecB = om.MVector(mc.xform(guide_list[len(guide_list//2)], t=True, q=True, ws=True))
+    
+    AC_mid = vec_midpoint(vecA, vecC)
+    pv_pos = AC_mid + (vecB - AC_mid)*offset_pv
+
+    pv_loc = mc.spaceLocator(name=name + '_LOC')[0]
+    mc.xform(pv_loc, pv_pos)
+
+    return pv_loc
+
+
+def vec_midpoint(a, b):
+    if not isinstance(a, om.MVector):
+        a = om.MVector(mc.xform(a, q=True, t=True, ws=True))
+    if not isinstance(b, om.MVector):
+        b = om.MVector(mc.xform(a, q=True, t=True, ws=True))
+
+    midpoint = (b-a)/2 + a
+    return midpoint
 
 def create_pv_guide(guide_list=None,
                     name=None,
