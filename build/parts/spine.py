@@ -24,6 +24,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         self.up_vector = up_vector
         self.world_up_vector = world_up_vector
         self.fk_offset = fk_offset
+        self.base_name = self.part + '_' + self.side
 
         self.pad = len(str(self.joint_num)) + 1
 
@@ -47,7 +48,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         self.fk_ctrl_list = []
         par = None
         for i, jnt in enumerate(fk_chain.joints[::-1]):
-            name_list = [self.part, str(i + 1).zfill(2), 'FK']
+            name_list = [self.base_name, str(i + 1).zfill(2), 'FK']
             ctrl_name = '_'.join(name_list)
 
             if i == 0:
@@ -55,7 +56,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
             else:
                 shape = 'single_arrow' # half cylinder
 
-            fk_ctrl = rCtrl.Control(parent=par, shape=shape, side=self.side, suffix='CTRL', name=ctrl_name, axis='y', group_type='main', rig_type='fk', translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale)
+            fk_ctrl = rCtrl.Control(parent=par, shape=shape, side=None, suffix='CTRL', name=ctrl_name, axis='y', group_type='main', rig_type='fk', translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale)
             self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False, rotate=False)
 
             par=fk_ctrl.ctrl
@@ -67,7 +68,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
     def output_rig(self):
         self.build_spline_chain(scale_attr=self.global_scale)
 
-        curve_jnt_grp = mc.group(empty=True, parent=self.module_grp, name=self.base_name + 'curve_bind_JNT_GRP')
+        curve_jnt_grp = mc.group(empty=True, parent=self.module_grp, name=self.base_name + '_curve_bind_JNT_GRP')
         base_jnt = mc.joint(curve_jnt_grp, name=self.base_ctrl.ctrl.replace('CTRL', 'JNT'))
         tip_jnt = mc.joint(curve_jnt_grp, name=self.tip_ctrl.ctrl.replace('CTRL', 'JNT'))
 
@@ -139,6 +140,11 @@ class Spine(rModule.RigModule, rSpline.Spline):
         self.tag_bind_joints(self.bind_joints[-1])
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['hip_M_JNT'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['hip_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
+        driver_list = ['hip_M_02_CTRL', 'hip_M_01_CTRL', 'chest_M_02_CTRL']
+        driven_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_01_FK_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
 
+        hide_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(hide_list)], name='hideRigPlugs', children_name=['hideNodes'])

@@ -222,109 +222,69 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
         self.bind_joints = limb_chain.joints
 
         self.tag_bind_joints(self.bind_joints[:-1])
-
-    def add_plugs(self):
-        if self.part == 'leg':
-            par = 'Cn_hip_JNT'
-            driver_list = ['Cn_hip_02_CTRL',
-                           'Cn_hip_02_CTRL',
-                           'Cn_hip_02_CTRL',
-                           self.base_name + '_IK_base_CTRL',
-                           self.side + '_foot_01_ik_JNT']
-            driven_list = [self.limb_grp,
-                           self.base_name + '_IK_base_CTRL_CNST_GRP',
-                           self.base_name + '_01_fk_CTRL_CNST_GRP',
-                           self.base_name + '_up_twist_LOC',
-                           self.base_name + '_IK_main_CTRL_CNST_GRP']
-            hide_list = [self.base_name + '_IK_main_CTRL_CNST_GRP',
-                         self.fk_ctrls[-1].top]
-            pv_targets = ['CHAR', 'Cn_global_CTRL', 'Cn_root_02_CTRL',
-                          'Cn_hip_01_CTRL', self.side + '_leg_IK_base_CTRL',
-                          self.side + '_foot_02_CTRL', '2']
-            pv_names = ['world', 'global', 'root', 'hip', 'leg', 'foot',
-                        'default_value']
-            ik_ctrl = [self.side + '_foot_01_CTRL']
-        elif self.part == 'arm':
-            par = self.side + '_clavicle_02_JNT'
-            driver_list = [self.side + '_clavicle_02_driver_JNT',
-                           self.side + '_clavicle_02_driver_JNT',
-                           self.side + '_clavicle_02_driver_JNT',
-                           self.side + '_hand_01_ik_JNT']
-            driven_list = [self.limb_grp,
-                           self.base_name + '_IK_base_CTRL_CNST_GRP',
-                           self.base_name + '_up_twist_LOC',
-                           self.base_name + '_IK_main_CTRL_CNST_GRP']
-            hide_list = [self.base_name + '_IK_base_CTRL_CNST_GRP',
-                         self.base_name + '_IK_main_CTRL_CNST_GRP']
-            pv_targets = ['CHAR', 'Cn_global_CTRL', 'Cn_root_02_CTRL',
-                          'Cn_chest_01_CTRL', self.side + '_hand_local_CTRL',
-                          '2']
-            pv_names = ['world', 'global', 'root', 'chest', 'hand',
-                        'default_value']
-            ik_ctrl = [self.side + '_hand_01_CTRL']
-
-            # add pointConstraint rig plugs
-            rAttr.Attribute(node=self.part_grp, type='plug',
-                             value=[self.side + '_clavicle_02_driver_JNT'],
-                             name='pocRigPlugs',
-                             children_name=[
-                                 self.side + '_arm_01_fk_CTRL_CNST_GRP'])
-
-            # add space plugs
-            target_list = ['Cn_chest_01_CTRL', 'Cn_chest_02_CTRL',
-                           self.side + '_clavicle_02_driver_JNT', '0']
-            name_list = ['chest01', 'chest02', 'clavicle', 'default_value']
-            orient_names = ['orient' + n.title() for n in name_list]
-
-            rAttr.Attribute(node=self.part_grp, type='plug',
-                             value=target_list,
-                             name=self.fk_ctrls[0].ctrl + '_orient',
-                             children_name=orient_names)
-        else:
-            par = 'insert limb plug here'
-            driver_list = ['driver_node']
-            driven_list = ['driven_node']
-            hide_list = ['list of geo to hide']
-            ik_ctrl = ['ik driver control (hand/foot)']
-
-        # add skeleton plugs
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[par], name='skeletonPlugs',
-                         children_name=[self.bind_joints[0]])
-
-        # add parentConstraint rig plugs
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=driver_list, name='pacRigPlugs',
-                         children_name=driven_list)
-
-        # add hide rig plugs
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[' '.join(hide_list)], name='hideRigPlugs',
-                         children_name=['hideNodes'])
-
-        # add pv space plug
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=pv_targets,
-                         name=self.pv_ctrl.ctrl + '_parent',
-                         children_name=pv_names)
-
-        # add switch plug
-        switch_attr = self.side.lower() + self.part.capitalize() + 'IKFK'
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[switch_attr], name='switchRigPlugs',
-                         children_name=['ikFkSwitch'])
-
-        # add transferAttributes plug
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=ik_ctrl, name='transferAttributes',
-                         children_name=[self.main_ctrl.ctrl])
-        
+  
     def add_plugs(self):
         if self.part == 'leg':
             par = 'hip_M_JNT'
+            driver_list = ['hip_M_02_CTRL',
+                           'hip_M_02_CTRL', 
+                           'hip_M_02_CTRL', 
+                           self.base_name + '_IK_BASE_CTRL', 
+                           'foot_' + self.side + '_01_ik_JNT']
+            driven_list = [self.limb_grp, 
+                           self.base_name + '_IK_BASE_CTRL_CNST_GRP', 
+                           self.base_name + '_01_fk_CTRL_CNST_GRP',
+                           self.base_name + '_up_twist_LOC',
+                           self.base_name + '_IK_MAIN_CTRL_CNST_GRP']
+            hide_list = [self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
+                         self.base_name + '_IK_BASE_CTRL_CNST_GRP',
+                         self.fk_ctrls[-1].top]
+            pv_targets = ['CHAR',
+                          'global_M_CTRL',
+                          'root_M_02_CTRL',
+                          'hip_M_01_CTRL',
+                          'leg_' + self.side + '_IK_BASE_CTRL',
+                          'foot_' + self.side + '_02_BASE_CTRL',
+                          '2']
+            pv_names = ['world', 'global', 'root', 'hip', 'leg', 'foot', 'default_value']
+            ik_ctrl = ['foot_' + self.side + '_01_CTRL']
         elif self.part == 'arm':
             par = 'clavicle_' + self.side + '_02_JNT'
+            driver_list = ['clavicle_' + self.side + '_02_driver_JNT',
+                           'clavicle_' + self.side + '_02_driver_JNT',
+                           'clavicle_' + self.side + '_02_driver_JNT',
+                           'hand_' + self.side + '_01_ik_JNT']
+            driven_list = [self.limb_grp,
+                           self.base_name + '_IK_BASE_CTRL_CNST_GRP',
+                           self.base_name + '_up_twist_LOC',
+                           self.base_name + '_IK_MAIN_CTRL_CNST_GRP']
+            hide_list = [self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
+                         self.base_name + '_IK_BASE_CTRL_CNST_GRP']
+            pv_targets = ['CHAR',
+                          'global_M_CTRL',
+                          'root_M_02_CTRL',
+                          'chest_M_01_CTRL',
+                          'hand_' + self.side + '_local_CTRL',
+                          '2']
+            pv_names = ['world', 'global', 'root', 'hip', 'hand', 'default_value']
+            ik_ctrl = ['hand_' + self.side + '_01_CTRL']
+
+            rAttr.Attribute(node=self.part_grp, type='plug', value=['clavicle_' + self.side + '_02_driver_JNT'], name='pocRigPlugs', children_name=['arm_' + self.side + '_01_fk_CTRL_CNST_GRP'])
+            target_list = ['chest_M_01_CTRL', 'chest_M_02_CTRL', 'clavicle_' + self.side + '_02_driver_JNT', '0']
+            name_list = ['chest01', 'chest02', 'clavicle', 'default_value']
+            orient_names = ['orient' + name.title() for name in name_list]
+            rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.fk_ctrls[0].ctrl + '_orient', children_name=orient_names)
         else:
             par = 'insert limb plug here'
+            driver_list = ['driver list']
+            driven_list = ['driven list']
+            hide_list = ['hide list']
+            ik_ctrl = ['ik ctrl']
 
-        rAttr.Attribute(node=self.part_grp, type='plug', value=[par], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        switch_attr = self.part.lower() + self.side.capitalize() + '_IKFK'
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[par], name='skeletonPlugs', children_name=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(hide_list)], name='hideRigPlugs', children_name=['hideNodes'])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=pv_targets, name=self.pv_ctrl.ctrl + '_parent', children_name=pv_names)
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=ik_ctrl, name='transferAttributes', children_name=[self.main_ctrl.ctrl])

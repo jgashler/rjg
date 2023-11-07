@@ -47,7 +47,7 @@ class Neck(rModule.RigModule, rSpline.Spline):
     def output_rig(self):
         self.build_spline_chain(scale_attr=self.global_scale)
 
-        curve_jnt_grp = mc.group(empty=True, parent=self.module_grp, name=self.base_name + 'curve_bind_JNT_GRP')
+        curve_jnt_grp = mc.group(empty=True, parent=self.module_grp, name=self.base_name + '_curve_bind_JNT_GRP')
         base_jnt = mc.joint(curve_jnt_grp, name=self.base_ctrl.ctrl.replace('CTRL', 'JNT'))
         tip_jnt = mc.joint(curve_jnt_grp, name=self.tip_ctrl.ctrl.replace('CTRL', 'JNT'))
 
@@ -128,4 +128,11 @@ class Neck(rModule.RigModule, rSpline.Spline):
         self.tag_bind_joints(self.bind_joints[-1])
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
+
+        driver_list = ['chest_M_02_JNT', 'head_M_02_CTRL']
+        driven_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+
+        hide_list = [self.base_name + '_tip_CTRL_CNST_GRP', self.base_name + '_base_CTRL_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(hide_list)], name='hideRigPlugs', children_name=['hideNodes'])

@@ -35,6 +35,7 @@ class Foot(rModule.RigModule):
                                        model_path=model_path,
                                        guide_path=guide_path)
         
+        self.base_name = self.part + '_' + self.side
         self.in_piv = in_piv
         self.out_piv = out_piv
         self.heel_piv = heel_piv
@@ -58,25 +59,25 @@ class Foot(rModule.RigModule):
     def control_rig(self):
         attr_util = rAttr.Attribute(add=False)
 
-        self.main_ctrl = rCtrl.Control(parent=self.control_grp, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_01', axis='y', group_type='main', 
+        self.main_ctrl = rCtrl.Control(parent=self.control_grp, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', 
                                      rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
-        self.second_ctrl = rCtrl.Control(parent=self.main_ctrl.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_02', axis='y', group_type='main', 
+        self.second_ctrl = rCtrl.Control(parent=self.main_ctrl.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', 
                                      rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 0.85)
         
-        self.toe_piv = rCtrl.Control(parent=self.second_ctrl.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_toe_piv', axis='y', group_type='main', rig_type='pivot',
+        self.toe_piv = rCtrl.Control(parent=self.second_ctrl.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_toe_piv', axis='y', group_type='main', rig_type='pivot',
                              translate=self.toe_piv, rotate=self.guide_list[-1], ctrl_scale=self.ctrl_scale * 0.2)
-        self.heel_piv = rCtrl.Control(parent=self.toe_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_heel_piv', axis='y', group_type='main', rig_type='pivot',
+        self.heel_piv = rCtrl.Control(parent=self.toe_piv.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_heel_piv', axis='y', group_type='main', rig_type='pivot',
                              translate=self.heel_piv, ctrl_scale=self.ctrl_scale * 0.2)
-        self.in_piv = rCtrl.Control(parent=self.heel_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_in_piv', axis='y', group_type='main', rig_type='pivot',
+        self.in_piv = rCtrl.Control(parent=self.heel_piv.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_in_piv', axis='y', group_type='main', rig_type='pivot',
                              translate=self.in_piv, ctrl_scale=self.ctrl_scale * 0.2)
-        self.out_piv = rCtrl.Control(parent=self.in_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_out_piv', axis='y', group_type='main', rig_type='pivot',
+        self.out_piv = rCtrl.Control(parent=self.in_piv.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_out_piv', axis='y', group_type='main', rig_type='pivot',
                              translate=self.out_piv, ctrl_scale=self.ctrl_scale * 0.2)
         
-        self.ball_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.part + '_ball', axis='y', group_type='main', rig_type='pivot',
+        self.ball_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name + '_ball', axis='y', group_type='main', rig_type='pivot',
                              translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale * 1.45)
-        self.ankle_ctrl = rCtrl.Control(parent=self.ball_ctrl.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.part + '_ankle', axis='y', group_type='main', rig_type='pivot',
+        self.ankle_ctrl = rCtrl.Control(parent=self.ball_ctrl.ctrl, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name + '_ankle', axis='y', group_type='main', rig_type='pivot',
                              translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
-        self.toe_ctrl = rCtrl.Control(parent=self.ankle_ctrl.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.part + '_toe', axis='y', group_type='main', rig_type='pivot',
+        self.toe_ctrl = rCtrl.Control(parent=self.ankle_ctrl.ctrl, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name + '_toe', axis='y', group_type='main', rig_type='pivot',
                              translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale)
         
         ts_list = [self.ball_ctrl, self.toe_ctrl, self.toe_piv, self.heel_piv, self.in_piv, self.out_piv]
@@ -192,5 +193,23 @@ class Foot(rModule.RigModule):
         self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("leg_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("leg_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
+        driver_list = ['leg_' + self.side + '_03_switch_JNT']
+        driven_list = [self.base_name + '_01_switch_JNT']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pocRigPlugs', children_name=driven_list)
+
+        delete_list = [self.base_name + '_01_translate_BCN']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
+
+        target_list = ['CHAR',
+                       'global_M_CTRL',
+                       'root_M_02_CTRL',
+                       'hip_M_01_CTRL',
+                       'leg_'+ self.side +'_IK_BASE_CTRL',
+                       '1']
+        name_list = ['world', 'global', 'root', 'hip', 'leg', 'default_value']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.main_ctrl.ctrl + '_parent', children_name=name_list)
+
+        switch_attr = self.side.lower() + 'LegIKFK'
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])

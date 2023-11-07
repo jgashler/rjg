@@ -2,7 +2,7 @@ import maya.cmds as mc
 from importlib import reload
 
 class Attribute:
-    def __init__(self, add=True, type=None, node=None, name=None, value=None, enum_list=None, lock=False, min=None, max=None, keyable=None, children_name=None):
+    def __init__(self, add=True, type=None, node=None, name=None, value=None, enum_list=None, lock=False, min=None, max=None, keyable=None, children_name=None, transfer_to=None):
         self.type = type
         self.node = node
         self.name = name
@@ -13,6 +13,7 @@ class Attribute:
         self.keyable = keyable
         self.lock = lock
         self.children_name = children_name
+        self.transfer_to = transfer_to
 
         self.hasMinValue = True if min is not None else False
         self.hasMaxValue = True if max is not None else False
@@ -117,3 +118,36 @@ class Attribute:
             for attr in attribute_list:
                 mc.setAttr('{}.{}'.format(node, attr), lock=True)
                 mc.setAttr('{}.{}'.format(node, attr), keyable=False)
+
+    def transfer_attr(self, connect=True):
+        old_attr = self.attr
+        self.get_attr()
+        self.node = self.transfer_to
+        self.add_attr()
+        if connect:
+            mc.connectAttr(self.attr, old_attr)
+
+    def get_attr(self):
+        if self.min == None:
+            self.hasMinValue = False
+        else:
+            self.hasMinValue = True
+
+        if self.max == None:
+            self.hasMaxValue = False
+        else:
+            self.hasMaxValue = True
+
+        if not self.type:
+            self.type = mc.getAttr(self.attr, type=True)
+        if self.hasMinValue:
+            self.min = mc.attributeQuery(self.name, node=self.node, minimum=True)[0]
+        if self.hasMaxValue:
+            self.max = mc.attributeQuery(self.name, node=self.node, maximum=True)[0]
+        if not self.value:
+            self.value = mc.getAttr(self.attr)
+        if not self.keyable:
+            self.keyable = mc.getAttr(self.attr, keyable=True)
+        
+        
+

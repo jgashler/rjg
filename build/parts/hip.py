@@ -57,3 +57,9 @@ class Hip(rModule.RigModule):
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['root_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
         
+        target_list = ['CHAR',
+                       'global_M_CTRL',
+                       'root_M_02_CTRL',
+                       '2']
+        name_list = ['world', 'global', 'root', 'default_value']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.hip_01.ctrl +'_parent', children_name=name_list)

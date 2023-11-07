@@ -80,3 +80,25 @@ class Hand(rModule.RigModule):
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("arm_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
+        driver_list = ['arm_'+ self.side +'_03_switch_JNT', 'clavicle_'+ self.side +'_02_driver_JNT']
+        driven_list = [self.base_name + '_fk_CTRL_CNST_GRP', self.base_name + '_JNT_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+
+        driver_list = ['arm_'+ self.side +'_03_switch_JNT']
+        driven_list = [self.base_name + '_01_switch_JNT']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pocRigPlugs', children_name=driven_list)
+
+        hide_list = ['hand_'+ self.side + '_fk_CTRL_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(hide_list)], name='hideRigPlugs', children_name=['hideNodes'])
+
+        target_list = ['CHAR',
+                       'global_M_CTRL',
+                       'root_M_02_CTRL',
+                       'hip_M_01_CTRL',
+                       'chest_M_01_CTRL',
+                       'clavicle_'+ self.side +'_CTRL', '2']
+        name_list = ['world', 'global', 'root', 'hip', 'chest', 'clavicle', 'default_value']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.hand_01.ctrl +'_parent', children_name=name_list)
+
+        switch_attr = self.side.lower() + 'ArmIKFK'
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])

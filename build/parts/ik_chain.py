@@ -87,4 +87,4 @@ class IkChain(rModule.RigModule, rIk.Ik):
         self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['insert ik chain plug here'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['insert ik chain plug here'], name='skeletonPlugs', children_name=[self.bind_joints[0]])

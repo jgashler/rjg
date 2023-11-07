@@ -56,30 +56,30 @@ class Spline:
 
         self.curve_ctrls = []
 
-        self.base_ctrl = rCtrl.Control(parent=None, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_base', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
+        self.base_ctrl = rCtrl.Control(parent=None, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_base', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
         self.attr_util.lock_and_hide(node=self.base_ctrl.ctrl, translate=False, rotate=False)
         self.curve_ctrls.append(self.base_ctrl.top)
         self.base_driver = self.base_ctrl.ctrl
 
-        self.tip_ctrl = rCtrl.Control(parent=None, shape='cube', side=self.side, suffix='CTRL', name=self.part + '_tip', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[-1], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
+        self.tip_ctrl = rCtrl.Control(parent=None, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_tip', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[-1], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
         self.attr_util.lock_and_hide(node=self.tip_ctrl.ctrl, translate=False, rotate=False)
         self.curve_ctrls.append(self.tip_ctrl.top)
         self.tip_driver = self.tip_ctrl.ctrl
 
         if self.local_ctrl:
-            self.base_local = rCtrl.Control(parent=self.base_ctrl.ctrl, shape='quad_arrow', side=self.side, suffix='CTRL', name=self.part + '_base_local', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
+            self.base_local = rCtrl.Control(parent=self.base_ctrl.ctrl, shape='quad_arrow', side=None, suffix='CTRL', name=self.base_name + '_base_local', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
             self.attr_util.lock_and_hide(node=self.base_local.ctrl, translate=False, rotate=False)
             #self.curve_ctrls.append(self.tip_ctrl)
             self.base_driver = self.base_local.ctrl
 
-            self.tip_local = rCtrl.Control(parent=self.tip_ctrl.ctrl, shape='quad_arrow', side=self.side, suffix='CTRL', name=self.part + '_tip_local', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[-1], rotate=self.guide_list[-1], ctrl_scale=self.ctrl_scale)
+            self.tip_local = rCtrl.Control(parent=self.tip_ctrl.ctrl, shape='quad_arrow', side=None, suffix='CTRL', name=self.base_name + '_tip_local', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[-1], rotate=self.guide_list[-1], ctrl_scale=self.ctrl_scale)
             self.attr_util.lock_and_hide(node=self.tip_local.ctrl, translate=False, rotate=False)
             #self.curve_ctrls.append(self.tip_ctrl)
             self.tip_driver = self.tip_local.ctrl
 
         if self.mid_ctrl:
             pos = rXform.findPosOnCurve(self.curve, 0.5)
-            self.mid_ctrl = rCtrl.Control(parent=None, shape='circle', side=self.side, suffix='CTRL', name=self.part + '_mid', axis='y', group_type='main', rig_type='primary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
+            self.mid_ctrl = rCtrl.Control(parent=None, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid', axis='y', group_type='main', rig_type='primary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
             self.attr_util.lock_and_hide(node=self.mid_ctrl.ctrl, translate=False, rotate=False)
             self.curve_ctrls.append(self.mid_ctrl.top)
             #self.base_driver = self.base_local.ctrl

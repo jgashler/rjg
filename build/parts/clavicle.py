@@ -141,5 +141,10 @@ class Clavicle(rModule.RigModule):
         self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', childrenName=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
+        driver_list = ['chest_M_02_JNT',
+                       'chest_M_02_JNT']
+        driven_list = ['clavicle_' + self.side + '_CTRL_CNST_GRP',
+                       'clavicle_' + self.side + '_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
