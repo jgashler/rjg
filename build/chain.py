@@ -319,19 +319,19 @@ class Chain:
         for a, b in zip(chain_a, chain_b):
             bcn_name = self.joints[i].replace(self.suffix, '')
             if translate:
-                bcn = mc.createNode('blendColors', name=bcn_name + '_translate_BCN')
+                bcn = mc.createNode('blendColors', name=bcn_name + 'translate_BCN')
                 mc.connectAttr(a + '.t', bcn + '.color1')
                 mc.connectAttr(b + '.t', bcn + '.color2')
                 mc.connectAttr(self.switch.attr, bcn + '.blender')
                 mc.connectAttr(bcn + '.output', self.joints[i] + '.t')
             if rotate:
-                bcn = mc.createNode('blendColors', name=bcn_name + '_rotate_BCN')
+                bcn = mc.createNode('blendColors', name=bcn_name + 'rotate_BCN')
                 mc.connectAttr(a + '.r', bcn + '.color1')
                 mc.connectAttr(b + '.r', bcn + '.color2')
                 mc.connectAttr(self.switch.attr, bcn + '.blender')
                 mc.connectAttr(bcn + '.output', self.joints[i] + '.r')
             if scale:
-                bcn = mc.createNode('blendColors', name=bcn_name + '_scale_BCN')
+                bcn = mc.createNode('blendColors', name=bcn_name + 'scale_BCN')
                 mc.connectAttr(a + '.s', bcn + '.color1')
                 mc.connectAttr(b + '.s', bcn + '.color2')
                 mc.connectAttr(self.switch.attr, bcn + '.blender')
