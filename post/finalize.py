@@ -175,6 +175,9 @@ def add_global_scale(global_ctrl='global_M_CTRL'):
         mc.connectAttr(ps, part + '.sz')
 
 def assemble_rig():
+    mc.parent('chest_M_01_CTRL', 'hip_M_01_CTRL')
+    mc.parent('head_M_01_CTRL', 'chest_M_01_CTRL')
+
     for part in mc.listRelatives('RIG'):
 
         plug_types = ['hideRigPlugs', 'deleteRigPlugs']
