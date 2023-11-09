@@ -17,7 +17,7 @@ class Control(rDraw.Draw, rGroup.Group):
     def __init__(self, ctrl=None, parent=None, shape='circle', side='M', suffix='CTRL', name='default', axis='y', 
                  group_type='main', rig_type='primary', ctrl_scale=1, translate=(0, 0, 0), rotate=(0, 0, 0), scale=(1, 1, 1)):
         self.group_dict = {
-                           "main": ["CNST", "MOCAP", "SDK", "OFF"],
+                           "main": ["CNST", "SDK", "OFF"],
                            "offset": ["CNST", "OFF"]
                           }
         self.parent = parent
