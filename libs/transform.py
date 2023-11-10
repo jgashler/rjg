@@ -53,6 +53,9 @@ def match_pose(node, translate=None, rotate=None, scale=None):
     else:
         mc.error("Input for scale not valid. Please give coordinates or provide a valid object.")
 
+'''
+populates an OrderedDict with {node : world space matrix}
+'''
 def read_pose(nodes):
     if not isinstance(nodes, list):
         nodes = [nodes]
@@ -62,9 +65,15 @@ def read_pose(nodes):
         pose_dict[node] = mc.xform(node, q=True, worldSpace=True, matrix=True)
     return pose_dict
 
+'''
+sets worldspace matrix of an object
+'''
 def set_pose(node, matrix):
     mc.xform(node, worldSpace=True, matrix=matrix)
 
+'''
+given a curve and a percentage along the curve, return the worldspace position of that point on the curve
+'''
 def findPosOnCurve(curve, u_val):
     pci = mc.createNode("pointOnCurveInfo", n='tmp_pci')
     mc.connectAttr(curve + 'Shape.worldSpace[0]', pci + '.inputCurve')

@@ -1,12 +1,12 @@
 import maya.cmds as mc
 
-# TODO: namespace only works if set to mixamorig right now
-def import_hierarchy(path, namespace='mixamorig'):
+# imports a scene, finds all root nodes (no parent) and returns them
+def import_hierarchy(path, namespace='mixamorig'):      # TODO: namespace only works if set to mixamorig right now
     mc.file(path, i=True, namespace=namespace)
-    root_list = mc.ls(namespace + ':|*')
+    root_list = mc.ls(namespace + ':|*')                # this gets all the root nodes
     root_nodes = []
     for root in root_list:
-        root_nodes.append(root.split(':')[-1])
+        root_nodes.append(root.split(':')[-1])          # this removes namespace info from the name
     mc.namespace(moveNamespace=(namespace, ':'), force=True)
     mc.namespace(removeNamespace=namespace)
     return root_nodes

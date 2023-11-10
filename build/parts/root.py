@@ -16,11 +16,11 @@ class Root(rModule.RigModule):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
         if self.guide_list:
-            self.root_pose = guide_list[0]
+            self.root_pos = guide_list[0]
         else:
-            self.root_pose = (0, 0, 0)
+            self.root_pos = (0, 0, 0)
 
-        self.global_shape = global_shape
+        self.global_shape = global_shape    # these two shapes are unique to root
         self.root_shape = root_shape
 
         self.create_module()
@@ -36,16 +36,16 @@ class Root(rModule.RigModule):
     Sets up root controls and parents them to each other properly.
     '''
     def control_rig(self):
-        if self.root_pose == (0, 0, 0):
+        if self.root_pos == (0, 0, 0):
             group_type = None
         else:
             group_type = 1
 
-        self.global_control = rCtrl.Control(parent=self.control_grp, shape=self.global_shape, side=self.side, suffix='CTRL', name='global', axis='y', group_type=group_type, rig_type='global', translate=self.root_pose, rotate=self.root_pose, ctrl_scale=self.ctrl_scale)
+        self.global_control = rCtrl.Control(parent=self.control_grp, shape=self.global_shape, side=self.side, suffix='CTRL', name='global', axis='y', group_type=group_type, rig_type='global', translate=self.root_pos, rotate=self.root_pos, ctrl_scale=self.ctrl_scale)
 
-        self.root_01 = rCtrl.Control(parent=self.global_control.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_01', axis='y', group_type='main', rig_type='root_01', translate=self.root_pose, rotate=self.root_pose, ctrl_scale=self.ctrl_scale * 0.5)
+        self.root_01 = rCtrl.Control(parent=self.global_control.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_01', axis='y', group_type='main', rig_type='root_01', translate=self.root_pos, rotate=self.root_pos, ctrl_scale=self.ctrl_scale * 0.5)
 
-        self.root_02 = rCtrl.Control(parent=self.root_01.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_02', axis='y', group_type='main', rig_type='root_02', translate=self.root_pose, rotate=self.root_pose, ctrl_scale=self.ctrl_scale * 0.4)
+        self.root_02 = rCtrl.Control(parent=self.root_01.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_02', axis='y', group_type='main', rig_type='root_02', translate=self.root_pos, rotate=self.root_pos, ctrl_scale=self.ctrl_scale * 0.4)
 
 
     '''

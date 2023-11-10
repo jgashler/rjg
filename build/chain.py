@@ -24,6 +24,9 @@ class Chain:
         self.name = name
         self.split_jnt_dict = None
 
+    '''
+    Given a list of transforms, place joints at each transform
+    '''
     def create_from_transforms(self, parent_constraint=True, orient_constraint=False, point_constraint=False, scale_constraint=False, connect_scale=True, parent=False, static=False, pad='auto'):
         pose_dict = rXform.read_pose(self.transform_list)
         if pad == 'auto':
@@ -34,12 +37,14 @@ class Chain:
         # place joints at each position in the transform list
         self.joints = []
         for i, pose in enumerate(pose_dict):
+            # create the name of the joint
             if pad:
                 name_list = [self.name, self.side, str(i+1).zfill(pad), self.suffix]
             else:
                 name_list = [self.name, self.side, self.suffix]
             jnt_name = '_'.join(name_list)
 
+            # create the joint with its name
             if i == 0:
                 jnt = mc.joint(None, name=jnt_name)
                 p_jnt = jnt
@@ -47,6 +52,7 @@ class Chain:
                 jnt = mc.joint(p_jnt, name=jnt_name)
                 p_jnt = jnt
 
+            # place the joint in its worldspace position
             rXform.set_pose(jnt, pose_dict[pose])
             self.joints.append(jnt)
 
@@ -107,6 +113,9 @@ class Chain:
             else:
                 mc.setAttr(jnt + '.side', 3)
 
+    '''
+    sums up bone lengths in the chain
+    '''
     def get_chain_lengths(self):
         self.bone_lengths = []
 

@@ -22,6 +22,11 @@ class RigModule(rBase.RigBase):
         self.guide_list = guide_list
         self.ctrl_scale = ctrl_scale
 
+        if not self.side:
+            self.side = 'M'
+        if not self.part:
+            self.part = 'default'
+
         self.base_name = '{}_{}'.format(self.part, self.side)
 
         if self.guide_list:
@@ -32,7 +37,7 @@ class RigModule(rBase.RigBase):
         super().create_module()
         self.part_hierarchy()
 
-        # set ctrl_scale to model's bounding box
+        # set ctrl_scale to model's bounding box as default
         if not self.ctrl_scale:
             bb = rCommon.get_bounding_box(self.model)
             if abs(bb[0]) > abs(bb[1]):
@@ -41,14 +46,17 @@ class RigModule(rBase.RigBase):
                 scale_factor = abs(bb[1])
             self.ctrl_scale=scale_factor
 
+    # creates individual part's hierarchy as a subset of the RIG group created by rigBase
     def part_hierarchy(self):
-        self.part_grp = self.rig_group(name=self.base_name, parent=self.rig)
-        self.module_grp = self.rig_group(name=self.base_name + "_MODULE", parent=self.part_grp)
-        self.control_grp = self.rig_group(name=self.base_name + "_CONTROL", parent=self.part_grp)
+        self.part_grp = self.rig_group(name=self.base_name, parent=self.rig)                        # part group
+        self.module_grp = self.rig_group(name=self.base_name + "_MODULE", parent=self.part_grp)     # module group to contain rig systems
+        self.control_grp = self.rig_group(name=self.base_name + "_CONTROL", parent=self.part_grp)   # control group to contain any control curves
 
+        # global scale attribute added to root
         if self.part != 'root':
             self.global_scale = rAttr.Attribute(node=self.part_grp, type='double', value=1, keyable=True, name='globalScale')
         
+    # tag joints to be used for skinning
     def tag_bind_joints(self, joints):
         if not isinstance(joints, list):
             joints = [joints]
