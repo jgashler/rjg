@@ -211,5 +211,5 @@ class Foot(rModule.RigModule):
         name_list = ['world', 'global', 'root', 'hip', 'leg', 'default_value']
         rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.main_ctrl.ctrl + '_parent', children_name=name_list)
 
-        switch_attr = self.side.lower() + 'LegIKFK'
+        switch_attr = 'leg' + self.side + '_IKFK'
         rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])
