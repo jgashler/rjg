@@ -11,11 +11,16 @@ reload(rCtrl)
 reload(rAttr)
 
 class Chest(rModule.RigModule):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, chest_shape='chest', model_path=None, guide_path=None):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, chest_shape='chest', model_path=None, guide_path=None, parent=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
         self.chest_shape = chest_shape
         self.base_name = self.part + '_' + self.side
+        self.parent = parent
+
+        if not self.parent:             # allow parenting to other controls
+            parent = self.control_grp
+
         self.create_module()
 
     def create_module(self):
@@ -26,8 +31,9 @@ class Chest(rModule.RigModule):
         self.skeleton()
         self.add_plugs()
 
+
     def control_rig(self):
-        self.chest_01 = rCtrl.Control(parent=self.control_grp, shape=self.chest_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
+        self.chest_01 = rCtrl.Control(parent=self.parent, shape=self.chest_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
 
         self.chest_02 = rCtrl.Control(parent=self.chest_01.ctrl, shape=self.chest_shape, side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.35)
 

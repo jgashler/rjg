@@ -11,7 +11,7 @@ reload(rChain)
 reload(rCtrl)
 
 class Head(rModule.RigModule):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, head_shape='circle'):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, head_shape='circle', parent=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
         self.side = side
@@ -24,6 +24,9 @@ class Head(rModule.RigModule):
         self.guide_list = guide_list
 
         self.head_shape = head_shape
+        self.parent = parent
+        if not self.parent:
+            self.parent = self.control_grp
 
         self.create_module()
 
@@ -36,7 +39,7 @@ class Head(rModule.RigModule):
         self.add_plugs()
 
     def control_rig(self):
-        self.head_01 = rCtrl.Control(parent=self.control_grp, shape=self.head_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
+        self.head_01 = rCtrl.Control(parent=self.parent, shape=self.head_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
         self.head_02 = rCtrl.Control(parent=self.head_01.ctrl, shape=self.head_shape, side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.3)
         self.head_01.tag_as_controller()
         self.head_02.tag_as_controller(parent=self.head_01)
