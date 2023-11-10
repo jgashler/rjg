@@ -1,7 +1,7 @@
 {
-    "duplicatedCurveShape1": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1Shape": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -19,9 +19,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape2": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_1": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -39,9 +39,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape3": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_2": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -59,9 +59,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape4": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_3": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -79,9 +79,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape5": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_4": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -99,9 +99,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape6": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_5": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -119,9 +119,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape7": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_6": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -139,9 +139,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape8": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_7": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -159,9 +159,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape9": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_8": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -179,9 +179,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape10": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_9": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -199,9 +199,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape11": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_10": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -219,9 +219,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape12": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_11": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -239,9 +239,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape13": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_12": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -259,9 +259,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape14": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_13": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -279,9 +279,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape15": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_14": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -299,9 +299,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape16": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_15": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -319,9 +319,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape17": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_16": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -339,9 +339,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape18": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_17": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -359,9 +359,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape28": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_18": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -379,9 +379,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape37": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_19": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -399,9 +399,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape45": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_20": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -419,9 +419,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape54": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_21": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -439,9 +439,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape63": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_22": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -459,9 +459,9 @@
             ]
         ]
     },
-    "duplicatedCurveShape71": {
-        "min": 1.0,
-        "max": 2.0,
+    "gear_2D1gear_2D1_23": {
+        "min": 0.0,
+        "max": 1.0,
         "spans": 1,
         "degree": 1,
         "form": 0,
@@ -476,246 +476,6 @@
                 -0.625,
                 0.0,
                 0.6495189666748047
-            ]
-        ]
-    },
-    "duplicatedCurveShape72": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                -0.08850674075360952,
-                0.0003645740371903683,
-                0.3303116505362973
-            ],
-            [
-                0.0885067509449246,
-                0.0003645740371903683,
-                0.3303116505362973
-            ]
-        ]
-    },
-    "duplicatedCurveShape76": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                0.0885067509449246,
-                0.0003645740371903683,
-                0.3303116505362973
-            ],
-            [
-                0.2418049301653179,
-                0.0003645740371903683,
-                0.24180490978268776
-            ]
-        ]
-    },
-    "duplicatedCurveShape79": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                0.2418049301653179,
-                0.0003645740371903683,
-                0.24180490978268776
-            ],
-            [
-                0.3303116505362973,
-                0.0003645740371903683,
-                0.08850672037097937
-            ]
-        ]
-    },
-    "duplicatedCurveShape82": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                0.3303116505362973,
-                0.0003645740371903683,
-                0.08850672037097937
-            ],
-            [
-                0.3303116505362973,
-                0.0003645740371903683,
-                -0.08850676113623968
-            ]
-        ]
-    },
-    "duplicatedCurveShape85": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                0.3303116505362973,
-                0.0003645740371903683,
-                -0.08850676113623968
-            ],
-            [
-                0.2418049301653179,
-                0.0003645740371903683,
-                -0.24180490978268776
-            ]
-        ]
-    },
-    "duplicatedCurveShape88": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                0.2418049301653179,
-                0.0003645740371903683,
-                -0.24180490978268776
-            ],
-            [
-                0.0885067101796643,
-                0.0003645740371903683,
-                -0.33031167091892744
-            ]
-        ]
-    },
-    "duplicatedCurveShape91": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                0.0885067101796643,
-                0.0003645740371903683,
-                -0.33031167091892744
-            ],
-            [
-                -0.08850681209281507,
-                0.0003645740371903683,
-                -0.3303116301536671
-            ]
-        ]
-    },
-    "duplicatedCurveShape94": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                -0.08850681209281507,
-                0.0003645740371903683,
-                -0.3303116301536671
-            ],
-            [
-                -0.24180490978268776,
-                0.0003645740371903683,
-                -0.24180490978268776
-            ]
-        ]
-    },
-    "duplicatedCurveShape97": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                -0.24180490978268776,
-                0.0003645740371903683,
-                -0.24180490978268776
-            ],
-            [
-                -0.3303116505362973,
-                0.0003645740371903683,
-                -0.08850677132755476
-            ]
-        ]
-    },
-    "duplicatedCurveShape100": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                -0.3303116505362973,
-                0.0003645740371903683,
-                -0.08850677132755476
-            ],
-            [
-                -0.33031167091892744,
-                0.0003645740371903683,
-                0.088506669414404
-            ]
-        ]
-    },
-    "duplicatedCurveShape103": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                -0.33031167091892744,
-                0.0003645740371903683,
-                0.088506669414404
-            ],
-            [
-                -0.24180486901742745,
-                0.0003645740371903683,
-                0.24180495054794807
-            ]
-        ]
-    },
-    "duplicatedCurveShape106": {
-        "min": 1.0,
-        "max": 2.0,
-        "spans": 1,
-        "degree": 1,
-        "form": 0,
-        "cv_len": 2,
-        "cv_pose": [
-            [
-                -0.24180486901742745,
-                0.0003645740371903683,
-                0.24180495054794807
-            ],
-            [
-                -0.08850674075360952,
-                0.0003645740371903683,
-                0.3303116505362973
             ]
         ]
     }
