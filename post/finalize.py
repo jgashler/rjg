@@ -175,8 +175,8 @@ def add_global_scale(global_ctrl='global_M_CTRL'):
         mc.connectAttr(ps, part + '.sz')
 
 def assemble_rig():
-    mc.parent('chest_M_01_CTRL', 'hip_M_01_CTRL')
-    mc.parent('head_M_01_CTRL', 'chest_M_01_CTRL')
+    #mc.parent('chest_M_01_CTRL', 'hip_M_01_CTRL')
+    #mc.parent('head_M_01_CTRL', 'chest_M_01_CTRL')
 
     for part in mc.listRelatives('RIG'):
 
@@ -292,10 +292,14 @@ def add_switch_ctrl():
     for part in mc.listRelatives('RIG'):
         if mc.objExists(part + '.switchRigPlugs'):
             switch_name = mc.getAttr(part + '.ikFkSwitch')
+            if 'arm' in part or 'hand' in part:
+                default_val = 1
+            else:
+                default_val = 0
             if mc.objExists(s_ctrl.ctrl + '.' + switch_name):
                 switch_attr = rAttr.Attribute(node=s_ctrl.ctrl, name=switch_name, add=False)
             else:
-                switch_attr = rAttr.Attribute(node=s_ctrl.ctrl, type='double', value=0, keyable=True, min=0, max=1, name=switch_name)
+                switch_attr = rAttr.Attribute(node=s_ctrl.ctrl, type='double', value=default_val, keyable=True, min=0, max=1, name=switch_name)
             mc.connectAttr(switch_attr.attr, part + '.switch')
 
     return s_ctrl.ctrl
