@@ -52,7 +52,16 @@ class Attribute:
     def add_double(self):
         if not self.value:
             self.value=0
-        mc.addAttr(self.node, attributeType='double', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+            
+        if self.hasMaxValue and self.hasMinValue:
+            mc.addAttr(self.node, attributeType='double', maxValue=self.max, minValue=self.min, hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+        elif self.hasMaxValue:
+            mc.addAttr(self.node, attributeType='double', maxValue=self.max, hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+        elif self.hasMinValue:
+            mc.addAttr(self.node, attributeType='double', minValue=self.min, hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+        else:
+            mc.addAttr(self.node, attributeType='double', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, defaultValue=self.value, keyable=self.keyable, longName=self.name)
+
 
     def add_double3(self):
         mc.addAttr(self.node, attributeType='double3', hasMinValue=self.hasMinValue, hasMaxValue=self.hasMaxValue, keyable=self.keyable, longName=self.name)
