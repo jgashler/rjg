@@ -63,7 +63,7 @@ class Chest(rModule.RigModule):
 
         target_list = ['CHAR',
                        'global_M_CTRL',
-                       'root_M_02_CTRL',
+                       'root_02_M_CTRL',
                        'spine_M_03_FK_CTRL',
                        '3']
         name_list = ['world', 'global', 'root', 'spine', 'default_value']
