@@ -1,4 +1,5 @@
 import maya.cmds as mc
+import maya.api.OpenMaya as om
 # import math
 
 
@@ -29,3 +30,13 @@ def distance_between(point_a=None, point_b=None):
     distance = vector_length(vector_ab)
     return distance
 
+def vec_midpoint(a, b):
+    if not isinstance(a, om.MVector):
+        pos = mc.xform(a, q=True, t=True, ws=True)
+        a = om.MVector(pos)
+    if not isinstance(b, om.MVector):
+        pos = mc.xform(b, q=True, t=True, ws=True)
+        b = om.MVector(pos)
+
+    midpoint = (b-a)/2 + a
+    return midpoint

@@ -7,7 +7,7 @@ import rjg.libs.math as rMath
 reload(rAttr)
 reload(rMath)
 
-def clean_pv_guide(guide_list=None, name=None, suffix=None, slide_pv=None, offset_pv=2, delete_setup=True):
+def clean_pv_guide(guide_list=None, name=None, suffix=None, slide_pv=None, offset_pv=5):
     if not suffix:
         suffix = 'guide'
     if not name:
@@ -16,27 +16,18 @@ def clean_pv_guide(guide_list=None, name=None, suffix=None, slide_pv=None, offse
     vecA = om.MVector(mc.xform(guide_list[0], t=True, q=True, ws=True))
     vecC = om.MVector(mc.xform(guide_list[-1], t=True, q=True, ws=True))
     if len(guide_list)%2 == 0:
-        vecB = vec_midpoint(guide_list[len(guide_list//2)], guide_list[len(guide_list//2-1)])
+        vecB = rMath.vec_midpoint(guide_list[len(guide_list)//2], guide_list[(len(guide_list)//2)-1])
     else:
-        vecB = om.MVector(mc.xform(guide_list[len(guide_list//2)], t=True, q=True, ws=True))
+        vecB = om.MVector(mc.xform(guide_list[len(guide_list)//2], t=True, q=True, ws=True))
     
-    AC_mid = vec_midpoint(vecA, vecC)
+    AC_mid = rMath.vec_midpoint(vecA, vecC)
     pv_pos = AC_mid + (vecB - AC_mid)*offset_pv
 
-    pv_loc = mc.spaceLocator(name=name + '_LOC')[0]
-    mc.xform(pv_loc, pv_pos)
+    # pv_loc = mc.spaceLocator(name=name + '_LOC')[0]
+    # mc.xform(pv_loc, t=pv_pos, ws=True)
 
-    return pv_loc
+    return (pv_pos[0], pv_pos[1], pv_pos[2])
 
-
-def vec_midpoint(a, b):
-    if not isinstance(a, om.MVector):
-        a = om.MVector(mc.xform(a, q=True, t=True, ws=True))
-    if not isinstance(b, om.MVector):
-        b = om.MVector(mc.xform(a, q=True, t=True, ws=True))
-
-    midpoint = (b-a)/2 + a
-    return midpoint
 
 def create_pv_guide(guide_list=None,
                     name=None,
