@@ -42,11 +42,11 @@ class Root(rModule.RigModule):
             group_type = 1
 
         self.global_control = rCtrl.Control(parent=self.control_grp, shape=self.global_shape, side=self.side, suffix='CTRL', name='global', axis='y', group_type=group_type, rig_type='global', translate=self.root_pos, rotate=self.root_pos, ctrl_scale=self.ctrl_scale)
-
         self.root_01 = rCtrl.Control(parent=self.global_control.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_01', axis='y', group_type='main', rig_type='root', translate=self.root_pos, rotate=self.root_pos, ctrl_scale=self.ctrl_scale * 0.5)
-
         self.root_02 = rCtrl.Control(parent=self.root_01.ctrl, shape=self.root_shape, side=self.side, suffix='CTRL', name='root_02', axis='y', group_type='main', rig_type='root', translate=self.root_pos, rotate=self.root_pos, ctrl_scale=self.ctrl_scale * 0.4)
-
+        self.global_control.tag_as_controller()
+        self.root_01.tag_as_controller()
+        self.root_02.tag_as_controller()
 
     '''
     Places root joint and constrains it to the innermost root control.

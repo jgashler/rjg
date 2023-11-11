@@ -56,6 +56,7 @@ class Fk:
                        rig_type='fk', translate=pose, rotate=pose, ctrl_scale=self.ctrl_scale)
             par = fk.ctrl
             self.fk_ctrls.append(fk)
+            fk.tag_as_controller()
 
             # output_ctrls: constraint target for joints
             self.output_ctrls = self.fk_ctrls
@@ -66,12 +67,14 @@ class Fk:
                 par = gim.ctrl
                 self.gim_ctrls.append(gim)
                 self.output_ctrls = self.gim_ctrls
+                gim.tag_as_controller()
 
             if self.offset:
                 ofst = rCtrl.Control(parent=par, shape=self.offset_shape, side=None, suffix='CTRL', name=self.base_name + "_" + num + "_offset", axis='y', group_type='main', 
                        rig_type='offset', translate=pose, rotate=pose, ctrl_scale=self.ctrl_scale*0.55)
                 self.ofst_ctrls.append(ofst)
                 self.output_ctrls = self.ofst_ctrls
+                ofst.tag_as_controller()
 
     '''
     Places and constrains joints at each control location.

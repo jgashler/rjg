@@ -35,6 +35,7 @@ class Clavicle(rModule.RigModule):
 
         # create controls
         self.main_ctrl = rCtrl.Control(parent=self.control_grp, shape='cube', side=self.side, suffix='CTRL', name='clavicle', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=rotate, ctrl_scale=self.ctrl_scale)
+        self.main_ctrl.tag_as_controller()
 
         attr_util = rAttr.Attribute(add=False)
         attr_util.lock_and_hide(node=self.main_ctrl.ctrl, translate=False, rotate=False)

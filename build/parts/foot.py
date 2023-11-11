@@ -83,10 +83,14 @@ class Foot(rModule.RigModule):
         ts_list = [self.ball_ctrl, self.toe_ctrl, self.toe_piv, self.heel_piv, self.in_piv, self.out_piv]
         for c in ts_list:
             attr_util.lock_and_hide(node=c.ctrl, rotate=False)
+            c.tag_as_controller()
+
+        self.ankle_ctrl.tag_as_controller()
 
         s_list = [self.main_ctrl, self.second_ctrl]
         for s in s_list:
             attr_util.lock_and_hide(node=s.ctrl, translate='False', rotate='False')
+            s.tag_as_controller()
 
     def output_rig(self):
         sc = rIk.Ik(side=self.side, part=self.part, guide_list=[self.guide_list[0], self.guide_list[1]], solver='ikSCsolver')

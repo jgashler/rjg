@@ -50,6 +50,9 @@ class Hand(rModule.RigModule):
         self.hand_fk = rCtrl.Control(parent=self.control_grp, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_fk', axis='y', group_type='main', 
                                      rig_type='fk', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
         
+        for c in [self.hand_01, self.hand_02, self.hand_local, self.hand_fk]:
+            c.tag_as_controller()
+        
     def output_rig(self):
         ik_jnt = mc.joint(self.hand_local.ctrl, name=self.hand_01.ctrl.replace("CTRL", "ik_JNT"))
         fk_jnt = mc.joint(self.hand_local.ctrl, name=self.hand_01.ctrl.replace("CTRL", "JNT"))

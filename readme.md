@@ -10,7 +10,7 @@ Overall
 Controls
 - Add more sophisticated control shapes throughout the rig. Circles, squares, and cubes aren't very visually descriptive, especially when that's all there are. **in progress**
 - <s>Add color to all controls. The functionality is there, just need a way to send a color argument from the build script all the way down to the curve drawing function. This should help with rig readability.</s>
-- Figure out how to tag all control curves as controls. (Rigging > Control > Tag as Controller) **in progress**
+- <s>Figure out how to tag all control curves as controls. (Rigging > Control > Tag as Controller) </s>
 
 Hands
 - Add metacarpal joint creator to finger part. Handle case when they are given in the guides and when they are not (Mixamo)

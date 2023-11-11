@@ -60,22 +60,26 @@ class Spline:
         self.attr_util.lock_and_hide(node=self.base_ctrl.ctrl, translate=False, rotate=False)
         self.curve_ctrls.append(self.base_ctrl.top)
         self.base_driver = self.base_ctrl.ctrl
+        self.base_ctrl.tag_as_controller()
 
         self.tip_ctrl = rCtrl.Control(parent=None, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_tip', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[-1], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
         self.attr_util.lock_and_hide(node=self.tip_ctrl.ctrl, translate=False, rotate=False)
         self.curve_ctrls.append(self.tip_ctrl.top)
         self.tip_driver = self.tip_ctrl.ctrl
+        self.tip_ctrl.tag_as_controller()
 
         if self.local_ctrl:
             self.base_local = rCtrl.Control(parent=self.base_ctrl.ctrl, shape='quad_arrow', side=None, suffix='CTRL', name=self.base_name + '_base_local', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
             self.attr_util.lock_and_hide(node=self.base_local.ctrl, translate=False, rotate=False)
             #self.curve_ctrls.append(self.tip_ctrl)
             self.base_driver = self.base_local.ctrl
+            self.base_local.tag_as_controller()
 
             self.tip_local = rCtrl.Control(parent=self.tip_ctrl.ctrl, shape='quad_arrow', side=None, suffix='CTRL', name=self.base_name + '_tip_local', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[-1], rotate=self.guide_list[-1], ctrl_scale=self.ctrl_scale)
             self.attr_util.lock_and_hide(node=self.tip_local.ctrl, translate=False, rotate=False)
             #self.curve_ctrls.append(self.tip_ctrl)
             self.tip_driver = self.tip_local.ctrl
+            self.tip_local.tag_as_controller()
 
         if self.mid_ctrl:
             pos = rXform.findPosOnCurve(self.curve, 0.5)
@@ -83,6 +87,7 @@ class Spline:
             self.attr_util.lock_and_hide(node=self.mid_ctrl.ctrl, translate=False, rotate=False)
             self.curve_ctrls.append(self.mid_ctrl.top)
             #self.base_driver = self.base_local.ctrl
+            self.mid_ctrl.tag_as_controller()
 
     def build_spline_chain(self, scale_attr=None):
         if not scale_attr:
@@ -131,6 +136,7 @@ class Spline:
                 self.fk_offset_list.append(fk_ctrl)
                 mc.setAttr(fk_ctrl.top + '.translate', 0, 0, 0)
                 mc.setAttr(fk_ctrl.top + '.rotate', 0, 0, 0)
+                fk_ctrl.tag_as_controller()
 
                 grp = mc.group(empty=True, name=joint.replace('driver_JNT', 'fk_offset_GRP'))
                 pac = mc.parentConstraint(joint, grp, mo=False)[0]

@@ -279,6 +279,9 @@ class Chain:
                                  rig_type='tangent', translate=b_crv + '.cv[1]', rotate=bone, ctrl_scale=ctrl_scale*0.6)
         e_tan = rCtrl.Control(parent=ctrl_grp, shape='square', side=None, suffix='CTRL', name=bone.replace('JNT', 'end_tangent'), axis='y', group_type=2, 
                                  rig_type='tangent', translate=b_crv + '.cv[5]', rotate=bone, ctrl_scale=ctrl_scale*0.6)
+        mid_ctrl.tag_as_controller()
+        s_tan.tag_as_controller()
+        e_tan.tag_as_controller()
         
         attr_util.lock_and_hide(node=mid_ctrl.ctrl, translate=False, rotate=False, scale='XZ')
         attr_util.lock_and_hide(node=s_tan.ctrl, translate=False)

@@ -28,8 +28,9 @@ class Hip(rModule.RigModule):
 
     def control_rig(self):
         self.hip_01 = rCtrl.Control(parent=self.control_grp, shape=self.hip_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
-
         self.hip_02 = rCtrl.Control(parent=self.hip_01.ctrl, shape=self.hip_shape, side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.35)
+        self.hip_01.tag_as_controller()
+        self.hip_02.tag_as_controller()
 
     def output_rig(self):
         hip_jnt_grp = mc.group(parent=self.module_grp, empty=True, name=self.base_name + "_JNT_GRP")

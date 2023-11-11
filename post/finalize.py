@@ -30,6 +30,7 @@ def add_color_attrs(x, y, z, utScale):
 
     c_ctrl = rCtrl.Control(parent=par, shape='rgb_circles', side=None, name='color', suffix='CTRL', axis='y', group_type=None, rig_type='global', ctrl_scale=utScale, translate=(x, y, z))
     attr_util.lock_and_hide(node=c_ctrl.ctrl)
+    c_ctrl.tag_as_controller()
 
     c_shapes = mc.listRelatives(c_ctrl.ctrl, shapes=True)
     for shape in c_shapes:
@@ -91,6 +92,7 @@ def add_vis_ctrl(x, y, z, utScale):
 
     vis_ctrl = rCtrl.Control(parent=par, shape='eye', side=None, name='vis', suffix='CTRL', axis='y', group_type=None, rig_type='global', ctrl_scale=utScale, translate=(x, y, z))
     attr_util.lock_and_hide(node=vis_ctrl.ctrl)
+    vis_ctrl.tag_as_controller()
 
     v_shapes = mc.listRelatives(vis_ctrl.ctrl, shapes=True)
     for shape in v_shapes:
@@ -292,6 +294,7 @@ def add_switch_ctrl(x, y, z, utScale):
 
     s_ctrl = rCtrl.Control(parent=par, shape='gear_3D', side=None, suffix='CTRL', name='switch', axis='y', group_type=None, rig_type='global', ctrl_scale=utScale, translate=(x, y, z))
     attr_util.lock_and_hide(node=s_ctrl.ctrl)
+    s_ctrl.tag_as_controller()
 
     # add color
 
