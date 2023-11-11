@@ -14,8 +14,8 @@ Controls
 
 Hands
 - Add metacarpal joint creator to finger part. Handle case when they are given in the guides and when they are not (Mixamo)
-- <s>Add IK capability for chains longer than three joints. This kinda works right now but it would be nice to have for IK fingers (4-5 joint chain)
-- Hand and finger attributes (fist, cup, spread, individual finger curl). Add a 2D control to drive SDKs on fist/cup/spread.</s>
+- <s>Add IK capability for chains longer than three joints. This kinda works right now but it would be nice to have for IK fingers (4-5 joint chain)</s>
+- Hand and finger attributes (fist, cup, spread, individual finger curl). Add a 2D control to drive SDKs on fist/cup/spread.
 
 Head
 - Add jaw part (plug to head)
