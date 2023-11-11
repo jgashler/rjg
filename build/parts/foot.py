@@ -195,16 +195,24 @@ class Foot(rModule.RigModule):
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("leg_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        driver_list = ['leg_' + self.side + '_03_switch_JNT']
-        driven_list = [self.base_name + '_01_switch_JNT']
+        driver_list = ['leg_' + self.side + '_03_switch_JNT','root_02_M_CTRL']
+        driven_list = [self.base_name + '_01_switch_JNT', self.base_name + '_01_CTRL_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pocRigPlugs', children_name=driven_list)
+
+        driver_list = ['leg_' + self.side + '_02_fk_CTRL']
+        driven_list = [self.base_name + '_01_fk_CTRL_CNST_GRP']
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+
+        # driver_list = ['root_02_M_CTRL']
+        # driven_list = [self.base_name + '_IK_MAIN_CTRL_CNST_GRP']
+        # rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pocRigPlugs', children_name=driven_list)
 
         delete_list = [self.base_name + '_01_translate_BCN']
         rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
 
         target_list = ['CHAR',
                        'global_M_CTRL',
-                       'root_M_02_CTRL',
+                       'root_02_M_CTRL',
                        'hip_M_01_CTRL',
                        'leg_'+ self.side +'_IK_BASE_CTRL',
                        '1']
