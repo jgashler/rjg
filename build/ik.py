@@ -57,7 +57,8 @@ class Ik:
 
     def check_pv_guide(self):
         if self.pv_guide == 'auto':
-            self.pv_guide = rGuide.create_pv_guide(guide_list=self.guide_list, name=self.base_name, slide_pv=self.slide_pv, offset_pv=self.offset_pv, delete_setup=True)
+            #self.pv_guide = rGuide.create_pv_guide(guide_list=self.guide_list, name=self.base_name, slide_pv=self.slide_pv, offset_pv=self.offset_pv, delete_setup=True)
+            self.pv_guide = rGuide.clean_pv_guide(guide_list=self.guide_list, name=self.base_name, offset_pv=self.offset_pv)
 
     def build_ik_controls(self):
         attr_util = rAttr.Attribute(add=False)
@@ -71,6 +72,8 @@ class Ik:
         if self.pv_guide:
             self.pv_ctrl = rCtrl.Control(parent=self.ik_ctrl_grp, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name +"_IK_PV", axis='y', group_type='main', rig_type='pv', translate=self.pv_guide, ctrl_scale=self.ctrl_scale)
             attr_util.lock_and_hide(node=self.pv_ctrl.ctrl, translate=False)
+
+        return self.pv_ctrl.ctrl
 
     def build_ik_chain(self):
         self.ik_chain = rChain.Chain(transform_list=self.guide_list, side=self.side, suffix=self.s_name + '_JNT', name=self.part)
@@ -94,7 +97,7 @@ class Ik:
             if not scale_attr:
                 scale_attr = rAttr.Attribute(node=self.base_ctrl.ctrl, type='double', value=1, keyable=True, name='globalScale')
             
-            self.stretch_switch = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=1, keyable=True, name='stretch')
+            self.stretch_switch = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='stretch', max=1, min=0)
 
             dist = mc.createNode('distanceBetween', name=self.base_name + "_stretch_DIST")
             mdn = mc.createNode('multiplyDivide', name=self.base_name + "_stretch_MDN")
