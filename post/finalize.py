@@ -19,25 +19,25 @@ def get_ctrl_types():
 
     return type_dict
 
-def add_color_attrs():
+def add_color_attrs(x, y, z, utScale):
     attr_util = rAttr.Attribute(add=False)
     type_dict = get_ctrl_types()
 
-    if mc.objExists('M_global_CTRL'):
-        par = ('M_global_CTRL')
+    if mc.objExists('global_M_CTRL'):
+        par = ('global_M_CTRL')
     else:
         par = 'RIG'
 
-    c_ctrl = rCtrl.Control(parent=par, shape='gear_3D', side=None, name='color', suffix='CTRL', axis='y', group_type=None, rig_type='global')
+    c_ctrl = rCtrl.Control(parent=par, shape='rgb_circles', side=None, name='color', suffix='CTRL', axis='y', group_type=None, rig_type='global', ctrl_scale=utScale, translate=(x, y, z))
     attr_util.lock_and_hide(node=c_ctrl.ctrl)
 
     c_shapes = mc.listRelatives(c_ctrl.ctrl, shapes=True)
     for shape in c_shapes:
         mc.setAttr(shape + '.overrideEnabled', 1)
         mc.setAttr(shape + '.overrideRGBColors', 1)
-    mc.setAttr(c_shapes[0] + '.overrideColorRGB', 1, 0, 0)
-    mc.setAttr(c_shapes[1] + '.overrideColorRGB', 0, 1, 0)
-    mc.setAttr(c_shapes[2] + '.overrideColorRGB', 0, 0, 1)
+    mc.setAttr(c_shapes[1] + '.overrideColorRGB', 1, 0, 0)
+    mc.setAttr(c_shapes[2] + '.overrideColorRGB', 0, 1, 0)
+    mc.setAttr(c_shapes[0] + '.overrideColorRGB', 0, 0, 1)
 
     for type, ctrl_list in type_dict.items():
         rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name=type)
@@ -54,8 +54,7 @@ def add_color_attrs():
 def set_color_defaults(ctrl):
     color_dict = {
         'gimbal'    : (0.00, 0.45, 0.00),
-        'root_01'   : (0.00, 1.00, 0.00),
-        'root_02'   : (0.00, 1.00, 0.10),
+        'root'   : (0.00, 1.00, 0.00),
         'global'    : (1.00, 0.25, 1.00),
         'pivot'     : (1.00, 0.25, 0.00),
         'primary'   : (1.00, 1.00, 0.00),
@@ -81,23 +80,24 @@ def add_display_type(node, value, name, target):
     mc.connectAttr(dt.attr, target + '.overrideDisplayType')
 
 
-def add_vis_ctrl():
+def add_vis_ctrl(x, y, z, utScale):
     attr_util = rAttr.Attribute(add=False)
     type_dict = get_ctrl_types()
 
-    if mc.objExists('M_global_CTRL'):
-        par = ('M_global_CTRL')
+    if mc.objExists('global_M_CTRL'):
+        par = 'global_M_CTRL'
     else:
         par = 'RIG'
 
-    vis_ctrl = rCtrl.Control(parent=par, shape='gear_3D', side=None, name='vis', suffix='CTRL', axis='y', group_type=None, rig_type='global')
+    vis_ctrl = rCtrl.Control(parent=par, shape='eye', side=None, name='vis', suffix='CTRL', axis='y', group_type=None, rig_type='global', ctrl_scale=utScale, translate=(x, y, z))
     attr_util.lock_and_hide(node=vis_ctrl.ctrl)
 
     v_shapes = mc.listRelatives(vis_ctrl.ctrl, shapes=True)
     for shape in v_shapes:
         mc.setAttr(shape + '.overrideEnabled', 1)
         mc.setAttr(shape + '.overrideRGBColors', 1)
-    mc.setAttr(v_shapes[0] + '.overrideColorRGB', 1, 0, 0)
+    mc.setAttr(v_shapes[0] + '.overrideColorRGB', .35, 0.271, .075)
+    mc.setAttr(v_shapes[1] + '.overrideColorRGB', .05, 0.05, .05)
 
     model_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=True, name='modelVis')
     skel_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=True, name='skelVis')
@@ -127,10 +127,19 @@ def add_vis_ctrl():
         for side in sides:
             mc.connectAttr(p_vis.attr, '{}_{}_CONTROL.visibility'.format(side, part))
         
+        
     rAttr.Attribute(node=vis_ctrl.ctrl, type='separator', value=0, name='controlType')
+    
 
     for type, ctrl_list in type_dict.items():
-        t_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=True, name=type + '_Vis')
+
+        if type in ['global', 'primary', 'fk', 'root', 'pv', 'tangent', 'bendy']:
+            val = 1
+        elif type in ['offset', 'gimbal', 'secondary', 'pivot']:
+            val = 0
+        else:
+            val = 1
+        t_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=val, keyable=True, name=type + '_Vis')
         for ctrl in ctrl_list:
             shapes = mc.listRelatives(ctrl, shapes=True, path=True)
             for shape in shapes:
@@ -273,7 +282,7 @@ def add_rig_sets():
 
     mc.sets('MODEL', add=cache_set)
 
-def add_switch_ctrl():
+def add_switch_ctrl(x, y, z, utScale):
     attr_util = rAttr.Attribute(add=False)
 
     if mc.objExists('global_M_CTRL'):
@@ -281,7 +290,7 @@ def add_switch_ctrl():
     else:
         par = 'RIG'
 
-    s_ctrl = rCtrl.Control(parent=par, shape='cube', side=None, suffix='CTRL', name='switch', axis='y', group_type=None, rig_type='global')
+    s_ctrl = rCtrl.Control(parent=par, shape='gear_3D', side=None, suffix='CTRL', name='switch', axis='y', group_type=None, rig_type='global', ctrl_scale=utScale, translate=(x, y, z))
     attr_util.lock_and_hide(node=s_ctrl.ctrl)
 
     # add color
@@ -289,7 +298,7 @@ def add_switch_ctrl():
     for part in mc.listRelatives('RIG'):
         if mc.objExists(part + '.switchRigPlugs'):
             switch_name = mc.getAttr(part + '.ikFkSwitch')
-            if 'arm' in part or 'hand' in part:
+            if 'arm' in part or 'hand' in part or 'finger' in part:
                 default_val = 1
             else:
                 default_val = 0
@@ -303,20 +312,24 @@ def add_switch_ctrl():
 
 
 
-def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=True):
+def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1):
     if color_ctrl:
-        c_ctrl = add_color_attrs()
+        #print("before color")
+        c_ctrl = add_color_attrs(x=utX+DutX, y=utY+DutY, z=utZ+DutZ, utScale=utScale)
+        #print("after color")
     if switch_ctrl:
-        s_ctrl = add_switch_ctrl()
+        #print("before switch")
+        s_ctrl = add_switch_ctrl(x=utX, y=utY, z=utZ, utScale=utScale)
+        #print("after switch")
     if vis_ctrl:
-        v_ctrl = add_vis_ctrl()
+        #print("before vis")
+        v_ctrl = add_vis_ctrl(x=utX-DutX, y=utY-DutY, z=utZ-DutZ, utScale=utScale)
+        #print("after vis")
     assemble_skeleton()
     assemble_rig()
     add_global_scale()
     add_rig_sets()
 
-    util_grp = mc.group(empty=True, name='utility_M', parent='RIG')
-    mc.parent(c_ctrl, s_ctrl, v_ctrl, util_grp)
 
     if constrain_model:
         if mc.objExists('root_M_JNT'):
