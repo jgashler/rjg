@@ -42,12 +42,13 @@ class Spine(rModule.RigModule, rSpline.Spline):
     def control_rig(self):
         self.build_spline_ctrls()
 
-        fk_chain = rChain.Chain(side=self.side, suffix='ctrl_JNT', name=self.part)
-        fk_chain.create_from_curve(joint_num=4, curve=self.curve, stretch=None)
+        #fk_chain = rChain.Chain(side=self.side, suffix='ctrl_JNT', name=self.part)
+        #fk_chain.create_from_curve(joint_num=4, curve=self.curve, stretch=None)
 
+        '''
         self.fk_ctrl_list = []
         par = None
-        for i, jnt in enumerate(fk_chain.joints[::-1]):
+        for i, jnt in enumerate(fk_chain.joints[:-1]):
             name_list = [self.base_name, str(i + 1).zfill(2), 'FK']
             ctrl_name = '_'.join(name_list)
 
@@ -62,9 +63,10 @@ class Spine(rModule.RigModule, rSpline.Spline):
 
             par=fk_ctrl.ctrl
             self.fk_ctrl_list.append(fk_ctrl)
+        '''
 
-        mc.delete(fk_chain.joints[0])
-        mc.parent(self.curve_ctrls, self.fk_ctrl_list[0].top, self.control_grp)
+        #mc.delete(fk_chain.joints[0])
+        #mc.parent(self.curve_ctrls, self.fk_ctrl_list[0].top, self.control_grp)
 
     def output_rig(self):
         self.build_spline_chain(scale_attr=self.global_scale)
@@ -77,7 +79,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         mc.matchTransform(tip_jnt, self.spline_joints[-1])
         mc.parentConstraint(self.base_driver, base_jnt, mo=True)
         mc.parentConstraint(self.tip_driver, tip_jnt, mo=True)
-        mc.parentConstraint(self.fk_ctrl_list[-1].ctrl, self.tip_ctrl.top, mo=True)
+        #mc.parentConstraint(self.fk_ctrl_list[-1].ctrl, self.tip_ctrl.top, mo=True)
 
         if self.mid_ctrl:
             blend = rAttr.Attribute(node=self.mid_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='blendBetween')
@@ -122,7 +124,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         ikh_grp = mc.group(self.spline_ikh, self.curve, parent=self.module_grp, name=self.base_name + '_spline_IKH_GRP')
         mc.setAttr(ikh_grp + '.inheritsTransform', 0)
         mc.group(self.spline_joints[0], parent=self.module_grp, name=self.base_name + '_driver_JNT_GRP')
-
+        
         mc.setAttr(self.spline_ikh + '.dTwistControlEnable', 1)
         mc.setAttr(self.spline_ikh + '.dWorldUpType', 4)
         mc.setAttr(self.spline_ikh + '.dForwardAxis', 2)
@@ -132,7 +134,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         mc.setAttr(self.spline_ikh + '.dWorldUpVectorEnd', 0, 0, 1)
         mc.connectAttr(base_jnt + '.worldMatrix[0]', self.spline_ikh + '.dWorldUpMatrix')
         mc.connectAttr(tip_jnt + '.worldMatrix[0]', self.spline_ikh + '.dWorldUpMatrixEnd')
-
+        
     def skeleton(self):
         spine_chain = rChain.Chain(transform_list=self.spline_joints, side=self.side, suffix='JNT', name=self.part)
         spine_chain.create_from_transforms(parent=self.skel)
@@ -144,7 +146,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['hip_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
         driver_list = ['hip_M_02_CTRL', 'hip_M_01_CTRL', 'chest_M_02_CTRL']
-        driven_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_01_FK_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']
+        driven_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']#, self.base_name + '_01_FK_CTRL_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
 
         hide_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']

@@ -43,3 +43,5 @@ def space_switch(node, driver, target_list=[], name_list=[], name='space', const
         if i > 0:
             mc.setDrivenKeyframe(cnst + '.' + wal[i-1], currentDriver=space.attr, driverValue=i, value=0)
         mc.setDrivenKeyframe(cnst + '.' + wal[i], currentDriver=space.attr, driverValue=i, value=1)
+        if i <= len(target_list) - 2:
+            mc.setDrivenKeyframe(cnst + '.' + wal[i+1], currentDriver=space.attr, driverValue=i, value=0)

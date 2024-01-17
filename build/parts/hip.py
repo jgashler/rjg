@@ -65,6 +65,6 @@ class Hip(rModule.RigModule):
         name_list = ['world', 'global', 'root', 'default_value']
         rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.hip_01.ctrl +'_parent', children_name=name_list)
 
-        driver_list = ['root_02_M_CTRL']
-        driven_list = [self.hip_01.ctrl]
-        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+        # driver_list = ['root_02_M_CTRL']
+        # driven_list = [self.hip_01.ctrl]
+        # rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)

@@ -219,7 +219,7 @@ class Foot(rModule.RigModule):
                        'root_02_M_CTRL',
                        'hip_M_01_CTRL',
                        'leg_'+ self.side +'_IK_BASE_CTRL',
-                       '1']
+                       '2']
         name_list = ['world', 'global', 'root', 'hip', 'leg', 'default_value']
         rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.main_ctrl.ctrl + '_parent', children_name=name_list)
 

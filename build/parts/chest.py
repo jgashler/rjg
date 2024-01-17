@@ -57,7 +57,7 @@ class Chest(rModule.RigModule):
         # skeleton plugs
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("spine_M_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        delete_list = ['chest_M_02_JNT_parentConstraint1', 'spine_M_tip_CTRL_CNST_GRP_parentConstraint1']
+        delete_list = ['chest_M_02_JNT_parentConstraint1']#, 'spine_M_tip_CTRL_CNST_GRP_parentConstraint1']
         rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("spine_M_??_driver_JNT")[-1]'], name='pocRigPlugs', children_name=[self.chest_jnt + '_point'])

@@ -7,6 +7,10 @@ Overall
 - <s>Connect all components! Once this is done, the rig will be a rig.</s>
 - Look for ways to optimize everything!
 
+Spine
+- rebuild whole spine (start with FK, make sure there is hip control)
+- for IK, figure out a good way to use ribbons to drive base and tip with togglable mid_ctrl
+
 Controls
 - Add more sophisticated control shapes throughout the rig. Circles, squares, and cubes aren't very visually descriptive, especially when that's all there are. **in progress**
 - <s>Add color to all controls. The functionality is there, just need a way to send a color argument from the build script all the way down to the curve drawing function. This should help with rig readability.</s>
