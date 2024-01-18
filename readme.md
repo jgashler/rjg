@@ -8,8 +8,8 @@ Overall
 - Look for ways to optimize everything!
 
 Spine
-- rebuild whole spine (start with FK, make sure there is hip control)
-- for IK, figure out a good way to use ribbons to drive base and tip with togglable mid_ctrl
+- <s>rebuild whole spine (start with FK, make sure there is hip control)</s>
+- <s>for IK, figure out a good way to use ribbons to drive base and tip with togglable mid_ctrl</s>
 
 Controls
 - Add more sophisticated control shapes throughout the rig. Circles, squares, and cubes aren't very visually descriptive, especially when that's all there are. **in progress**
@@ -22,10 +22,12 @@ Hands
 - Hand and finger attributes (fist, cup, spread, individual finger curl). Add a 2D control to drive SDKs on fist/cup/spread.
 
 Head
-- Add jaw part (plug to head)
-- Add eye part (plug to head)
-- Add mouth part (integrate sealing mouth script into this one) (plug to jaw/head)
-- Face! Probably place locators at key vertices (cheek matrix, nose, nostril, chin, eyebrows 2*[1:n], eye corners, forehead, etc), then either set up a bone based face determined by locators or figure out a reliable way to script foundational blend shapes into the face.
+- <s>Add jaw part (plug to head)</s>
+- <s>Add eye part (plug to head)</s>
+- <s>Add mouth part (integrate sealing mouth script into this one) (plug to jaw/head)</s>
+- <s>Face! Probably place locators at key vertices (cheek matrix, nose, nostril, chin, eyebrows 2*[1:n], eye corners, forehead, etc), then either set up a bone based face determined by locators or figure out a reliable way to script foundational blend shapes into the face.</s>
+- All of the above will be done in a different place, either by hand or another script package
+- Create a script to connect head to body
 
 Skin
 - <s>Set up a basic auto skinning class. Literally just bind to nearby joints. </s>
