@@ -108,11 +108,11 @@ class Spine(rModule.RigModule, rSpline.Spline):
             mc.setAttr(t_vp + '.operation', 3)
             mc.setAttr(pma + '.operation', 3)
 
-            pac = mc.parentConstraint(self.fk_ctrl_list[1].ctrl, mid_loc, self.mid_ctrl.top, mo=True)[0]
-            wal = mc.parentConstraint(pac, q=True, weightAliasList=True)
-            mc.connectAttr(blend.attr, rev + '.inputX')
-            mc.connectAttr(rev + '.outputX', pac + '.' + wal[0])
-            mc.connectAttr(blend.attr, pac + '.' + wal[1])
+            #pac = mc.parentConstraint(self.fk_ctrl_list[1].ctrl, mid_loc, self.mid_ctrl.top, mo=True)[0]
+            # wal = mc.parentConstraint(pac, q=True, weightAliasList=True)
+            # mc.connectAttr(blend.attr, rev + '.inputX')
+            # mc.connectAttr(rev + '.outputX', pac + '.' + wal[0])
+            # mc.connectAttr(blend.attr, pac + '.' + wal[1])
 
             mc.parent(mid_loc, self.loc_grp)
             mc.parent(self.loc_grp, self.module_grp)

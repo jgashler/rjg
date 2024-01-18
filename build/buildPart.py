@@ -13,7 +13,6 @@ import rjg.build.parts.foot as rFoot
 import rjg.build.parts.spine as rSpine
 import rjg.build.parts.neck as rNeck
 import rjg.build.parts.head as rHead
-import rjg.build.parts.fkSpine as rFkSpine
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -26,7 +25,6 @@ reload(rFoot)
 reload(rSpine)
 reload(rNeck)
 reload(rHead)
-reload(rFkSpine)
 
 '''
 Wrapper for all part modules
@@ -42,8 +40,8 @@ MODULE_DICT = {'root' : rRoot.Root,
                'foot' : rFoot.Foot,
                'spine' : rSpine.Spine,
                'neck' : rNeck.Neck,
-               'head' : rHead.Head,
-               'fkSpine' : rFkSpine.FkSpine}
+               'head' : rHead.Head,}
+
 
 def build_module(module_type, **kwargs):
     # creates object from module_type class (kwargs carrying any info specific to that class)
