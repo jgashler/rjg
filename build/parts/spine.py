@@ -66,7 +66,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         '''
 
         #mc.delete(fk_chain.joints[0])
-        #mc.parent(self.curve_ctrls, self.fk_ctrl_list[0].top, self.control_grp)
+        mc.parent(self.curve_ctrls, self.control_grp) # self.fk_ctrl_list[0].top, 
 
     def output_rig(self):
         self.build_spline_chain(scale_attr=self.global_scale)
@@ -143,6 +143,10 @@ class Spine(rModule.RigModule, rSpline.Spline):
         self.tag_bind_joints(self.bind_joints[-1])
 
     def add_plugs(self):
+
+        # TODO: place this where it belongs... see lines 117 and 118. Something broke there but this fix works for now
+        mc.parent('spine_M_driver_LOC_GRP', self.module_grp)
+
         rAttr.Attribute(node=self.part_grp, type='plug', value=['hip_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
         driver_list = ['hip_M_02_CTRL', 'hip_M_01_CTRL', 'chest_M_02_CTRL']
