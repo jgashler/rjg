@@ -60,15 +60,17 @@ class Chest(rModule.RigModule):
         delete_list = ['chest_M_02_JNT_parentConstraint1']#, 'spine_M_tip_CTRL_CNST_GRP_parentConstraint1']
         rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
 
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("spine_M_??_driver_JNT")[-1]'], name='pocRigPlugs', children_name=[self.chest_jnt + '_point'])
+        #rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("spine_M_??_driver_JNT")[-1]'], name='pocRigPlugs', children_name=[self.chest_jnt + '_point'])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[self.chest_02.ctrl], name='pocRigPlugs', children_name=[self.chest_jnt + '_point'])
         rAttr.Attribute(node=self.part_grp, type='plug', value=[self.chest_02.ctrl], name='orcRigPlugs', children_name=[self.chest_jnt + '_orient'])
 
         target_list = ['CHAR',
                        'global_M_CTRL',
                        'root_02_M_CTRL',
                        'spine_M_03_FK_CTRL',
-                       '3']
-        name_list = ['world', 'global', 'root', 'spine', 'default_value']
+                       'hip_M_01_CTRL',
+                       '4']
+        name_list = ['world', 'global', 'root', 'spine', 'hip', 'default_value']
         point_names = ['point' + name.title() for name in name_list]
         orient_names = ['orient' + name.title() for name in name_list]
 
