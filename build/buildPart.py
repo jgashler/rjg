@@ -13,6 +13,7 @@ import rjg.build.parts.foot as rFoot
 import rjg.build.parts.spine as rSpine
 import rjg.build.parts.neck as rNeck
 import rjg.build.parts.head as rHead
+import rjg.build.parts.metaFinger as rMetaFinger
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -25,12 +26,14 @@ reload(rFoot)
 reload(rSpine)
 reload(rNeck)
 reload(rHead)
+reload(rMetaFinger)
 
 '''
 Wrapper for all part modules
 '''
 
-MODULE_DICT = {'root' : rRoot.Root,
+MODULE_DICT = {
+               'root' : rRoot.Root,
                'hip' : rHip.Hip, 
                'chest' : rChest.Chest, 
                'finger' : rFinger.Finger,
@@ -40,7 +43,9 @@ MODULE_DICT = {'root' : rRoot.Root,
                'foot' : rFoot.Foot,
                'spine' : rSpine.Spine,
                'neck' : rNeck.Neck,
-               'head' : rHead.Head,}
+               'head' : rHead.Head,
+               'meta_finger': rMetaFinger.MetaFinger,
+               }
 
 
 def build_module(module_type, **kwargs):

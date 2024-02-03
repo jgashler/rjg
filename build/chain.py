@@ -99,6 +99,8 @@ class Chain:
         if self.label_chain:
             self.label_side(self.joints)
 
+        return self.joints
+
     '''
     Adds an attribute to joints depending on their side.
     '''
