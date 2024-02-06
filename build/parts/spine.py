@@ -145,7 +145,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
     def add_plugs(self):
 
         # TODO: place this where it belongs... see lines 117 and 118. Something broke there but this fix works for now
-        mc.parent('spine_M_driver_LOC_GRP', self.module_grp)
+        #mc.parent('spine_M_driver_LOC_GRP', self.module_grp)
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=['hip_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
