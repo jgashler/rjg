@@ -19,9 +19,34 @@ def get_ctrl_types():
 
     return type_dict
 
+def get_ctrl_sides():
+    side_dict = {}
+    for x in mc.ls('*.ctrlDict'):
+        ctrl = rCtrl.Control(ctrl=x.split('.')[0])
+        side = ctrl.side
+        if not side:
+            n = ctrl.ctrl.split('_')[1]
+            if n == 'M':
+                side = 'M'
+            elif n == 'L':
+                side = 'L'
+            elif n == 'R':
+                side = 'R'
+            else:
+                side = 'Unknown'
+                print(ctrl)
+                continue
+        if side in side_dict:
+            side_dict[side].append(ctrl.ctrl)
+        else:
+            side_dict[side] = [ctrl.ctrl]
+
+    return side_dict
+
 def add_color_attrs(x, y, z, utScale):
     attr_util = rAttr.Attribute(add=False)
     type_dict = get_ctrl_types()
+    side_dict = get_ctrl_sides()
 
     if mc.objExists('global_M_CTRL'):
         par = ('global_M_CTRL')
@@ -40,14 +65,42 @@ def add_color_attrs(x, y, z, utScale):
     mc.setAttr(c_shapes[2] + '.overrideColorRGB', 0, 1, 0)
     mc.setAttr(c_shapes[0] + '.overrideColorRGB', 0, 0, 1)
 
+    c_view = rAttr.Attribute(node = c_ctrl.ctrl, type='enum', value=0, enum_list=['Side', 'Set'], keyable=True, name='colorView')
+
+    for side, ctrl_list in side_dict.items():
+        # TODO: longName
+        if side == 'M':
+            name = 'middle'
+        elif side == 'L':
+            name = 'left'
+        elif side == 'R':
+            name = 'right'
+        else:
+            name = 'unknown'
+            print(side, ctrl_list)
+            continue
+        rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name=name)
+        color = rAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0, keyable=True, min=0, max=1, name=name + 'Color', children_name='RGB')
+        for ctrl in ctrl_list:
+            cond = mc.createNode('condition', n='{}_CCOND'.format(ctrl))
+            mc.connectAttr(c_view.attr, cond + '.firstTerm')
+            mc.connectAttr(color.attr, cond + '.colorIfTrue')
+            for shape in mc.listRelatives(ctrl, shapes=True, type='nurbsCurve'):
+                mc.setAttr(shape + '.overrideEnabled', 1)
+                mc.setAttr(shape + '.overrideRGBColors', 1)
+                mc.connectAttr(cond + '.outColor', shape + '.overrideColorRGB')
+    
+    rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name='___')
     for type, ctrl_list in type_dict.items():
         rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name=type)
         color = rAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0, keyable=True, min=0, max=1, name=type + 'Color', children_name='RGB')
         for ctrl in ctrl_list:
+            cond = '{}_CCOND'.format(ctrl)
+            mc.connectAttr(color.attr, cond + '.colorIfFalse')
             for shape in mc.listRelatives(ctrl, shapes=True, type='nurbsCurve'):
                 mc.setAttr(shape + '.overrideEnabled', 1)
                 mc.setAttr(shape + '.overrideRGBColors', 1)
-                mc.connectAttr(color.attr, shape + '.overrideColorRGB')
+                #mc.connectAttr(color.attr, shape + '.overrideColorRGB')
 
     set_color_defaults(c_ctrl.ctrl)
     return c_ctrl.ctrl
@@ -55,8 +108,8 @@ def add_color_attrs(x, y, z, utScale):
 def set_color_defaults(ctrl):
     color_dict = {
         'gimbal'    : (0.00, 0.45, 0.00),
-        'root'   : (0.00, 1.00, 0.00),
-        'global'    : (1.00, 0.25, 1.00),
+        'root'      : (0.00, 1.00, 0.00),
+        'global'    : (1.00, 0.00, 1.00),
         'pivot'     : (1.00, 0.25, 0.00),
         'primary'   : (1.00, 1.00, 0.00),
         'bendy'     : (1.00, 0.20, 0.40),
@@ -65,9 +118,12 @@ def set_color_defaults(ctrl):
         'pv'        : (0.00, 1.00, 1.00),
         'fk'        : (0.00, 0.00, 1.00),
         'secondary' : (1.00, 0.20, 0.20),
-        'l_eye'     : (0.10, 0.10, 0.70),
-        'r_eye'     : (0.70, 0.10, 0.10),
-        'c_eye'     : (0.70, 0.70, 0.10),
+        # 'l_eye'     : (0.10, 0.10, 0.70),
+        # 'r_eye'     : (0.70, 0.10, 0.10),
+        # 'c_eye'     : (0.70, 0.70, 0.10),
+        'middle'    : (1.00, 0.00, 1.00),
+        'left'      : (0.00, 0.00, 1.00),
+        'right'     : (1.00, 0.00, 0.00),
     }
 
     for type, value in color_dict.items():

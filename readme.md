@@ -13,7 +13,7 @@ Spine
 
 Controls
 - Add more sophisticated control shapes throughout the rig. Circles, squares, and cubes aren't very visually descriptive, especially when that's all there are. **in progress**
-- Animation wants the ability to toggle between ctrl set colors and LMR set colors. Need to build the sets up and tie to the color ctrl. **in progress**
+- <s>Animation wants the ability to toggle between ctrl set colors and LMR set colors. Need to build the sets up and tie to the color ctrl. </s>
 - <s>Add color to all controls. The functionality is there, just need a way to send a color argument from the build script all the way down to the curve drawing function. This should help with rig readability.</s>
 - <s>Figure out how to tag all control curves as controls. (Rigging > Control > Tag as Controller) </s>
 
