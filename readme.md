@@ -13,13 +13,14 @@ Spine
 
 Controls
 - Add more sophisticated control shapes throughout the rig. Circles, squares, and cubes aren't very visually descriptive, especially when that's all there are. **in progress**
+- Animation wants the ability to toggle between ctrl set colors and LMR set colors. Need to build the sets up and tie to the color ctrl. **in progress**
 - <s>Add color to all controls. The functionality is there, just need a way to send a color argument from the build script all the way down to the curve drawing function. This should help with rig readability.</s>
 - <s>Figure out how to tag all control curves as controls. (Rigging > Control > Tag as Controller) </s>
 
 Hands
-- Add metacarpal joint creator to finger part. Handle case when they are given in the guides and when they are not (Mixamo)
+- <s>Add metacarpal joint creator to finger part. Handle case when they are given in the guides and when they are not (Mixamo)</s>
 - <s>Add IK capability for chains longer than three joints. This kinda works right now but it would be nice to have for IK fingers (4-5 joint chain)</s>
-- Hand and finger attributes (fist, cup, spread, individual finger curl). Add a 2D control to drive SDKs on fist/cup/spread.
+- Hand and finger attributes (fist, cup, spread, individual finger curl). Add a 2D control to drive SDKs on fist/cup/spread. **in progress**
 
 Head
 - <s>Add jaw part (plug to head)</s>
@@ -35,8 +36,8 @@ Skin
 - Something more sophisticated? Think about this...
 
 UI
-- Select model and guides files from file browser. **in progress**
-- Pass guide names in here instead of the script. **in progress**
+- Select model and guides files from file browser.
+- Pass guide names in here instead of the script.
 - Select/deselect which components to place/replace.
 - Save/load control color scheme (dict to and from json)
 - Picker
