@@ -360,7 +360,7 @@ class Chain:
         self.joints = []
 
         pad = len(str(joint_num)) + 1
-        inc = 1 / (joint_num + 1)
+        inc = 1 / (joint_num - 1)
         par = None
 
         for i in range(joint_num):
