@@ -38,7 +38,6 @@ def get_ctrl_sides():
                 side = 'R'
             else:
                 side = 'Unknown'
-                print(ctrl)
                 continue
         if side in side_dict:
             side_dict[side].append(ctrl.ctrl)
@@ -256,11 +255,8 @@ def assemble_rig():
                     plug = part + '.' + driven
                     node_list = mc.getAttr(plug)
                     node_list = node_list.split(' ')
-                    #print(node_list[0])
                     if pt == 'hideRigPlugs':
-                        #mc.hide(node for node in node_list)
                         for node in node_list:
-                            #print(node)
                             mc.hide(node)
                     elif pt == 'deleteRigPlugs':
                         #mc.delete(node for node in node_list)
@@ -319,7 +315,6 @@ def assemble_rig():
                         name_list = [name.replace(pt, '').lower() for name in name_list[1:-1]]
                         if all(mc.objExists(obj) for obj in target_list[:-1]):
                             if driver.fail:
-                                print(driver.ctrl)
                                 rSpace.space_switch(node=part, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
                             else:
                                 rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
@@ -381,17 +376,11 @@ def add_switch_ctrl(x, y, z, utScale):
 
 def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1):
     if color_ctrl:
-        #print("before color")
         c_ctrl = add_color_attrs(x=utX+DutX, y=utY+DutY, z=utZ+DutZ, utScale=utScale)
-        #print("after color")
     if switch_ctrl:
-        #print("before switch")
         s_ctrl = add_switch_ctrl(x=utX, y=utY, z=utZ, utScale=utScale)
-        #print("after switch")
     if vis_ctrl:
-        #print("before vis")
         v_ctrl = add_vis_ctrl(x=utX-DutX, y=utY-DutY, z=utZ-DutZ, utScale=utScale)
-        #print("after vis")
     assemble_skeleton()
     assemble_rig()
     add_global_scale()
