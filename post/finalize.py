@@ -12,6 +12,8 @@ def get_ctrl_types():
     type_dict = {}
     for x in mc.ls('*.ctrlDict'):
         ctrl = rCtrl.Control(ctrl=x.split('.')[0])
+        if ctrl.fail:
+            continue
         if ctrl.rig_type in type_dict:
             type_dict[ctrl.rig_type].append(ctrl.ctrl)
         else:
@@ -23,6 +25,8 @@ def get_ctrl_sides():
     side_dict = {}
     for x in mc.ls('*.ctrlDict'):
         ctrl = rCtrl.Control(ctrl=x.split('.')[0])
+        if ctrl.fail:
+            continue
         side = ctrl.side
         if not side:
             n = ctrl.ctrl.split('_')[1]
@@ -314,7 +318,11 @@ def assemble_rig():
                         value = int(target_list[-1])
                         name_list = [name.replace(pt, '').lower() for name in name_list[1:-1]]
                         if all(mc.objExists(obj) for obj in target_list[:-1]):
-                            rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+                            if driver.fail:
+                                print(driver.ctrl)
+                                rSpace.space_switch(node=part, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+                            else:
+                                rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
 
         if mc.objExists(part + '.transferAttributes'):
             driven_list = mc.listAttr(part + '.transferAttributes')[1:]

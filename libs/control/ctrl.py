@@ -24,6 +24,7 @@ class Control(rDraw.Draw, rGroup.Group):
         self.translate = translate
         self.rotate = rotate
         self.scale = scale
+        self.fail = False
 
         self.ctrl = ctrl
         if not self.ctrl:
@@ -43,8 +44,10 @@ class Control(rDraw.Draw, rGroup.Group):
             self.create()
 
         else:
-            self.get_control()
-
+            try:
+                self.get_control()
+            except:
+                self.fail = True  # for imported parts (props), this trigger will let finalize.py know how to handle things
     '''
     creates a control, adds padding, and sets SRT position, tags control with information
     '''
