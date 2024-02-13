@@ -72,20 +72,20 @@ class Clavicle(rModule.RigModule):
                               maintainOffset=True)
         mc.orientConstraint(self.main_ctrl.ctrl, up_loc_grp,
                               skip=['y', 'z'])
-        if self.side == 'L':
-            av = (0, 1, 0)
-            uv = (0, 0, -1)
-        else:
-            av = (0, 1, 0)
-            uv = (0, 0, -1)
-
-        # old
         # if self.side == 'L':
         #     av = (0, 1, 0)
         #     uv = (0, 0, -1)
         # else:
-        #     av = (0, -1, 0)
-        #     uv = (0, 0, 1)
+        #     av = (0, 1, 0)
+        #     uv = (0, 0, -1)
+
+        # old
+        if self.side == 'L':
+            av = (0, 1, 0)
+            uv = (0, 0, -1)
+        else:
+            av = (0, -1, 0)
+            uv = (0, 0, 1)
 
 
         mc.aimConstraint(target_loc, jnt_grp, aimVector=av, upVector=uv,

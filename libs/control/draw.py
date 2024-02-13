@@ -6,7 +6,7 @@ import os
 import rjg.libs.common as rCommon
 reload(rCommon)
 
-SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "\shapes"
+SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "/shapes"
 
 '''
 shapes to add to library
