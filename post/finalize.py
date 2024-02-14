@@ -36,6 +36,8 @@ def get_ctrl_sides():
                 side = 'L'
             elif n == 'R':
                 side = 'R'
+            elif n == 'P':
+                side = 'P'
             else:
                 side = 'Unknown'
                 continue
@@ -78,6 +80,8 @@ def add_color_attrs(x, y, z, utScale):
             name = 'left'
         elif side == 'R':
             name = 'right'
+        elif side == 'P':
+            name = 'prop'
         else:
             name = 'unknown'
             print(side, ctrl_list)
@@ -127,6 +131,7 @@ def set_color_defaults(ctrl):
         'middle'    : (1.00, 0.00, 1.00),
         'left'      : (0.00, 0.00, 1.00),
         'right'     : (1.00, 0.00, 0.00),
+        'prop'      : (1.00, 1.00, 1.00),
     }
 
     for type, value in color_dict.items():
@@ -246,89 +251,91 @@ def add_global_scale(global_ctrl='global_M_CTRL'):
 
 def assemble_rig():
     for part in mc.listRelatives('RIG'):
-
-        plug_types = ['hideRigPlugs', 'deleteRigPlugs']
-        for pt in plug_types:
-            if mc.objExists(part + '.' + pt):
-                driven_list = mc.listAttr(part + '.' + pt)[1:]
-                for driven in driven_list:
-                    plug = part + '.' + driven
-                    node_list = mc.getAttr(plug)
-                    node_list = node_list.split(' ')
-                    if pt == 'hideRigPlugs':
-                        for node in node_list:
-                            mc.hide(node)
-                    elif pt == 'deleteRigPlugs':
-                        #mc.delete(node for node in node_list)
-                        for node in node_list:
-                            mc.delete(node)
-                    else:
-                        mc.warning(pt + ' plug type not found. Skipping...')
-
-        plug_types = ['pacRigPlugs', 'pacPocRigPlugs', 'pocRigPlugs', 'orcRigPlugs']
-        for pt in plug_types:
-            if mc.objExists(part + '.' + pt):
-                driven_list = mc.listAttr(part + '.' + pt)[1:]
-                for driven in driven_list:
-                    plug = part + '.' + driven
-                    driver = mc.getAttr(plug)
-                    if 'mc.' in driver:
-                        driver = eval(driver)
-                        mc.setAttr(plug, driver, type='string')
-                    if mc.objExists(driver):
-                        if pt == 'pacRigPlugs':
-                            mc.parentConstraint(driver, driven, mo=True)
-                        elif pt == 'pacPocRigPlugs':
-                            mc.parentConstraint(driver, driven, skipRotate=['x', 'y', 'z'], mo=True)
-                        elif pt == 'pocRigPlugs':
-                            if '_point' in driven:
-                                driven = driven.replace('_point', '')
-                            mc.pointConstraint(driver, driven, mo=True)
-                        elif pt == 'orcRigPlugs':
-                            if '_orient' in driven:
-                                driven = driven.replace('_orient', '')
-                            mc.orientConstraint(driver, driven, mo=True)
+        try:
+            plug_types = ['hideRigPlugs', 'deleteRigPlugs']
+            for pt in plug_types:
+                if mc.objExists(part + '.' + pt):
+                    driven_list = mc.listAttr(part + '.' + pt)[1:]
+                    for driven in driven_list:
+                        plug = part + '.' + driven
+                        node_list = mc.getAttr(plug)
+                        node_list = node_list.split(' ')
+                        if pt == 'hideRigPlugs':
+                            for node in node_list:
+                                mc.hide(node)
+                        elif pt == 'deleteRigPlugs':
+                            #mc.delete(node for node in node_list)
+                            for node in node_list:
+                                mc.delete(node)
                         else:
-                            mc.warning(pt + ' plug type does not exist. Skipping...')
-                    else:
-                        mc.warning(driver + ' driver does not exist. Skipping...')
+                            mc.warning(pt + ' plug type not found. Skipping...')
 
-        plug_types = ['parent', 'point', 'orient']
-        for pt in plug_types:
-            for ctrl in mc.ls(part + '*.ctrlDict'):
-                ctrl = ctrl.split('.')[0]
-                attr_name = '{}.{}_{}'.format(part, ctrl, pt)
-                if mc.objExists(attr_name):
-                    name_list = mc.listAttr(attr_name)
-                    driver = name_list[0].split('.')[0]
-                    if mc.objExists(part + '.' + driver):
-                        driver = rCtrl.Control(ctrl=driver.replace('_'+pt, ''))
-                        target_list = []
-                        for name in name_list[1:]:
-                            plug = part + '.' + name
-                            target = mc.getAttr(plug)
-                            if 'mc.' in target:
-                                target = eval(target)
-                                mc.setAttr(plug, target, type='string')
-                            target_list.append(target)
-                        value = int(target_list[-1])
-                        name_list = [name.replace(pt, '').lower() for name in name_list[1:-1]]
-                        if all(mc.objExists(obj) for obj in target_list[:-1]):
-                            if driver.fail:
-                                rSpace.space_switch(node=part, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+            plug_types = ['pacRigPlugs', 'pacPocRigPlugs', 'pocRigPlugs', 'orcRigPlugs']
+            for pt in plug_types:
+                if mc.objExists(part + '.' + pt):
+                    driven_list = mc.listAttr(part + '.' + pt)[1:]
+                    for driven in driven_list:
+                        plug = part + '.' + driven
+                        driver = mc.getAttr(plug)
+                        if 'mc.' in driver:
+                            driver = eval(driver)
+                            mc.setAttr(plug, driver, type='string')
+                        if mc.objExists(driver):
+                            if pt == 'pacRigPlugs':
+                                mc.parentConstraint(driver, driven, mo=True)
+                            elif pt == 'pacPocRigPlugs':
+                                mc.parentConstraint(driver, driven, skipRotate=['x', 'y', 'z'], mo=True)
+                            elif pt == 'pocRigPlugs':
+                                if '_point' in driven:
+                                    driven = driven.replace('_point', '')
+                                mc.pointConstraint(driver, driven, mo=True)
+                            elif pt == 'orcRigPlugs':
+                                if '_orient' in driven:
+                                    driven = driven.replace('_orient', '')
+                                mc.orientConstraint(driver, driven, mo=True)
                             else:
-                                rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+                                mc.warning(pt + ' plug type does not exist. Skipping...')
+                        else:
+                            mc.warning(driver + ' driver does not exist. Skipping...')
 
-        if mc.objExists(part + '.transferAttributes'):
-            driven_list = mc.listAttr(part + '.transferAttributes')[1:]
-            for driven in driven_list:
-                plug = part + '.' + driven
-                transfer_node = mc.getAttr(plug)
-                attr_list = mc.listAttr(driven, userDefined=True)
-                for attr in attr_list:
-                    if attr != 'ctrlDict':
-                        src_attr = rAttr.Attribute(add=False, node=driven, name=attr, transfer_to=transfer_node)
-                        src_attr.transfer_attr()
+            plug_types = ['parent', 'point', 'orient']
+            for pt in plug_types:
+                for ctrl in mc.ls(part + '*.ctrlDict'):
+                    ctrl = ctrl.split('.')[0]
+                    attr_name = '{}.{}_{}'.format(part, ctrl, pt)
+                    if mc.objExists(attr_name):
+                        name_list = mc.listAttr(attr_name)
+                        driver = name_list[0].split('.')[0]
+                        if mc.objExists(part + '.' + driver):
+                            driver = rCtrl.Control(ctrl=driver.replace('_'+pt, ''))
+                            target_list = []
+                            for name in name_list[1:]:
+                                plug = part + '.' + name
+                                target = mc.getAttr(plug)
+                                if 'mc.' in target:
+                                    target = eval(target)
+                                    mc.setAttr(plug, target, type='string')
+                                target_list.append(target)
+                            value = int(target_list[-1])
+                            name_list = [name.replace(pt, '').lower() for name in name_list[1:-1]]
+                            if all(mc.objExists(obj) for obj in target_list[:-1]):
+                                if driver.fail:
+                                    rSpace.space_switch(node=part, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+                                else:
+                                    rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+
+            if mc.objExists(part + '.transferAttributes'):
+                driven_list = mc.listAttr(part + '.transferAttributes')[1:]
+                for driven in driven_list:
+                    plug = part + '.' + driven
+                    transfer_node = mc.getAttr(plug)
+                    attr_list = mc.listAttr(driven, userDefined=True)
+                    for attr in attr_list:
+                        if attr != 'ctrlDict':
+                            src_attr = rAttr.Attribute(add=False, node=driven, name=attr, transfer_to=transfer_node)
+                            src_attr.transfer_attr()
+        except:
+            continue
 
 def add_rig_sets():
     rig_set = mc.sets(name='rig_SET', empty=True)

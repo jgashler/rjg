@@ -41,4 +41,3 @@ class Prop():
         self.import_prop()
         self.space_switch_loc()
         self.prop_follow_loc()
-
