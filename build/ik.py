@@ -57,8 +57,8 @@ class Ik:
 
     def check_pv_guide(self):
         if self.pv_guide == 'auto':
-            #self.pv_guide = rGuide.create_pv_guide(guide_list=self.guide_list, name=self.base_name, slide_pv=self.slide_pv, offset_pv=self.offset_pv, delete_setup=True)
-            self.pv_guide = rGuide.clean_pv_guide(guide_list=self.guide_list, name=self.base_name, offset_pv=self.offset_pv)
+            self.pv_guide = rGuide.create_pv_guide(guide_list=self.guide_list, name=self.base_name, slide_pv=self.slide_pv, offset_pv=self.offset_pv, delete_setup=True)
+            #self.pv_guide = rGuide.clean_pv_guide(guide_list=self.guide_list, name=self.base_name, offset_pv=self.offset_pv)
 
     def build_ik_controls(self):
         attr_util = rAttr.Attribute(add=False)
