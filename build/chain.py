@@ -195,7 +195,7 @@ class Chain:
             mc.connectAttr(mdl + '.output', jnt + '.rotateY')
             t_val += t_i
 
-    def bend_chain(self, bone, ctrl_scale, spans=16, mirror=False, global_scale=None):
+    def bend_chain(self, bone, ctrl_scale, spans=16, mirror=True, global_scale=None):
         if mirror:
             mirror = -1
         else:
