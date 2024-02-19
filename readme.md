@@ -30,8 +30,8 @@ Notes from anim
 - Hide max roll from animators
 - Fix axis of rotation on feet (guides)
 - Fix axis of rotation on wrists (guides)
-- Make COG control more conspicuous, find a better shape to grab
-- Hip2 and Shoulder2 should not be in secondary group
+- <s>Make COG control more conspicuous, find a better shape to grab</s>
+- <s>Hip2</s> and Shoulder2 should not be in secondary group
 - <s>Hide visibility control in graph editor</s>
 - <s>SS head to COG</s>
 - Check trap volume with modeling (model)
