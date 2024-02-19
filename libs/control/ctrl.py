@@ -71,6 +71,7 @@ class Control(rDraw.Draw, rGroup.Group):
             mc.warning(self.ctrl_name + " has no padding.")
 
         rXform.match_pose(node=self.top, translate=self.translate, rotate=self.rotate, scale=self.scale)
+        mc.setAttr(self.ctrl_name + '.v', keyable=False, cb=True)
 
         if self.parent:
             mc.parent(self.top, self.parent)
