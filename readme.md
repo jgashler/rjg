@@ -28,14 +28,14 @@ UI (low priority)
 Notes from anim
 - Combine ballRoll and heelRoll attrs, keep toes flat on roll forward
 - Hide max roll from animators
-- Fix axis of rotation on feet
-- Fix axis of rotation on wrists
+- Fix axis of rotation on feet (guides)
+- Fix axis of rotation on wrists (guides)
 - Make COG control more conspicuous, find a better shape to grab
 - Hip2 and Shoulder2 should not be in secondary group
 - Hide visibility control in graph editor
 - SS head to COG
-- Check trap volume with modeling
-- heelRoll and toeRoll need to completely touvh the ground. 
+- Check trap volume with modeling (model)
+- heelRoll and toeRoll need to completely touch the ground. (guides)
 
 Bigger notes from anim
 - FK spine controls
