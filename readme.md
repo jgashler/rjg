@@ -33,7 +33,7 @@ Notes from anim
 - Make COG control more conspicuous, find a better shape to grab
 - Hip2 and Shoulder2 should not be in secondary group
 - <s>Hide visibility control in graph editor</s>
-- SS head to COG
+- <s>SS head to COG</s>
 - Check trap volume with modeling (model)
 - heelRoll and toeRoll need to completely touch the ground. (guides)
 

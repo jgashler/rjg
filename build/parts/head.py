@@ -64,11 +64,12 @@ class Head(rModule.RigModule):
         target_list = ['CHAR', 
                        'global_M_CTRL',
                        'root_02_M_CTRL',
+                       'hip_M_01_CTRL',
                        'chest_M_01_CTRL',
                        'chest_M_02_CTRL',
                        'neck_M_base_CTRL',
-                       '5']
-        name_list = ['world', 'global', 'root', 'chest_01', 'chest_02', 'neck', 'default_value']
+                       '6']
+        name_list = ['world', 'global', 'root', 'cog', 'chest_01', 'chest_02', 'neck', 'default_value']
         point_names = ['point' + name.title() for name in name_list]
         orient_names = ['orient' + name.title() for name in name_list]
         rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.head_01.ctrl +'_point', children_name=point_names)
