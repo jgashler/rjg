@@ -25,6 +25,23 @@ UI (low priority)
 - Save/load control color scheme (dict to and from json)
 - Picker
 
+Notes from anim
+- Combine ballRoll and heelRoll attrs, keep toes flat on roll forward
+- Hide max roll from animators
+- Fix axis of rotation on feet
+- Fix axis of rotation on wrists
+- Make COG control more conspicuous, find a better shape to grab
+- Hip2 and Shoulder2 should not be in secondary group
+- Hide visibility control in graph editor
+- SS head to COG
+- Check trap volume with modeling
+- heelRoll and toeRoll need to completely touvh the ground. 
+
+Bigger notes from anim
+- FK spine controls
+- Improved neck control
+- Mirror keys script
+
 
 ### License
 
