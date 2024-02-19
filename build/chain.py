@@ -275,12 +275,12 @@ class Chain:
             mc.connectAttr(dcm + '.output' + attr.capitalize(), ctrl_grp + '.' + attr)
         
         attr_util = rAttr.Attribute(add=False)
-        mid_ctrl = rCtrl.Control(parent=ctrl_grp, shape='circle', side=None, suffix='CTRL', name=bone.replace('JNT', 'bendy'), axis='y', group_type='main', 
-                                 rig_type='bendy', translate=m, rotate=bone, ctrl_scale=ctrl_scale*0.8)
+        mid_ctrl = rCtrl.Control(parent=ctrl_grp, shape='square', side=None, suffix='CTRL', name=bone.replace('JNT', 'bendy'), axis='y', group_type='main', 
+                                 rig_type='bendy', translate=m, rotate=bone, ctrl_scale=ctrl_scale*0.5)
         s_tan = rCtrl.Control(parent=ctrl_grp, shape='square', side=None, suffix='CTRL', name=bone.replace('JNT', 'start_tangent'), axis='y', group_type=2, 
-                                 rig_type='tangent', translate=b_crv + '.cv[1]', rotate=bone, ctrl_scale=ctrl_scale*0.6)
+                                 rig_type='tangent', translate=b_crv + '.cv[1]', rotate=bone, ctrl_scale=ctrl_scale*0.4)
         e_tan = rCtrl.Control(parent=ctrl_grp, shape='square', side=None, suffix='CTRL', name=bone.replace('JNT', 'end_tangent'), axis='y', group_type=2, 
-                                 rig_type='tangent', translate=b_crv + '.cv[5]', rotate=bone, ctrl_scale=ctrl_scale*0.6)
+                                 rig_type='tangent', translate=b_crv + '.cv[5]', rotate=bone, ctrl_scale=ctrl_scale*0.4)
         mid_ctrl.tag_as_controller()
         s_tan.tag_as_controller()
         e_tan.tag_as_controller()
