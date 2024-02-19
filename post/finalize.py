@@ -110,6 +110,7 @@ def add_color_attrs(x, y, z, utScale):
                 #mc.connectAttr(color.attr, shape + '.overrideColorRGB')
 
     set_color_defaults(c_ctrl.ctrl)
+    mc.setAttr('color_CTRL.v', cb=False)
     return c_ctrl.ctrl
 
 def set_color_defaults(ctrl):
@@ -212,6 +213,7 @@ def add_vis_ctrl(x, y, z, utScale):
                 if mc.nodeType(shape) == 'nurbsCurve':
                     mc.connectAttr(t_vis.attr, shape + '.visibility')
 
+    mc.setAttr('vis_CTRL.v', cb=False)
     return vis_ctrl.ctrl
         
 
@@ -377,6 +379,7 @@ def add_switch_ctrl(x, y, z, utScale):
                 switch_attr = rAttr.Attribute(node=s_ctrl.ctrl, type='double', value=default_val, keyable=True, min=0, max=1, name=switch_name)
             mc.connectAttr(switch_attr.attr, part + '.switch')
 
+    mc.setAttr('switch_CTRL.v', cb=False)
     return s_ctrl.ctrl
 
 
