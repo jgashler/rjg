@@ -227,9 +227,9 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
         #print(self.pv_control)
         if self.part == 'leg':
             par = 'hip_M_JNT'
-            driver_list = ['hip_M_02_CTRL',
-                           'hip_M_02_CTRL', 
-                           'hip_M_02_CTRL', 
+            driver_list = ['waist_M_CTRL',
+                           'waist_M_CTRL', 
+                           'waist_M_CTRL', 
                            self.base_name + '_IK_BASE_CTRL', 
                            'foot_' + self.side + '_01_ik_JNT',
                            'root_02_M_CTRL']
@@ -245,7 +245,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
             pv_targets = ['CHAR',
                           'global_M_CTRL',
                           'root_02_M_CTRL',
-                          'hip_M_01_CTRL',
+                          'COG_M_CTRL',
                           'leg_' + self.side + '_IK_BASE_CTRL',
                           'foot_' + self.side + '_02_BASE_CTRL',
                           '2']

@@ -217,7 +217,7 @@ class Foot(rModule.RigModule):
         target_list = ['CHAR',
                        'global_M_CTRL',
                        'root_02_M_CTRL',
-                       'hip_M_01_CTRL',
+                       'COG_M_CTRL',
                        'leg_'+ self.side +'_IK_BASE_CTRL',
                        '2']
         name_list = ['world', 'global', 'root', 'hip', 'leg', 'default_value']

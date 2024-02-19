@@ -149,8 +149,8 @@ class Spine(rModule.RigModule, rSpline.Spline):
                          children_name=[self.bind_joints[0]])
 
         # add parentConstraint rig plugs
-        driver_list = ['hip_M_02_CTRL',
-                       'hip_M_01_CTRL',
+        driver_list = ['waist_M_CTRL',
+                       'COG_M_CTRL',
                        'chest_M_02_CTRL']
         driven_list = [self.base_name + '_base_CTRL_CNST_GRP',
                        self.base_name[:-2] + '_01_FK_M_CTRL_CNST_GRP',

@@ -97,7 +97,7 @@ class Hand(rModule.RigModule):
         target_list = ['CHAR',
                        'global_M_CTRL',
                        'root_02_M_CTRL',
-                       'hip_M_01_CTRL',
+                       'COG_M_CTRL',
                        'chest_M_01_CTRL',
                        'clavicle_'+ self.side +'_CTRL', '2']
         name_list = ['world', 'global', 'root', 'hip', 'chest', 'clavicle', 'default_value']

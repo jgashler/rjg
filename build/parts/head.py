@@ -64,7 +64,7 @@ class Head(rModule.RigModule):
         target_list = ['CHAR', 
                        'global_M_CTRL',
                        'root_02_M_CTRL',
-                       'hip_M_01_CTRL',
+                       'COG_M_CTRL',
                        'chest_M_01_CTRL',
                        'chest_M_02_CTRL',
                        'neck_M_base_CTRL',
