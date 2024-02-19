@@ -11,11 +11,11 @@ reload(rCtrl)
 reload(rAttr)
 
 class Hip(rModule.RigModule):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, offset_hip=-0.1, hip_shape='hip', model_path=None, guide_path=None):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, offset_hip=-0.1, cog_shape='circle', waist_shape='circle', model_path=None, guide_path=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
+        self.__dict__.update(locals())
         self.base_name = self.part + '_' + self.side
         self.offset_hip = offset_hip
-        self.hip_shape = hip_shape
         self.create_module()
 
     def create_module(self):
@@ -27,8 +27,8 @@ class Hip(rModule.RigModule):
         self.add_plugs()
 
     def control_rig(self):
-        self.hip_01 = rCtrl.Control(parent=self.control_grp, shape=self.hip_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
-        self.hip_02 = rCtrl.Control(parent=self.hip_01.ctrl, shape=self.hip_shape, side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.35)
+        self.hip_01 = rCtrl.Control(parent=self.control_grp, shape=self.cog_shape, side=None, suffix='CTRL', name='COG_M', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
+        self.hip_02 = rCtrl.Control(parent=self.hip_01.ctrl, shape=self.waist_shape, side=None, suffix='CTRL', name='waist_M', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.35)
         self.hip_01.tag_as_controller()
         self.hip_02.tag_as_controller()
 
