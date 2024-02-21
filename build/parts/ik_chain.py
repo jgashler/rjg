@@ -15,15 +15,7 @@ class IkChain(rModule.RigModule, rIk.Ik):
                  stretchy=True, twisty=None, bendy=None, segments=None, model_path=None, guide_path=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
-        self.sticky = sticky
-        self.solver = solver
-        self.pv_guide = pv_guide
-        self.offset_pv = offset_pv
-        self.slide_pv = slide_pv
-        self.stretchy = stretchy
-        self.twisty = twisty
-        self.bendy = bendy
-        self.segments = segments
+        self.__dict__.update(locals())
         
         if self.twisty or self.bendy and not self.segments:
             self.segments = 4

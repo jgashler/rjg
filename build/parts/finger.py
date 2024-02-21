@@ -14,9 +14,7 @@ class Finger(rModule.RigModule, rFk.Fk):
     def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=1, model_path=None, guide_path=None, pad='auto', remove_last=True, fk_shape='circle'):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
-        self.pad = pad
-        self.remove_last = remove_last
-        self.fk_shape = fk_shape
+        self.__dict__.update(locals())
         self.gimbal = None
         self.offset = None
 

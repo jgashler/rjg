@@ -14,15 +14,7 @@ class fk_chain(rModule.RigModule, rFk.Fk):
     def __init__(self, side=None, part=None, guide_list=None, gimbal=None, offset=None, pad='auto', ctrl_scale=1, remove_last=True, 
                  fk_shape='circle', gimbal_shape='circle', offset_shape='square', model_path=None, guide_path=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
-
-        self.guide_list = guide_list
-        self.gimbal = gimbal
-        self.offset = offset
-        self.pad = pad
-        self.remove_last = remove_last
-        self.fk_shape = fk_shape
-        self.gimbal_shape = gimbal_shape
-        self.offset_shape = offset_shape
+        self.__dict__.update(locals())
 
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1

@@ -13,17 +13,9 @@ reload(rCtrl)
 class Head(rModule.RigModule):
     def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, model_path=None, guide_path=None, head_shape='circle'):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
+        self.__dict__.update(locals())
 
-        self.side = side
-        self.part = part
         self.base_name = self.part + '_' + self.side
-
-        self.guide_list = guide_list
-        self.ctrl_scale = ctrl_scale
-        self.model_path = model_path
-        self.guide_list = guide_list
-
-        self.head_shape = head_shape
 
         self.create_module()
 

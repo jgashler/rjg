@@ -12,19 +12,8 @@ reload(rCtrl)
 
 
 class Hand(rModule.RigModule):
-    def __init__(self,
-                 side=None,
-                 part=None,
-                 guide_list=None,
-                 ctrl_scale=None,
-                 local_orient=False,
-                 model_path=None,
-                 guide_path=None):
-        super().__init__(side=side, part=part,
-                                       guide_list=guide_list,
-                                       ctrl_scale=ctrl_scale,
-                                       model_path=model_path,
-                                       guide_path=guide_path)
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, local_orient=False, model_path=None, guide_path=None):
+        super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
         
         self.base_name = self.part + '_' + self.side
 

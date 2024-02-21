@@ -16,14 +16,7 @@ class Neck(rModule.RigModule, rSpline.Spline):
     def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, joint_num=5, mid_ctrl=True, local_ctrl=False, stretchy=True, aim_vector=(0, 1, 0), up_vector=(0, 0, 1), world_up_vector=(0, 0, 1), fk_offset=False, model_path=None, guide_path=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
-        self.joint_num = joint_num
-        self.mid_ctrl = mid_ctrl
-        self.local_ctrl = local_ctrl
-        self.stretchy = stretchy
-        self.aim_vector = aim_vector
-        self.up_vector = up_vector
-        self.world_up_vector = world_up_vector
-        self.fk_offset = fk_offset
+        self.__dict__.update(locals())
 
         self.pad = len(str(self.joint_num)) + 1
 

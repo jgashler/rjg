@@ -17,28 +17,13 @@ reload(rFk)
 
 
 class Foot(rModule.RigModule):
-    def __init__(self,
-                 side=None,
-                 part=None,
-                 guide_list=None,
-                 ctrl_scale=None,
-                 local_orient=False,
-                 model_path=None,
-                 guide_path=None,
-                 in_piv=None,
-                 out_piv=None,
-                 heel_piv=None,
-                 toe_piv=None):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, local_orient=False, model_path=None, guide_path=None, in_piv=None, out_piv=None, heel_piv=None, toe_piv=None):
         super(Foot, self).__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
-        self.in_piv = in_piv
-        self.out_piv = out_piv
-        self.heel_piv = heel_piv
-        self.toe_piv = toe_piv
+        self.__dict__.update(locals())
 
         if not self.toe_piv:
             self.toe_piv = self.guide_list[-1]
-
-        self.local_orient = local_orient
+            
         self.create_module()
 
     def create_module(self):

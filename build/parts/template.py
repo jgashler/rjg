@@ -28,6 +28,8 @@ class Part(rModule.RigModule):
                      model_path=model_path,
                      guide_path=guide_path)
         
+        self.__dict__.update(locals())
+        
         # base name conventions: part_side. used for naming objects.
         self.base_name = self.part + '_' + self.side
 

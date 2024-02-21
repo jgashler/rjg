@@ -14,63 +14,15 @@ reload(rIk)
 reload(rAttr)
 
 class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
-    def __init__(self,
-                 side=None,
-                 part=None,
-                 guide_list=None,
-                 ctrl_scale=1,
-                 create_ik=True,
-                 create_fk=True,
-                 stretchy=True,
-                 twisty=True,
-                 bendy=True,
-                 segments=4,
-                 sticky=None,
-                 solver=None,
-                 pv_guide='auto',
-                 offset_pv=0,
-                 slide_pv=None,
-                 gimbal=True,
-                 offset=True,
-                 pad='auto',
-                 fk_shape='circle',
-                 gimbal_shape='circle',
-                 offset_shape='square',
-                 model_path=None,
-                 guide_path=None):
-        super(BipedLimb, self).__init__(side=side, part=part,
-                                        guide_list=guide_list,
-                                        ctrl_scale=ctrl_scale,
-                                        model_path=model_path,
-                                        guide_path=guide_path)
+    def __init__(self,side=None,part=None,guide_list=None, ctrl_scale=1,create_ik=True,create_fk=True,stretchy=True,twisty=True,bendy=True,segments=4,
+                 sticky=None, solver=None, pv_guide='auto', offset_pv=0, slide_pv=None, gimbal=True, offset=True, 
+                 pad='auto', fk_shape='circle', gimbal_shape='circle', offset_shape='square', model_path=None, guide_path=None):
+        super(BipedLimb, self).__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
-        self.gimbal = gimbal
-        self.create_ik = create_ik
-        self.create_fk = create_fk
-        self.stretchy = stretchy
-        self.twisty = twisty
-        self.bendy = bendy
-        self.segments = segments
-
-        # fk shape kwargs
-        self.fk_shape = fk_shape
-        self.gimbal_shape = gimbal_shape
-        self.offset_shape = offset_shape
-
-        # ik kwargs
-        self.sticky = sticky
-        self.solver = solver
-        self.pv_guide = pv_guide
-        self.offset_pv = offset_pv
-        self.slide_pv = slide_pv
+        self.__dict__.update(locals())
 
         if self.twisty or self.bendy and not self.segments:
             self.segments = 4
-
-        # fk kwargs
-        self.gimbal = gimbal
-        self.offset = offset
-        self.pad = pad
 
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1
