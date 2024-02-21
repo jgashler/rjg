@@ -23,11 +23,11 @@ UI (low priority)
 - Pass guide names in here instead of the script.
 - Select/deselect which components to place/replace.
 - Save/load control color scheme (dict to and from json)
-- Picker
+- Picker (Diego)
 
 Notes from anim
-- Combine ballRoll and heelRoll attrs, keep toes flat on roll forward
-- Hide max roll from animators
+- <s>Combine ballRoll and heelRoll attrs, keep toes flat on roll forward</s>
+- <s>Hide max roll from animators</s>
 - Fix axis of rotation on feet (guides)
 - Fix axis of rotation on wrists (guides)
 - <s>Make COG control more conspicuous, find a better shape to grab</s>
@@ -40,7 +40,7 @@ Notes from anim
 Bigger notes from anim
 - FK spine controls
 - Improved neck control
-- Mirror keys script
+- Mirror keys script (Alex)
 
 
 ### License
