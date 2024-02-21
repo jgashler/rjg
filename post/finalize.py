@@ -200,9 +200,9 @@ def add_vis_ctrl(x, y, z, utScale):
 
     for type, ctrl_list in type_dict.items():
 
-        if type in ['global', 'primary', 'fk', 'root', 'pv', 'tangent', 'bendy', 'secondary']:
+        if type in ['global', 'primary', 'fk', 'root', 'pv', 'tangent', 'bendy', 'pivot']:
             val = 1
-        elif type in ['offset', 'gimbal', 'secondary', 'pivot']:
+        elif type in ['offset', 'gimbal', 'secondary']:
             val = 0
         else:
             val = 1
