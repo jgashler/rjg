@@ -29,13 +29,7 @@ class Foot(rModule.RigModule):
                  out_piv=None,
                  heel_piv=None,
                  toe_piv=None):
-        super().__init__(side=side, part=part,
-                                       guide_list=guide_list,
-                                       ctrl_scale=ctrl_scale,
-                                       model_path=model_path,
-                                       guide_path=guide_path)
-        
-        self.base_name = self.part + '_' + self.side
+        super(Foot, self).__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
         self.in_piv = in_piv
         self.out_piv = out_piv
         self.heel_piv = heel_piv
@@ -45,7 +39,6 @@ class Foot(rModule.RigModule):
             self.toe_piv = self.guide_list[-1]
 
         self.local_orient = local_orient
-
         self.create_module()
 
     def create_module(self):
@@ -59,37 +52,22 @@ class Foot(rModule.RigModule):
     def control_rig(self):
         attr_util = rAttr.Attribute(add=False)
 
-        self.main_ctrl = rCtrl.Control(parent=self.control_grp, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', 
-                                     rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
-        self.second_ctrl = rCtrl.Control(parent=self.main_ctrl.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', 
-                                     rig_type='secondary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 0.85)
-        
-        self.toe_piv = rCtrl.Control(parent=self.second_ctrl.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_toe_piv', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.toe_piv, rotate=self.guide_list[-1], ctrl_scale=self.ctrl_scale * 0.2)
-        self.heel_piv = rCtrl.Control(parent=self.toe_piv.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_heel_piv', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.heel_piv, ctrl_scale=self.ctrl_scale * 0.2)
-        self.in_piv = rCtrl.Control(parent=self.heel_piv.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_in_piv', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.in_piv, ctrl_scale=self.ctrl_scale * 0.2)
-        self.out_piv = rCtrl.Control(parent=self.in_piv.ctrl, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_out_piv', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.out_piv, ctrl_scale=self.ctrl_scale * 0.2)
-        
-        self.ball_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name + '_ball', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale * 1.45)
-        self.ankle_ctrl = rCtrl.Control(parent=self.ball_ctrl.ctrl, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name + '_ankle', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
-        self.toe_ctrl = rCtrl.Control(parent=self.ankle_ctrl.ctrl, shape='locator_3D', side=None, suffix='CTRL', name=self.base_name + '_toe', axis='y', group_type='main', rig_type='pivot',
-                             translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale)
-        
+        self.main_ctrl = rCtrl.Control(parent=self.control_grp, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
+        self.second_ctrl = rCtrl.Control(parent=self.main_ctrl.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], ctrl_scale=self.ctrl_scale * 0.85)
+        self.toe_piv = rCtrl.Control(parent=self.second_ctrl.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_toe_piv', axis='y', group_type='main', rig_type='pivot', translate=self.toe_piv, rotate=self.guide_list[-1], ctrl_scale=self.ctrl_scale * 0.2)
+        self.heel_piv = rCtrl.Control(parent=self.toe_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_heel_piv', axis='y', group_type='main', rig_type='pivot', translate=self.heel_piv, ctrl_scale=self.ctrl_scale * 0.2)
+        self.in_piv = rCtrl.Control(parent=self.heel_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_in_piv', axis='y', group_type='main', rig_type='pivot', translate=self.in_piv, ctrl_scale=self.ctrl_scale * 0.2)
+        self.out_piv = rCtrl.Control(parent=self.in_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_out_piv', axis='y', group_type='main', rig_type='pivot', translate=self.out_piv, ctrl_scale=self.ctrl_scale * 0.2)
+        self.ball_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.base_name + '_ball', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale * 1.45)
+        self.ankle_ctrl = rCtrl.Control(parent=self.ball_ctrl.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.base_name + '_ankle', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
+        self.toe_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.base_name + '_toe', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale)
         ts_list = [self.ball_ctrl, self.toe_ctrl, self.toe_piv, self.heel_piv, self.in_piv, self.out_piv]
         for c in ts_list:
             attr_util.lock_and_hide(node=c.ctrl, rotate=False)
-            c.tag_as_controller()
-
-        self.ankle_ctrl.tag_as_controller()
 
         s_list = [self.main_ctrl, self.second_ctrl]
         for s in s_list:
-            attr_util.lock_and_hide(node=s.ctrl, translate='False', rotate='False')
+            attr_util.lock_and_hide(node=s.ctrl, translate=False, rotate=False)
             s.tag_as_controller()
 
     def output_rig(self):
@@ -144,6 +122,9 @@ class Foot(rModule.RigModule):
         toe_mdl = mc.createNode('multDoubleLinear', name=self.base_name + '_toe_MDL')
         toe_adl = mc.createNode('addDoubleLinear', name=self.base_name + '_toe_ADL')
         bank_cnd = mc.createNode('condition', name=self.base_name + '_bank_CND')
+        
+        roll_cnd2 = mc.createNode('condition', name=self.base_name + '_roll2_CND')
+        roll_mdl2 = mc.createNode('multDoubleLinear', name=self.base_name + '_roll2_MDL')
 
         mc.setAttr(ball_mdl + '.input2', -1)
         mc.setAttr(toe_mdl + '.input2', -1)
@@ -151,6 +132,9 @@ class Foot(rModule.RigModule):
         mc.setAttr(roll_pma + '.operation', 2)
         mc.setAttr(bank_cnd + '.operation', 2)
         mc.setAttr(bank_cnd + '.colorIfFalseG', 0)
+
+        mc.setAttr(roll_cnd2 + '.operation', 4)
+        mc.setAttr(roll_mdl2 + '.input2', -1)
 
         # roll
         mc.connectAttr(roll.attr, roll_cnd + '.firstTerm')
@@ -164,6 +148,11 @@ class Foot(rModule.RigModule):
         mc.connectAttr(roll_cnd + '.outColorG', toe_adl + '.input1')
         mc.connectAttr(toe_roll.attr, toe_adl + '.input2')
         mc.connectAttr(toe_adl + '.output', toe_mdl + '.input1')
+
+        mc.connectAttr(roll.attr, roll_cnd2 + '.firstTerm')
+        mc.connectAttr(roll.attr, roll_cnd2 + '.colorIfTrueR')
+        mc.connectAttr(roll_cnd2 + '.outColorR', roll_mdl2 + '.input1')
+        mc.connectAttr(roll_mdl2 + '.output', self.toe_ctrl.group_list[1] + '.rotateX')
 
         # bank
         mc.connectAttr(bank.attr, bank_cnd + '.firstTerm')
