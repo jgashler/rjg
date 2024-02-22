@@ -14,6 +14,7 @@ import rjg.build.parts.spine as rSpine
 import rjg.build.parts.neck as rNeck
 import rjg.build.parts.head as rHead
 import rjg.build.parts.metaFinger as rMetaFinger
+import rjg.build.parts.fingerAttr as rFingerAttr
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -27,6 +28,7 @@ reload(rSpine)
 reload(rNeck)
 reload(rHead)
 reload(rMetaFinger)
+reload(rFingerAttr)
 
 '''
 Wrapper for all part modules
@@ -45,6 +47,7 @@ MODULE_DICT = {
                'neck' : rNeck.Neck,
                'head' : rHead.Head,
                'meta_finger': rMetaFinger.MetaFinger,
+               'finger_attr': rFingerAttr.FingerAttr,
                }
 
 
