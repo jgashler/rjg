@@ -35,7 +35,7 @@ class Neck(rModule.RigModule, rSpline.Spline):
         self.build_spline_ctrls()
         mc.parent(self.base_ctrl.top, self.tip_ctrl.top, self.control_grp)
         if self.mid_ctrl:
-            mc.parent(self.mid_ctrl.top, self.control_grp)
+            mc.parent(self.curve_ctrls, self.control_grp)
 
     def output_rig(self):
         self.build_spline_chain(scale_attr=self.global_scale)
@@ -53,12 +53,12 @@ class Neck(rModule.RigModule, rSpline.Spline):
         if self.mid_ctrl:
             #blend = rAttr.Attribute(node=self.mid_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='blendBetween')
 
-            mid_jnt = mc.joint(curve_jnt_grp, name=self.mid_ctrl.ctrl.replace('CTRL', 'JNT'))
-            mc.parentConstraint(self.mid_ctrl.ctrl, mid_jnt, mo=False)
+            mid_jnt = mc.joint(curve_jnt_grp, name=self.mid_02_ctrl.ctrl.replace('CTRL', 'JNT'))
+            mc.parentConstraint(self.mid_02_ctrl.ctrl, mid_jnt, mo=False)
 
-            mc.pointConstraint(self.base_driver, self.tip_driver, self.mid_ctrl.top, mo=True)
+            mc.pointConstraint(self.base_driver, self.tip_driver, self.mid_01_ctrl.top, mo=True)
 
-            aim = mc.aimConstraint(tip_jnt, self.mid_ctrl.top, aimVector=(0, 1, 0), upVector=(0, 0, 1), worldUpType='vector', worldUpVector=(0, 0, 1), mo=True)[0]
+            aim = mc.aimConstraint(tip_jnt, self.mid_01_ctrl.top, aimVector=(0, 1, 0), upVector=(0, 0, 1), worldUpType='vector', worldUpVector=(0, 0, 1), mo=True)[0]
             b_vp = mc.createNode('vectorProduct', name=base_jnt.replace('JNT', 'VP'))
             t_vp = mc.createNode('vectorProduct', name=tip_jnt.replace('JNT', 'VP'))
             pma = mc.createNode('plusMinusAverage', name=mid_jnt.replace('JNT', 'PMA'))

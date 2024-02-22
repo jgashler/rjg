@@ -80,9 +80,9 @@ class Spine(rModule.RigModule, rSpline.Spline):
         mc.parentConstraint(self.fk_ctrl_list[-1].ctrl, self.tip_ctrl.top, maintainOffset=True)
 
         if self.mid_ctrl:
-            blend = rAttr.Attribute(node=self.mid_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='blendBetween')
-            mid_jnt = mc.joint(c_jnt_grp, name=self.mid_ctrl.ctrl.replace('CTRL', 'JNT'))
-            mc.parentConstraint(self.mid_ctrl.ctrl, mid_jnt, maintainOffset=False)
+            blend = rAttr.Attribute(node=self.mid_01_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='blendBetween')
+            mid_jnt = mc.joint(c_jnt_grp, name=self.mid_01_ctrl.ctrl.replace('CTRL', 'JNT'))
+            mc.parentConstraint(self.mid_02_ctrl.ctrl, mid_jnt, maintainOffset=False)
 
             # blend locator between start and end
             mid_loc = mc.spaceLocator(name=mid_jnt.replace('JNT', 'LOC'))[0]
@@ -105,7 +105,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
             mc.setAttr(t_vp + '.operation', 3)
             mc.setAttr(pma + '.operation', 3)
 
-            pac = mc.parentConstraint(self.fk_ctrl_list[1].ctrl, mid_loc, self.mid_ctrl.top, maintainOffset=True)[0]
+            pac = mc.parentConstraint(self.fk_ctrl_list[1].ctrl, mid_loc, self.mid_01_ctrl.top, maintainOffset=True)[0]
             wal = mc.parentConstraint(pac, query=True, weightAliasList=True)
             mc.connectAttr(blend.attr, rev + '.inputX')
             mc.connectAttr(rev + '.outputX', pac + '.' + wal[0])
