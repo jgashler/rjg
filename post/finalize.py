@@ -271,7 +271,10 @@ def assemble_rig():
                                 mc.delete(node)
                         else:
                             mc.warning(pt + ' plug type not found. Skipping...')
+        except:
+            print("exception on", part, "hide/delete")
 
+        try:
             plug_types = ['pacRigPlugs', 'pacPocRigPlugs', 'pocRigPlugs', 'orcRigPlugs']
             for pt in plug_types:
                 if mc.objExists(part + '.' + pt):
@@ -299,7 +302,10 @@ def assemble_rig():
                                 mc.warning(pt + ' plug type does not exist. Skipping...')
                         else:
                             mc.warning(driver + ' driver does not exist. Skipping...')
+        except:
+            print("exception on", part, "constraints")
 
+        try:
             plug_types = ['parent', 'point', 'orient']
             for pt in plug_types:
                 for ctrl in mc.ls(part + '*.ctrlDict'):
@@ -325,7 +331,12 @@ def assemble_rig():
                                     rSpace.space_switch(node=part, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
                                 else:
                                     rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
+                            else:
+                                print("MISSING SOMETHING")
+        except:
+            print("exception on", part, "space")
 
+        try:
             if mc.objExists(part + '.transferAttributes'):
                 driven_list = mc.listAttr(part + '.transferAttributes')[1:]
                 for driven in driven_list:
@@ -337,7 +348,7 @@ def assemble_rig():
                             src_attr = rAttr.Attribute(add=False, node=driven, name=attr, transfer_to=transfer_node)
                             src_attr.transfer_attr()
         except:
-            continue
+            print("  exception on", part, "transfer")
 
 def add_rig_sets():
     rig_set = mc.sets(name='rig_SET', empty=True)
