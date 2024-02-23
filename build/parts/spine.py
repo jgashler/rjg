@@ -145,7 +145,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
     def add_plugs(self):
         # add skeleton plugs
         rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=['hip_M_JNT'], name='skeletonPlugs',
+                         value=['COG_M_JNT'], name='skeletonPlugs',
                          children_name=[self.bind_joints[0]])
 
         # add parentConstraint rig plugs

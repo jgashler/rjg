@@ -178,7 +178,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
     def add_plugs(self):
         #print(self.pv_control)
         if self.part == 'leg':
-            par = 'hip_M_JNT'
+            par = 'COG_M_JNT'
             driver_list = ['waist_M_CTRL',
                            'waist_M_CTRL', 
                            'waist_M_CTRL', 
@@ -199,7 +199,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                           'root_02_M_CTRL',
                           'COG_M_CTRL',
                           'leg_' + self.side + '_IK_BASE_CTRL',
-                          'foot_' + self.side + '_02_BASE_CTRL',
+                          'foot_' + self.side + '_02_' + self.side + '_CTRL',
                           '2']
             pv_names = ['world', 'global', 'root', 'hip', 'leg', 'foot', 'default_value']
             ik_ctrl = ['foot_' + self.side + '_01_CTRL']
