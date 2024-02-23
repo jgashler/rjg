@@ -202,7 +202,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                           'foot_' + self.side + '_02_' + self.side + '_CTRL',
                           '2']
             pv_names = ['world', 'global', 'root', 'hip', 'leg', 'foot', 'default_value']
-            ik_ctrl = ['foot_' + self.side + '_01_CTRL']
+            ik_ctrl = ['foot_' + self.side + '_01_' + self.side + '_CTRL']
         elif self.part == 'arm':
             par = 'clavicle_' + self.side + '_02_JNT'
             driver_list = ['clavicle_' + self.side + '_02_driver_JNT',

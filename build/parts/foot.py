@@ -174,7 +174,7 @@ class Foot(rModule.RigModule):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("leg_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
         driver_list = ['leg_' + self.side + '_03_switch_JNT','root_02_M_CTRL']
-        driven_list = [self.base_name + '_01_switch_JNT', self.base_name + '_01_CTRL_CNST_GRP']
+        driven_list = [self.base_name + '_01_switch_JNT', self.base_name + '_01_' + self.side + '_CTRL_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pocRigPlugs', children_name=driven_list)
 
         driver_list = ['leg_' + self.side + '_02_fk_CTRL']
