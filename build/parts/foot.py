@@ -86,7 +86,7 @@ class Foot(rModule.RigModule):
 
         self.add_foot_attrs()
 
-        rev = mc.createNode('reverse', name=self.base_name + 'REV')
+        rev = mc.createNode('reverse', name=self.base_name + '_REV')
         mc.connectAttr(self.blend_chain.switch.attr, rev + '.inputX')
         mc.connectAttr(rev + '.outputX', self.main_ctrl.top + '.visibility')
         mc.connectAttr(self.blend_chain.switch.attr, fk.fk_ctrls[0].top + '.visibility')
