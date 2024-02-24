@@ -23,8 +23,8 @@ def write_ctrls(directory, name='control_curves', force=False):
     else:
         mc.error('The curve data you are trying to save already exist in the specified directory at {}. Please choose a different directory or set the force flag to True.'.format(path))
     
-def read_ctrls(directory, curve_file='control_curves.json'):
-    path = directory + curve_file
+def read_ctrls(directory, curve_file='control_curves'):
+    path = directory + '/' + curve_file + '.json'
     if os.path.isfile(path):
         file = open(path, 'r')
         curve_data = json.loads(file.read())

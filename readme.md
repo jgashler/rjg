@@ -26,16 +26,10 @@ UI (low priority)
 - Picker (Diego)
 
 Notes from anim
-- <s>Combine ballRoll and heelRoll attrs, keep toes flat on roll forward</s>
-- <s>Hide max roll from animators</s>
-- Fix axis of rotation on feet (guides)
-- Fix axis of rotation on wrists (guides)
-- <s>Make COG control more conspicuous, find a better shape to grab</s>
-- <s>Hip2</s> and Shoulder2 should not be in secondary group
-- <s>Hide visibility control in graph editor</s>
-- <s>SS head to COG</s>
 - Check trap volume with modeling (model)
-- heelRoll and toeRoll need to completely touch the ground. (guides)
+
+- give position control to utility control group
+- add space switches to PVs
 
 Bigger notes from anim
 - FK spine controls
