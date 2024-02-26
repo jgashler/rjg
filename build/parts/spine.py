@@ -80,7 +80,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
         mc.parentConstraint(self.fk_ctrl_list[-1].ctrl, self.tip_ctrl.top, maintainOffset=True)
 
         if self.mid_ctrl:
-            blend = rAttr.Attribute(node=self.mid_01_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='blendBetween')
+            blend = rAttr.Attribute(node=self.mid_01_ctrl.ctrl, type='double', value=0, min=0, max=1, keyable=True, name='blendBetween')
             mid_jnt = mc.joint(c_jnt_grp, name=self.mid_01_ctrl.ctrl.replace('CTRL', 'JNT'))
             mc.parentConstraint(self.mid_02_ctrl.ctrl, mid_jnt, maintainOffset=False)
 
