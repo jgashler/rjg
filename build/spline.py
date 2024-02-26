@@ -84,6 +84,13 @@ class Spline:
         if self.mid_ctrl:
             pos = rXform.findPosOnCurve(self.curve, 0.5)
 
+            pos25 = rXform.findPosOnCurve(self.curve, 0.25)
+            pos75 = rXform.findPosOnCurve(self.curve, 0.75)
+
+            self.mid_25_ctrl = rCtrl.Control(parent=None, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_25', axis='y', group_type='main', rig_type='primary', translate=pos25, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 12)
+            self.attr_util.lock_and_hide(node=self.mid_25_ctrl.ctrl, translate=False, rotate=False)
+            self.curve_ctrls.append(self.mid_25_ctrl.top)
+
             self.mid_01_ctrl = rCtrl.Control(parent=None, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_01', axis='y', group_type='main', rig_type='primary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 12)
             self.attr_util.lock_and_hide(node=self.mid_01_ctrl.ctrl, translate=False, rotate=False)
             self.curve_ctrls.append(self.mid_01_ctrl.top)
@@ -91,11 +98,18 @@ class Spline:
             self.mid_02_ctrl = rCtrl.Control(parent=self.mid_01_ctrl.ctrl, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_02', axis='y', group_type='main', rig_type='primary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 10)
             self.attr_util.lock_and_hide(node=self.mid_02_ctrl.ctrl, translate=False, rotate=False)
             #self.curve_ctrls.append(self.mid_02_ctrl.top)
+
+            self.mid_75_ctrl = rCtrl.Control(parent=None, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_75', axis='y', group_type='main', rig_type='primary', translate=pos75, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 12)
+            self.attr_util.lock_and_hide(node=self.mid_75_ctrl.ctrl, translate=False, rotate=False)
+            self.curve_ctrls.append(self.mid_75_ctrl.top)
             
             # if self.local_ctrl:
             #     self.base_driver = self.base_local.ctrl
             self.mid_01_ctrl.tag_as_controller()
             self.mid_02_ctrl.tag_as_controller()
+
+            self.mid_25_ctrl.tag_as_controller()
+            self.mid_75_ctrl.tag_as_controller()
 
     def build_spline_chain(self, scale_attr=None):
         if not scale_attr:
