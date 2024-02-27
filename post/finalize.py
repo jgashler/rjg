@@ -340,6 +340,9 @@ def assemble_rig():
             if mc.objExists(part + '.transferAttributes'):
                 driven_list = mc.listAttr(part + '.transferAttributes')[1:]
                 for driven in driven_list:
+                    if "spine" in driven:
+                        spine_switch_transfer(driven)
+                        continue
                     plug = part + '.' + driven
                     transfer_node = mc.getAttr(plug)
                     attr_list = mc.listAttr(driven, userDefined=True)
@@ -347,8 +350,16 @@ def assemble_rig():
                         if attr != 'ctrlDict':
                             src_attr = rAttr.Attribute(add=False, node=driven, name=attr, transfer_to=transfer_node)
                             src_attr.transfer_attr()
-        except:
+
+                    
+        except Exception as e:
             print("  exception on", part, "transfer")
+            print(e)
+
+def spine_switch_transfer(driven):
+    stretch = rAttr.Attribute(node='chest_M_01_CTRL', type='double', name='stretch', keyable=False)
+    mc.connectAttr('spine_M_SW_REV.outputX', stretch.attr, force=True)
+    mc.connectAttr(stretch.attr, driven + '.stretch', force=True)
 
 def add_rig_sets():
     rig_set = mc.sets(name='rig_SET', empty=True)
@@ -375,12 +386,12 @@ def add_switch_ctrl(x, y, z, utScale):
     attr_util.lock_and_hide(node=s_ctrl.ctrl)
     s_ctrl.tag_as_controller()
 
-    # add color
+    # TODO: add color
 
     for part in mc.listRelatives('RIG'):
         if mc.objExists(part + '.switchRigPlugs'):
             switch_name = mc.getAttr(part + '.ikFkSwitch')
-            if 'arm' in part or 'hand' in part or 'finger' in part:
+            if 'arm' in part or 'hand' in part or 'finger' in part or 'spine' in part:
                 default_val = 1
             else:
                 default_val = 0

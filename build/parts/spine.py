@@ -50,13 +50,13 @@ class Spine(rModule.RigModule, rSpline.Spline):
             name_list = [self.part, str(i + 1).zfill(2), 'FK']
             ctrl_name = '_'.join(name_list)
             if i == 0:
-                shape = 'square'
+                shape = 'lollipop'
             else:
-                shape = 'square'
+                shape = 'lollipop'
             fk_ctrl = rCtrl.Control(parent=par, shape=shape, side=self.side, suffix='CTRL',
                                      name=ctrl_name, axis='y', group_type='main', rig_type='fk', 
-                                     translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale)
-            self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False, rotate=False)
+                                     translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale*10)
+            self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False, rotate=False, visibility=False)
             par = fk_ctrl.ctrl
             self.fk_ctrl_list.append(fk_ctrl)
 
@@ -135,6 +135,14 @@ class Spine(rModule.RigModule, rSpline.Spline):
         mc.connectAttr(base_jnt + '.worldMatrix[0]', self.spline_ikh + '.dWorldUpMatrix')
         mc.connectAttr(tip_jnt + '.worldMatrix[0]', self.spline_ikh + '.dWorldUpMatrixEnd')
 
+        self.switch = rAttr.Attribute(node=self.part_grp, type='double', min=0, max=1, keyable=True, name='switch')
+        sw_rev = mc.createNode('reverse', name=self.base_name + '_SW_REV')
+        mc.connectAttr(self.switch.attr, sw_rev + '.inputX')
+        mc.connectAttr(sw_rev + '.outputX', self.tip_ctrl.ctrl + '.stretch')
+        mc.connectAttr(sw_rev + '.outputX', self.mid_01_ctrl.ctrl + '.v')
+        mc.connectAttr(sw_rev + '.outputX', self.mid_01_ctrl.ctrl + '.blendBetween')
+        mc.connectAttr(self.switch.attr, self.fk_ctrl_list[0].ctrl + '.v')
+
     def skeleton(self):
         spine_chain = rChain.Chain(transform_list=self.spline_joints, side=self.side, suffix='JNT', name=self.part)
         spine_chain.create_from_transforms(parent=self.skel)
@@ -165,3 +173,6 @@ class Spine(rModule.RigModule, rSpline.Spline):
         rAttr.Attribute(node=self.part_grp, type='plug',
                          value=[' '.join(hide_list)], name='hideRigPlugs',
                          children_name=['hideNodes'])
+        
+        switch_attr = self.part.lower() + self.side.capitalize() + '_IKFK'
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])

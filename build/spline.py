@@ -85,10 +85,10 @@ class Spline:
             pos = rXform.findPosOnCurve(self.curve, 0.5)
 
             self.mid_01_ctrl = rCtrl.Control(parent=None, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_01', axis='y', group_type='main', rig_type='primary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 12)
-            self.attr_util.lock_and_hide(node=self.mid_01_ctrl.ctrl, translate=False, rotate=False)
+            self.attr_util.lock_and_hide(node=self.mid_01_ctrl.ctrl, translate=False, rotate=False, visibility=False)
             self.curve_ctrls.append(self.mid_01_ctrl.top)
 
-            self.mid_02_ctrl = rCtrl.Control(parent=self.mid_01_ctrl.ctrl, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_02', axis='y', group_type='main', rig_type='primary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 10)
+            self.mid_02_ctrl = rCtrl.Control(parent=self.mid_01_ctrl.ctrl, shape='circle', side=None, suffix='CTRL', name=self.base_name + '_mid_02', axis='y', group_type='main', rig_type='secondary', translate=pos, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale * 10)
             self.attr_util.lock_and_hide(node=self.mid_02_ctrl.ctrl, translate=False, rotate=False)
             #self.curve_ctrls.append(self.mid_02_ctrl.top)
             
@@ -110,7 +110,7 @@ class Spline:
             mc.matchTransform(self.tip_local.top, self.spline_joints[-1])
 
         if self.stretchy:
-            stretch = rAttr.Attribute(node=self.tip_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='stretch')
+            stretch = rAttr.Attribute(node=self.tip_ctrl.ctrl, type='double', value=0, min=0, max=1, keyable=True, name='stretch')
 
             self.loc_grp = mc.group(empty=True, name=self.base_name + '_driver_LOC_GRP')
             inc = 1 / (self.joint_num - 1)
