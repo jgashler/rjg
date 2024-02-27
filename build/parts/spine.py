@@ -50,12 +50,12 @@ class Spine(rModule.RigModule, rSpline.Spline):
             name_list = [self.part, str(i + 1).zfill(2), 'FK']
             ctrl_name = '_'.join(name_list)
             if i == 0:
-                shape = 'lollipop'
+                shape = 'locator_3D'
             else:
-                shape = 'lollipop'
+                shape = 'circle'
             fk_ctrl = rCtrl.Control(parent=par, shape=shape, side=self.side, suffix='CTRL',
                                      name=ctrl_name, axis='y', group_type='main', rig_type='fk', 
-                                     translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale*10)
+                                     translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale*14)
             self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False, rotate=False, visibility=False)
             par = fk_ctrl.ctrl
             self.fk_ctrl_list.append(fk_ctrl)
