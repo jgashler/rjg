@@ -25,6 +25,7 @@ def read_skin(directory, weights_file='skin_weights'):
         mc.error('Skin weights file {} does not exist.'.format(path))
 
     for cluster, cluster_dict in skin.items():
+        print("  Reading skin weights for", cluster, "...")
         inf = cluster_dict['influences'] + [cluster_dict['geometry']]
         max_inf = cluster_dict['max_influences']
 
