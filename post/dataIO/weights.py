@@ -16,8 +16,8 @@ def write_skin(directory, name='skin_weights', force=False):
     for cluster in skin:
         mc.deformerWeights(cluster + '.xml', export=True, path=directory, deformer=cluster)
 
-def read_skin(directory, weights_file='skin_weights.json'):
-    path = directory + weights_file
+def read_skin(directory, weights_file='skin_weights'):
+    path = directory + '/' + weights_file + '.json'
     if os.path.isfile(path):
         file = open(path, 'r')
         skin = json.loads(file.read())
