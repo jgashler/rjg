@@ -142,7 +142,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                                        twist_driver=lo_twist)
 
         if self.bendy:
-            if self.side == 'Rt':
+            if self.side == 'R':
                 mirror = True
             else:
                 mirror = False
