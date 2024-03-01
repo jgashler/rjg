@@ -74,6 +74,7 @@ class Attribute:
                 mc.addAttr(child_attr, edit=True, min=self.min)
             if self.hasMaxValue:
                 mc.addAttr(child_attr, edit=True, max=self.max)
+            mc.setAttr(child_attr, cb=True)
 
     def add_enum(self):
         if self.enum_list:

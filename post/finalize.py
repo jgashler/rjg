@@ -70,7 +70,8 @@ def add_color_attrs(x, y, z, utScale):
     mc.setAttr(c_shapes[2] + '.overrideColorRGB', 0, 1, 0)
     mc.setAttr(c_shapes[0] + '.overrideColorRGB', 0, 0, 1)
 
-    c_view = rAttr.Attribute(node = c_ctrl.ctrl, type='enum', value=0, enum_list=['Side', 'Set'], keyable=True, name='colorView')
+    c_view = rAttr.Attribute(node = c_ctrl.ctrl, type='enum', value=0, enum_list=['Side', 'Set'], keyable=False, name='colorView')
+    mc.setAttr(c_view.attr, cb=True)
 
     for side, ctrl_list in side_dict.items():
         # TODO: longName
@@ -87,7 +88,8 @@ def add_color_attrs(x, y, z, utScale):
             print(side, ctrl_list)
             continue
         rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name=name)
-        color = rAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0, keyable=True, min=0, max=1, name=name + 'Color', children_name='RGB')
+        color = rAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0, keyable=False, min=0, max=1, name=name + 'Color', children_name='RGB')
+        mc.setAttr(color.attr, cb=True)
         for ctrl in ctrl_list:
             cond = mc.createNode('condition', n='{}_CCOND'.format(ctrl))
             mc.connectAttr(c_view.attr, cond + '.firstTerm')
@@ -100,7 +102,8 @@ def add_color_attrs(x, y, z, utScale):
     rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name='___')
     for type, ctrl_list in type_dict.items():
         rAttr.Attribute(node=c_ctrl.ctrl, type='separator', name=type)
-        color = rAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0, keyable=True, min=0, max=1, name=type + 'Color', children_name='RGB')
+        color = rAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0, keyable=False, min=0, max=1, name=type + 'Color', children_name='RGB')
+        mc.setAttr(color.attr, cb=True)
         for ctrl in ctrl_list:
             cond = '{}_CCOND'.format(ctrl)
             mc.connectAttr(color.attr, cond + '.colorIfFalse')
@@ -141,7 +144,8 @@ def set_color_defaults(ctrl):
             mc.setAttr(color , *value)
 
 def add_display_type(node, value, name, target):
-    dt = rAttr.Attribute(node=node, type='enum', value=value, enum_list=['Normal', 'Template', 'Reference'], keyable=True, name=name)
+    dt = rAttr.Attribute(node=node, type='enum', value=value, enum_list=['Normal', 'Template', 'Reference'], keyable=False, name=name)
+    mc.setAttr(dt.attr, cb=True)
     mc.setAttr(target + '.overrideEnabled', 1)
     mc.connectAttr(dt.attr, target + '.overrideDisplayType')
 
@@ -166,9 +170,12 @@ def add_vis_ctrl(x, y, z, utScale):
     mc.setAttr(v_shapes[0] + '.overrideColorRGB', .35, 0.271, .075)
     mc.setAttr(v_shapes[1] + '.overrideColorRGB', .05, 0.05, .05)
 
-    model_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=True, name='modelVis')
-    skel_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=True, name='skelVis')
-    rig_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=0, keyable=True, name='rigVis')
+    model_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name='modelVis')
+    skel_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name='skelVis')
+    rig_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=0, keyable=False, name='rigVis')
+    mc.setAttr(model_vis.attr, cb=True)
+    mc.setAttr(skel_vis.attr, cb=True)
+    mc.setAttr(rig_vis.attr, cb=True)
     rAttr.Attribute(node=vis_ctrl.ctrl, type='separator', value=0, name='displayType')
 
     mc.connectAttr(model_vis.attr, 'MODEL.visibility')
@@ -190,7 +197,8 @@ def add_vis_ctrl(x, y, z, utScale):
             part_dict[part] = [side]
 
     for part, sides in part_dict.items():
-        p_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=True, name=part + '_Vis')
+        p_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name=part + '_Vis')
+        mc.setAttr(p_vis.attr, cb=True)
         for side in sides:
             mc.connectAttr(p_vis.attr, '{}_{}_CONTROL.visibility'.format(side, part))
         
@@ -206,7 +214,8 @@ def add_vis_ctrl(x, y, z, utScale):
             val = 0
         else:
             val = 1
-        t_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=val, keyable=True, name=type + '_Vis')
+        t_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=val, keyable=False, name=type + '_Vis')
+        mc.setAttr(t_vis.attr, cb=True)
         for ctrl in ctrl_list:
             shapes = mc.listRelatives(ctrl, shapes=True, path=True)
             for shape in shapes:
