@@ -98,7 +98,7 @@ class Foot(rModule.RigModule):
         roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='roll')
         roll_max = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=30, min=0, keyable=True, name='rollMax')
         #toe_roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='toeRoll')
-        heel_roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='heelRoll')
+        #heel_roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='heelRoll')
         bank = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='bank')
 
         roll_cnd = mc.createNode('condition', name=self.base_name + '_roll_CND')
@@ -110,6 +110,7 @@ class Foot(rModule.RigModule):
         
         roll_cnd2 = mc.createNode('condition', name=self.base_name + '_roll2_CND')
         roll_mdl2 = mc.createNode('multDoubleLinear', name=self.base_name + '_roll2_MDL')
+        ball_cnd3 = mc.createNode('condition', name=self.base_name + '_ball3_CND')
 
         mc.setAttr(ball_mdl + '.input2', -1)
         mc.setAttr(toe_mdl + '.input2', -1)
@@ -120,6 +121,7 @@ class Foot(rModule.RigModule):
 
         mc.setAttr(roll_cnd2 + '.operation', 4)
         mc.setAttr(roll_mdl2 + '.input2', -1)
+        mc.setAttr(ball_cnd3 + '.operation', 4)
 
         # roll
         mc.connectAttr(roll.attr, roll_cnd + '.firstTerm')
@@ -129,15 +131,19 @@ class Foot(rModule.RigModule):
         mc.connectAttr(roll_max.attr, roll_cnd + '.colorIfFalseR')
         mc.connectAttr(roll_max.attr, roll_pma + '.input1D[1]')
         mc.connectAttr(roll_pma + '.output1D', roll_cnd + '.colorIfFalseG')
-        mc.connectAttr(roll_cnd + '.outColorR', ball_mdl + '.input1')
         mc.connectAttr(roll_cnd + '.outColorG', toe_adl + '.input1')
-        #mc.connectAttr(toe_roll.attr, toe_adl + '.input2')
         mc.connectAttr(toe_adl + '.output', toe_mdl + '.input1')
 
         mc.connectAttr(roll.attr, roll_cnd2 + '.firstTerm')
         mc.connectAttr(roll.attr, roll_cnd2 + '.colorIfTrueR')
         mc.connectAttr(roll_cnd2 + '.outColorR', roll_mdl2 + '.input1')
         mc.connectAttr(roll_mdl2 + '.output', self.toe_ctrl.group_list[1] + '.rotateX')
+
+        mc.connectAttr(roll_cnd + '.outColorR', ball_cnd3 + '.firstTerm')
+        mc.connectAttr(roll_cnd + '.outColorR', ball_cnd3 + '.colorIfFalseR')
+        mc.connectAttr(ball_cnd3 + '.outColorR', ball_mdl + '.input1')
+        mc.connectAttr(roll_cnd2 + '.outColorG', roll_mdl2 + '.input2')
+        
 
         # bank
         mc.connectAttr(bank.attr, bank_cnd + '.firstTerm')
@@ -147,7 +153,7 @@ class Foot(rModule.RigModule):
         # drive
         mc.connectAttr(ball_mdl + '.output', self.ball_ctrl.group_list[1] + '.rotateX')
         mc.connectAttr(toe_mdl + '.output', self.toe_piv.group_list[1] + '.rotateX')
-        mc.connectAttr(heel_roll.attr, self.heel_piv.group_list[1] + '.rotateX')
+        mc.connectAttr(roll_cnd2 + '.outColorR', self.heel_piv.group_list[1] + '.rotateX')
 
         if self.side == 'L':
             mc.connectAttr(bank_cnd + '.outColorR', self.out_piv.group_list[1] + '.rotateZ')
