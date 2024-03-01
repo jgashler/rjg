@@ -97,7 +97,7 @@ class Foot(rModule.RigModule):
 
         roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='roll')
         roll_max = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=30, min=0, keyable=True, name='rollMax')
-        toe_roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='toeRoll')
+        #toe_roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='toeRoll')
         heel_roll = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='heelRoll')
         bank = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='bank')
 
@@ -131,7 +131,7 @@ class Foot(rModule.RigModule):
         mc.connectAttr(roll_pma + '.output1D', roll_cnd + '.colorIfFalseG')
         mc.connectAttr(roll_cnd + '.outColorR', ball_mdl + '.input1')
         mc.connectAttr(roll_cnd + '.outColorG', toe_adl + '.input1')
-        mc.connectAttr(toe_roll.attr, toe_adl + '.input2')
+        #mc.connectAttr(toe_roll.attr, toe_adl + '.input2')
         mc.connectAttr(toe_adl + '.output', toe_mdl + '.input1')
 
         mc.connectAttr(roll.attr, roll_cnd2 + '.firstTerm')
