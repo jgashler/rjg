@@ -45,7 +45,7 @@ class Foot(rModule.RigModule):
         self.out_piv = rCtrl.Control(parent=self.in_piv.ctrl, shape='cube', side=self.side, suffix='CTRL', name=self.base_name + '_out_piv', axis='y', group_type='main', rig_type='pivot', translate=self.out_piv, ctrl_scale=self.ctrl_scale * 0.2)
         self.ball_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.base_name + '_ball', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale * 1.45)
         self.ankle_ctrl = rCtrl.Control(parent=self.ball_ctrl.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.base_name + '_ankle', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[0], rotate=self.guide_list[0], ctrl_scale=self.ctrl_scale)
-        self.toe_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='locator_3D', side=self.side, suffix='CTRL', name=self.base_name + '_toe', axis='y', group_type='main', rig_type='secondary', translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale)
+        self.toe_ctrl = rCtrl.Control(parent=self.out_piv.ctrl, shape='circle', side=self.side, suffix='CTRL', name=self.base_name + '_toe', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[1], rotate=self.guide_list[1], ctrl_scale=self.ctrl_scale/2)
         ts_list = [self.ball_ctrl, self.toe_ctrl, self.toe_piv, self.heel_piv, self.in_piv, self.out_piv]
         for c in ts_list:
             attr_util.lock_and_hide(node=c.ctrl, rotate=False)
