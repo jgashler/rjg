@@ -31,7 +31,7 @@ class Clavicle(rModule.RigModule):
         if self.local_orient:
             rotate = self.guide_list[0]
         else:
-            rotate = (0, 0, 0)
+            rotate = (0, 0, 0) if self.side=='L' else (0, 180, 180)
 
         # create controls
         self.main_ctrl = rCtrl.Control(parent=self.control_grp, shape='cube', side=self.side, suffix='CTRL', name='clavicle', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=rotate, ctrl_scale=self.ctrl_scale)
