@@ -171,7 +171,7 @@ def add_vis_ctrl(x, y, z, utScale):
     mc.setAttr(v_shapes[1] + '.overrideColorRGB', .05, 0.05, .05)
 
     model_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name='modelVis')
-    skel_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name='skelVis')
+    skel_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=0, keyable=False, name='skelVis')
     rig_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=0, keyable=False, name='rigVis')
     mc.setAttr(model_vis.attr, cb=True)
     mc.setAttr(skel_vis.attr, cb=True)
