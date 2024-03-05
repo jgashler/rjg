@@ -118,7 +118,7 @@ class Neck(rModule.RigModule, rSpline.Spline):
             neck_chain.create_from_transforms(parent=self.skel)
 
         self.bind_joints = neck_chain.joints
-        self.tag_bind_joints(self.bind_joints[-1])
+        self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
