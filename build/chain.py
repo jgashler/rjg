@@ -372,8 +372,8 @@ class Chain:
             mc.setAttr(joint + '.translate', *pos)
 
             if par:
-                aim = mc.aimConstraint(joint, par, aim=aim_vector, upVector=up_vector, worldUpType='vector', worldUpVector=world_up_vector)
-                mc.delete(aim)
+                #aim = mc.aimConstraint(joint, par, aim=aim_vector, upVector=up_vector, worldUpType='vector', worldUpVector=world_up_vector)
+                #mc.delete(aim)
                 mc.parent(joint, par)
 
             par = joint
