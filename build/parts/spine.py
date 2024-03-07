@@ -56,6 +56,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
             fk_ctrl = rCtrl.Control(parent=par, shape=shape, side=self.side, suffix='CTRL',
                                      name=ctrl_name, axis='y', group_type='main', rig_type='fk', 
                                      translate=jnt, rotate=jnt, ctrl_scale=self.ctrl_scale*14)
+            fk_ctrl.tag_as_controller()
             self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False, rotate=False, visibility=False)
             par = fk_ctrl.ctrl
             self.fk_ctrl_list.append(fk_ctrl)
