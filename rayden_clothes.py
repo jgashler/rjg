@@ -1,6 +1,6 @@
 import maya.cmds as mc
 
-skin_src = 'Ray_UBM'
+skin_src = 'RaydenNewTopo2'
 
 skin_trg_grp = 'Ray_Extras'
 

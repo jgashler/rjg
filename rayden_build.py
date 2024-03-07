@@ -53,7 +53,7 @@ mc.delete('Ray_Guides')
 ### DEFAULT SKIN
 
 bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
-geo = mc.ls('Ray_UBM')
+geo = mc.ls('RaydenNewTopo2')
 for g in geo:
     mc.skinCluster(bind_joints, g, tsb=True, bindMethod=2)
     #mc.geomBind(bm=3, 
@@ -65,12 +65,12 @@ import rjg.post.dataIO.controls as rCtrlIO
 reload(rWeightIO)
 reload(rCtrlIO)
 
-rCtrlIO.read_ctrls("/groups/dungeons/character/Rigging/Robin/Controls", curve_file='robin_control_curves')
-#rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rayden/Controls", force=True, name='robin_control_curves')
+rCtrlIO.read_ctrls("/groups/dungeons/character/Rigging/Rayden/Controls", curve_file='rayden_control_curves')
+#rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rayden/Controls", force=True, name='rayden_control_curves')
 
 #rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rayden/Skin", force=True, name='robin_skin_weights')
 print("Reading skin weight files...")
-#rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rayden/Skin", weights_file='robin_skin_weights')
+rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rayden/Skin", weights_file='robin_skin_weights')
 import rjg.rayden_clothes as rc
 reload(rc)
 
