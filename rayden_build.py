@@ -18,7 +18,7 @@ mc.file(new=True, f=True)
 
 ### BUILD SCRIPT
 root = rBuild.build_module(module_type='root', side='M', part='root', model_path=mp, guide_path=gp)
-rFile.import_hierarchy('/groups/dungeons/character/Rigging/Rayden/ray_extras.mb', parent='MODEL')
+extras = rFile.import_hierarchy('/groups/dungeons/character/Rigging/Rayden/ray_extras.mb', parent='MODEL')
 mc.viewFit('perspShape', fitFactor=1, all=True, animate=True)
 
 hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=[pref+'Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
@@ -43,10 +43,6 @@ for fs in ['Left', 'Right']:
         finger = rBuild.build_module(module_type='meta_finger', side=fs[0], part='finger'+f, guide_list=[pref + fs + 'Hand' + f + str(num+1) for num in range(4)], ctrl_scale=2, hand=fs + 'Hand')
         fingers.append(finger)
 
-
-
-#####
-
 rFinal.final(utX=90, utY=0, DutZ=15, utScale=3)
 mc.delete('Ray_Guides')
 
@@ -55,8 +51,7 @@ mc.delete('Ray_Guides')
 bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
 geo = mc.ls('RaydenNewTopo2')
 for g in geo:
-    mc.skinCluster(bind_joints, g, tsb=True, bindMethod=2)
-    #mc.geomBind(bm=3, 
+    mc.skinCluster(bind_joints, g, tsb=True, bindMethod=0)
 
 ### SKIN/CURVE IO
 
@@ -73,6 +68,15 @@ print("Reading skin weight files...")
 rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rayden/Skin", weights_file='robin_skin_weights')
 import rjg.rayden_clothes as rc
 reload(rc)
+
+##### PROJECT FACE
+
+face = rFile.import_hierarchy('/groups/dungeons/anim/rigs/RaydenFace.mb')
+import rjg.post.faceProject as rFaceProj
+reload(rFaceProj)
+rFaceProj.project(body='RaydenNewTopo2', f_model='FaceAtOrigin', f_rig='face_M', f_skel='faceRoot_JNT')
+mc.delete(face)
+
 
 mc.select(clear=True)
 print("Rayden rig build complete.")

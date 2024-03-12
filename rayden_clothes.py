@@ -8,7 +8,6 @@ bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
 geo = mc.ls(mc.select(skin_trg_grp, hierarchy=True), selection=True)
 mc.select(skin_trg_grp, hierarchy=True)
 geo = mc.ls(selection=True, type='mesh')
-print(geo)
 
 sk_g = []
 
