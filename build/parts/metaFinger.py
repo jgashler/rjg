@@ -61,8 +61,10 @@ class MetaFinger(rModule.RigModule, rFk.Fk):
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['hand_' + self.side + '_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        driver_list = ['hand_' + self.side + '_01_switch_JNT', 'hand_' + self.side + '_01_switch_JNT']
-        #driven_list = [self.base_name + '_01_fk_CTRL_CNST_GRP']
-        driven_list = [self.base_name + '_01_fk_CTRL_CNST_GRP', self.meta_chain[0]]#, self.base_name + '_01_JNT']
-
+        driver_list = ['hand_' + self.side + '_01_switch_JNT']
+        driven_list = [self.base_name + '_01_fk_CTRL_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+
+        driver_list = ['hand_' + self.side + '_01_switch_JNT']
+        driven_list = [self.meta_chain[0]]
+        rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pocRigPlugs', children_name=driven_list)
