@@ -280,8 +280,8 @@ def assemble_rig():
                                 mc.delete(node)
                         else:
                             mc.warning(pt + ' plug type not found. Skipping...')
-        except:
-            print("exception on", part, "hide/delete")
+        except Exception as e:
+            print("exception on", part, "hide/delete:", e)
 
         try:
             plug_types = ['pacRigPlugs', 'pacPocRigPlugs', 'pocRigPlugs', 'orcRigPlugs']
@@ -311,8 +311,8 @@ def assemble_rig():
                                 mc.warning(pt + ' plug type does not exist. Skipping...')
                         else:
                             mc.warning(driver + ' driver does not exist. Skipping...')
-        except:
-            print("exception on", part, "constraints")
+        except Exception as e:
+            print("exception on", part, "constraints:", e)
 
         try:
             plug_types = ['parent', 'point', 'orient']
@@ -341,9 +341,9 @@ def assemble_rig():
                                 else:
                                     rSpace.space_switch(node=driver.top, driver=driver.ctrl, target_list=target_list[:-1], name_list=name_list, name=pt + 'Space', constraint_type=pt, value=value)
                             else:
-                                print("MISSING SOMETHING")
-        except:
-            print("exception on", part, "space")
+                                print(part, "MISSING SOMETHING")
+        except Exception as e:
+            print("exception on", part, "space:", e)
 
         try:
             if mc.objExists(part + '.transferAttributes'):
@@ -362,8 +362,7 @@ def assemble_rig():
 
                     
         except Exception as e:
-            print("  exception on", part, "transfer")
-            print(e)
+            print("  exception on", part, "transfer:", e)
 
 def spine_switch_transfer(driven):
     stretch = rAttr.Attribute(node='chest_M_01_CTRL', type='double', name='stretch', keyable=False)
