@@ -64,12 +64,15 @@ reload(rCtrlIO)
 
 #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
 #rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')
-#rWeightNgIO.write_skin('RaydenNewTopo2', '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', name='rayden_skin_weights', force=True)
+rWeightNgIO.write_skin('RaydenNewTopo2', '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', name='test_skin_weights', force=True)
+
+from ngSkinTools2 import api as ngst_api
+ngst_api.export_json('RaydenNewTopo2', file='/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/test_skin_weights.json')
 
 print("Reading skin weight files...")
 
 rCtrlIO.read_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", curve_file='rayden_control_curves')
-rWeightNgIO.read_skin('RaydenNewTopo2', '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', 'ng_test') 
+rWeightNgIO.read_skin('RaydenNewTopo2', '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', 'rayden_skin_weights') 
 #rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", weights_file='rayden_skin_weights')
 
 import rjg.rayden_clothes as rc
