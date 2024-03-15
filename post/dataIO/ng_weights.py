@@ -5,9 +5,6 @@ from ngSkinTools2 import api as ngst_api
 from ngSkinTools2.api import InfluenceMappingConfig, VertexTransferMode
 
 def write_skin(mesh, directory, name='skin_weights', force=False):
-    file_name = '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/ng_test.json'
-    ngst_api.export_json("RaydenNewTopo2", file=file_name)
-
     path = '{}/{}.json'.format(directory, name)
     if force or not os.path.isfile(path):
         ngst_api.export_json(mesh, file=path)
