@@ -59,7 +59,7 @@ class Head(rModule.RigModule):
                        'COG_M_CTRL',
                        'chest_M_01_CTRL',
                        'chest_M_02_CTRL',
-                       'neck_M_base_CTRL',
+                       'neck_02_FK_M_CTRL',
                        '6']
         name_list = ['world', 'global', 'root', 'cog', 'chest_01', 'chest_02', 'neck', 'default_value']
         point_names = ['point' + name.title() for name in name_list]

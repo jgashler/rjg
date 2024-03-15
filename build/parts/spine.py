@@ -14,7 +14,7 @@ reload(rCtrl)
 reload(rAttr)
 
 class Spine(rModule.RigModule, rSpline.Spline):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, joint_num=5, mid_ctrl=True,
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, joint_num=4, mid_ctrl=True,
                  local_ctrl=False, stretchy=True, aim_vector=(0, 1, 0), up_vector=(0, 0, 1), world_up_vector=(0, 0, 1), 
                  fk_offset=False, model_path=None, guide_path=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale,
@@ -42,14 +42,14 @@ class Spine(rModule.RigModule, rSpline.Spline):
 
         # build fk controls
         fk_chain = rChain.Chain(side=self.side, suffix='ctrl_JNT', name=self.part)
-        fk_chain.create_from_curve(joint_num=4, curve=self.curve, stretch=None)
+        fk_chain.create_from_curve(joint_num=self.joint_num, curve=self.curve, stretch=None)
 
         self.fk_ctrl_list = []
         par = None
         for i, jnt in enumerate(fk_chain.joints[:-1]):
             name_list = [self.part, str(i + 1).zfill(2), 'FK']
             ctrl_name = '_'.join(name_list)
-            if i == 0:
+            if i == 0 and self.part == 'spine':
                 shape = 'locator_3D'
             else:
                 shape = 'circle'
@@ -113,7 +113,7 @@ class Spine(rModule.RigModule, rSpline.Spline):
             mc.connectAttr(blend.attr, pac + '.' + wal[1])
 
             mc.parent(mid_loc, self.loc_grp)
-            mc.parent(self.loc_grp, self.module_grp)
+        mc.parent(self.loc_grp, self.module_grp)
 
         # bind curve to control joint
         bind_list = mc.listRelatives(c_jnt_grp) + [self.curve]
@@ -136,13 +136,14 @@ class Spine(rModule.RigModule, rSpline.Spline):
         mc.connectAttr(base_jnt + '.worldMatrix[0]', self.spline_ikh + '.dWorldUpMatrix')
         mc.connectAttr(tip_jnt + '.worldMatrix[0]', self.spline_ikh + '.dWorldUpMatrixEnd')
 
-        self.switch = rAttr.Attribute(node=self.part_grp, type='double', min=0, max=1, keyable=True, name='switch')
-        sw_rev = mc.createNode('reverse', name=self.base_name + '_SW_REV')
-        mc.connectAttr(self.switch.attr, sw_rev + '.inputX')
-        mc.connectAttr(sw_rev + '.outputX', self.tip_ctrl.ctrl + '.stretch')
-        mc.connectAttr(sw_rev + '.outputX', self.mid_01_ctrl.ctrl + '.v')
-        mc.connectAttr(sw_rev + '.outputX', self.mid_01_ctrl.ctrl + '.blendBetween')
-        mc.connectAttr(self.switch.attr, self.fk_ctrl_list[0].ctrl + '.v')
+        if self.mid_ctrl:
+            self.switch = rAttr.Attribute(node=self.part_grp, type='double', min=0, max=1, keyable=True, name='switch')
+            sw_rev = mc.createNode('reverse', name=self.base_name + '_SW_REV')
+            mc.connectAttr(self.switch.attr, sw_rev + '.inputX')
+            mc.connectAttr(sw_rev + '.outputX', self.tip_ctrl.ctrl + '.stretch')
+            mc.connectAttr(sw_rev + '.outputX', self.mid_01_ctrl.ctrl + '.v')
+            mc.connectAttr(sw_rev + '.outputX', self.mid_01_ctrl.ctrl + '.blendBetween')
+            mc.connectAttr(self.switch.attr, self.fk_ctrl_list[0].ctrl + '.v')
 
     def skeleton(self):
         spine_chain = rChain.Chain(transform_list=self.spline_joints, side=self.side, suffix='JNT', name=self.part)
@@ -152,28 +153,49 @@ class Spine(rModule.RigModule, rSpline.Spline):
         self.tag_bind_joints(self.bind_joints[:-1])
 
     def add_plugs(self):
-        # add skeleton plugs
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=['COG_M_JNT'], name='skeletonPlugs',
-                         children_name=[self.bind_joints[0]])
+        if self.part == 'spine':
+            # add skeleton plugs
+            rAttr.Attribute(node=self.part_grp, type='plug',
+                            value=['COG_M_JNT'], name='skeletonPlugs',
+                            children_name=[self.bind_joints[0]])
 
-        # add parentConstraint rig plugs
-        driver_list = ['waist_M_CTRL',
-                       'COG_M_CTRL',
-                       'chest_M_02_CTRL']
-        driven_list = [self.base_name + '_base_CTRL_CNST_GRP',
-                       self.base_name[:-2] + '_01_FK_M_CTRL_CNST_GRP',
-                       self.base_name + '_tip_CTRL_CNST_GRP']
-        rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=driver_list, name='pacRigPlugs',
-                         children_name=driven_list)
+            # add parentConstraint rig plugs
+            driver_list = ['waist_M_CTRL',
+                        'COG_M_CTRL',
+                        'chest_M_02_CTRL']
+            driven_list = [self.base_name + '_base_CTRL_CNST_GRP',
+                        self.base_name[:-2] + '_01_FK_M_CTRL_CNST_GRP',
+                        self.base_name + '_tip_CTRL_CNST_GRP']
+            rAttr.Attribute(node=self.part_grp, type='plug',
+                            value=driver_list, name='pacRigPlugs',
+                            children_name=driven_list)
+
+
+        elif self.part == 'neck':
+            rAttr.Attribute(node=self.part_grp, type='plug',
+                            value=['chest_M_JNT'], name='skeletonPlugs',
+                            children_name=[self.bind_joints[0]])
+
+            driver_list = ['chest_M_02_CTRL',
+                        'chest_M_02_CTRL',
+                        'head_M_01_CTRL']
+            driven_list = [self.base_name + '_base_CTRL_CNST_GRP',
+                        self.base_name[:-2] + '_01_FK_M_CTRL_CNST_GRP',
+                        self.base_name + '_tip_CTRL_CNST_GRP']
+            rAttr.Attribute(node=self.part_grp, type='plug',
+                            value=driver_list, name='pacRigPlugs',
+                            children_name=driven_list)
+
 
         # add hide rig plugs
         hide_list = [self.base_name + '_base_CTRL_CNST_GRP',
-                     self.base_name + '_tip_CTRL_CNST_GRP']
+                    self.base_name + '_tip_CTRL_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[' '.join(hide_list)], name='hideRigPlugs',
-                         children_name=['hideNodes'])
-        
-        switch_attr = self.part.lower() + self.side.capitalize() + '_IKFK'
-        rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])
+                        value=[' '.join(hide_list)], name='hideRigPlugs',
+                        children_name=['hideNodes'])
+            
+
+
+        if self.mid_ctrl:
+            switch_attr = self.part.lower() + self.side.capitalize() + '_IKFK'
+            rAttr.Attribute(node=self.part_grp, type='plug', value=[switch_attr], name='switchRigPlugs', children_name=['ikFkSwitch'])
