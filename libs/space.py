@@ -37,6 +37,11 @@ def space_switch(node, driver, target_list=[], name_list=[], name='space', const
     else:
         mc.error("constraint_type only supports ['parent', 'point', 'orient']")
 
+    # for some reason, PV wal gets scrambled, so this unscrambles...
+    if 'PV' in node:
+        temp = [wal[1], wal[2], wal[0], wal[3], wal[4]]
+        wal = temp
+
     space = rAttr.Attribute(node=driver, type='enum', value=value, enum_list=name_list, keyable=True, name=name)
 
     for i in range(len(targets)):

@@ -224,7 +224,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                           'chest_M_01_CTRL',
                           'hand_' + self.side + '_local_CTRL',
                           '2']
-            pv_names = ['world', 'global', 'root', 'hip', 'hand', 'default_value']
+            pv_names = ['world', 'global', 'root', 'chest', 'hand', 'default_value']
             ik_ctrl = ['hand_' + self.side + '_01_CTRL']
 
             rAttr.Attribute(node=self.part_grp, type='plug', value=['clavicle_' + self.side + '_02_driver_JNT'], name='pocRigPlugs', children_name=['arm_' + self.side + '_01_fk_CTRL_CNST_GRP'])
