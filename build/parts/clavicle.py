@@ -64,8 +64,7 @@ class Clavicle(rModule.RigModule):
         # position aim locators
         mc.matchTransform(target_loc, self.clav_chain.joints[-1])
         mc.matchTransform(up_loc_grp, self.clav_chain.joints[0])
-        mc.xform(up_loc, objectSpace=True,
-                   translation=(0, 0, self.clav_chain.bone_lengths[0] * -1.1))
+        mc.xform(up_loc, relative=True, translation=(20 * (1 if 'R' in self.side else -1), 0, 0))
         
 
         mc.parentConstraint(self.main_ctrl.ctrl, target_loc,
