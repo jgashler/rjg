@@ -13,7 +13,10 @@ def project(body=None, f_model=None, f_rig=None, f_skel=None, rig_par='head_M_02
     mc.blendShape(f_model, body, name='FaceProjection', w=[(0, 1.0)], foc=True)
 
     # duplcicate the face rig controls and constrain their root to rig_par
+    f_rig_name = f_rig
+    f_rig = mc.rename(f_rig, f_rig + '_clone')
     f_rig_clone = mc.duplicate(f_rig, renameChildren=True)
+    f_rig_clone = mc.rename(f_rig_clone[0], f_rig_name)
     mc.select(f_rig, hierarchy=True)
     f_rig_sel = mc.ls(selection=True, type='transform')
     mc.select(f_rig_clone, hierarchy=True)
