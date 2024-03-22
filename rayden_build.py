@@ -10,16 +10,16 @@ reload(rBuild)
 reload(rFinal)
 reload(rFile)
 
-mp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_model.mb'
-gp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_guides.mb'
+mp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_model.mb'
+gp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_guides.mb'
 pref = ''
-body_mesh = 'RaydenNewTopo2'
+body_mesh = 'Rayden_UBM'
 
 mc.file(new=True, f=True)
 
 ### BUILD SCRIPT
 root = rBuild.build_module(module_type='root', side='M', part='root', model_path=mp, guide_path=gp)
-extras = rFile.import_hierarchy('/groups/dungeons/character/Rigging/Rigs/Rayden/ray_extras.mb', parent='MODEL')[0]
+extras = rFile.import_hierarchy('/groups/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_extras.mb', parent='MODEL')[0]
 mc.viewFit('perspShape', fitFactor=1, all=True, animate=True)
 
 hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=[pref+'Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
@@ -39,7 +39,7 @@ for fs in ['Left', 'Right']:
     
     fingers = []
     for f in ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']:
-        finger = rBuild.build_module(module_type='meta_finger', side=fs[0], part='finger'+f, guide_list=[pref + fs + 'Hand' + f + str(num+1) for num in range(4)], ctrl_scale=2, hand=fs + 'Hand')
+        finger = rBuild.build_module(module_type='meta_finger', side=fs[0], part='finger'+f, guide_list=[pref + fs + 'Hand' + f + str(num+1) for num in range(4)], ctrl_scale=1, hand=fs + 'Hand', up_par='arm_{}_03_fk_CTRL'.format(fs[0]))
         fingers.append(finger)
 
 rFinal.final(utX=90, utY=0, DutZ=15, utScale=3)
@@ -61,13 +61,10 @@ reload(rWeightNgIO)
 reload(rWeightIO)
 reload(rCtrlIO)
 
-rWeightNgIO.write_skin(body_mesh, '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', name='test_skin_weights', force=True)
-
-from ngSkinTools2 import api as ngst_api
 print("Reading skin weight files...")
 
 rCtrlIO.read_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", curve_file='rayden_control_curves')
-rWeightNgIO.read_skin(body_mesh, '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', 'rayden_skin_weights') 
+rWeightNgIO.read_skin(body_mesh, '/groups/dungeons/character/Rigging/Rigs/Rayden/Skin', 'rayden_ubm_rough') 
 
 import rjg.rayden_clothes as rc
 reload(rc)
