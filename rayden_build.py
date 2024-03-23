@@ -11,7 +11,7 @@ reload(rFinal)
 reload(rFile)
 
 mp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_model.mb'
-gp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_guides.mb'
+gp = '/groups/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_guides_m.mb'
 pref = ''
 body_mesh = 'Rayden_UBM'
 
@@ -38,12 +38,19 @@ for fs in ['Left', 'Right']:
     foot = rBuild.build_module(module_type='foot', side=fs[0], part='foot', guide_list=[pref + fs + piece for piece in ['Foot', 'ToeBase', 'Toe_End']], ctrl_scale=10, toe_piv=pref + fs+'ToePiv', heel_piv=pref + fs+'HeelPiv', in_piv=pref + fs+'In', out_piv=pref + fs+'Out')
     
     fingers = []
-    for f in ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']:
-        finger = rBuild.build_module(module_type='meta_finger', side=fs[0], part='finger'+f, guide_list=[pref + fs + 'Hand' + f + str(num+1) for num in range(4)], ctrl_scale=1, hand=fs + 'Hand', up_par='arm_{}_03_fk_CTRL'.format(fs[0]))
+    #for f in ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']:
+    #    finger = rBuild.build_module(module_type='meta_finger', side=fs[0], part='finger'+f, guide_list=[pref + fs + 'Hand' + f + str(num+1) for num in range(4)], ctrl_scale=1, hand=fs + 'Hand', up_par='arm_{}_03_fk_CTRL'.format(fs[0]))
+    #    fingers.append(finger)
+        
+    for f in ['Index', 'Middle', 'Ring', 'Pinky']:
+        finger = rBuild.build_module(module_type='finger', side=fs[0], part='finger'+f, guide_list=[pref + fs + 'Hand' + f + str(num) for num in range(5)], ctrl_scale=1, fk_shape='lollipop')
         fingers.append(finger)
+    thumb = rBuild.build_module(module_type='finger', side=fs[0], part='fingerThumb', guide_list=[pref + fs + 'HandThumb' + str(num+1) for num in range(4)], ctrl_scale=1, fk_shape='lollipop')
+    fingers.append(thumb)    
+    
 
 rFinal.final(utX=90, utY=0, DutZ=15, utScale=3)
-mc.delete('Ray_Guides')
+mc.delete('Ray_Guides_Meta')
 
 ### DEFAULT SKIN
 
