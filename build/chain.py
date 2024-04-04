@@ -289,7 +289,7 @@ class Chain:
         attr_util.lock_and_hide(node=s_tan.ctrl, translate=False)
         attr_util.lock_and_hide(node=e_tan.ctrl, translate=False)
 
-        curvature = rAttr.Attribute(node=mid_ctrl.ctrl, type='double', value=1, min=0.001, max=3, keyable=True, name='curvature')
+        curvature = rAttr.Attribute(node=mid_ctrl.ctrl, type='double', value=0.001, min=0.001, max=3, keyable=True, name='curvature')
         tangent_vis = rAttr.Attribute(node=mid_ctrl.ctrl, type='bool', value=False, keyable=True, name='tangentVisibility')
         mc.connectAttr(tangent_vis.attr, s_tan.top + '.visibility')
         mc.connectAttr(tangent_vis.attr, e_tan.top + '.visibility')

@@ -200,7 +200,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                           'COG_M_CTRL',
                           #'leg_' + self.side + '_IK_BASE_CTRL',
                           'foot_' + self.side + '_02_' + self.side + '_CTRL',
-                          '2']
+                          '4']
             pv_names = ['world', 'global', 'root', 'hip', 'foot', 'default_value']
             ik_ctrl = ['foot_' + self.side + '_01_' + self.side + '_CTRL']
         elif self.part == 'arm':

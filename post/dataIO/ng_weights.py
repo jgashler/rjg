@@ -13,12 +13,8 @@ def write_skin(mesh, directory, name='skin_weights', force=False):
 
 
 def read_skin(mesh, directory, name='skin_weights'):
-    config = InfluenceMappingConfig()
-    config.use_distance_matching = True
-    config.use_name_matching = False
-
     path = '{}/{}.json'.format(directory, name)
     if os.path.isfile(path):
-        ngst_api.import_json(mesh, file=path, vertex_transfer_mode=VertexTransferMode.vertexId, influences_mapping_config=config)
+        ngst_api.import_json(mesh, file=path, vertex_transfer_mode=VertexTransferMode.vertexId)
     else:
         mc.error('Skin weights file {} does not exist.'.format(path))
