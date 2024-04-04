@@ -3,7 +3,7 @@ from importlib import reload
 import rjg.libs.file as rFile
 reload(rFile)
 
-def project(body=None, f_model=None, f_rig=None, f_skel=None, rig_par='head_M_02_CTRL_CNST_GRP'):
+def project(body=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_extras=None, rig_par='head_M_02_CTRL_CNST_GRP'):
     # reparent face sections to main rig
     mc.parent(f_model, 'MODEL')
     mc.parent(f_rig, 'RIG')
@@ -11,6 +11,15 @@ def project(body=None, f_model=None, f_rig=None, f_skel=None, rig_par='head_M_02
 
     # project the face rig as an always-on blendShape
     mc.blendShape(f_model, body, name='FaceProjection', w=[(0, 1.0)], foc=True)
+
+    mc.select(f_extras, hi=True)
+    f_ex_list = mc.ls(selection=True, type='transform')
+
+    for f in f_ex_list[:0:-1]:
+        f = mc.rename(f, f[len(f_extras):]+'_clone')
+        mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
+        mc.parent(f, extras)
+        mc.hide(f)
 
     # duplcicate the face rig controls and constrain their root to rig_par
     f_rig_name = f_rig

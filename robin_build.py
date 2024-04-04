@@ -26,8 +26,8 @@ mc.viewFit('perspShape', fitFactor=1, all=True, animate=True)
 
 hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=['Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
 chest = rBuild.build_module(module_type='chest', side='M', part='chest', guide_list=['Spine2'], ctrl_scale=70, chest_shape='circle')
-spine = rBuild.build_module(module_type='spine', side='M', part='spine', guide_list=['Hips', pref+'Spine', pref+'Spine1', pref+'Spine2'], ctrl_scale=1, mid_ctrl=True)
-neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_list=['Neck', pref+'Neck1', pref+'Head'], ctrl_scale=1, mid_ctrl=False, joint_num=3)
+spine = rBuild.build_module(module_type='spine', side='M', part='spine', guide_list=['Hips', 'Spine', 'Spine1', 'Spine2'], ctrl_scale=1, mid_ctrl=True)
+neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=1, mid_ctrl=False, joint_num=3)
 head = rBuild.build_module(module_type='head', side='M', part='head', guide_list=['Head'], ctrl_scale=50)
 
 
@@ -37,7 +37,7 @@ for fs in ['Left', 'Right']:
     hand = rBuild.build_module(module_type='hand', side=fs[0], part='hand', guide_list=[fs + 'Hand'], ctrl_scale=8)
     
     leg = rBuild.build_module(module_type='biped_limb', side=fs[0], part='leg', guide_list=[fs + piece for piece in ['UpLeg', 'Leg', 'Foot']], offset_pv=50, ctrl_scale=8)
-    foot = rBuild.build_module(module_type='foot', side=fs[0], part='foot', guide_list=[fs + piece for piece in ['Foot', 'ToeBase', 'Toe_End']], ctrl_scale=10, toe_piv=pref + fs+'ToePiv', heel_piv=pref + fs+'HeelPiv', in_piv=pref + fs+'In', out_piv=pref + fs+'Out')
+    foot = rBuild.build_module(module_type='foot', side=fs[0], part='foot', guide_list=[fs + piece for piece in ['Foot', 'ToeBase', 'Toe_End']], ctrl_scale=10, toe_piv=fs+'ToePiv', heel_piv=fs+'HeelPiv', in_piv=fs+'In', out_piv=fs+'Out')
     
     fingers = []
         
