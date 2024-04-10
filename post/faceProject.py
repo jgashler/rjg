@@ -3,9 +3,11 @@ from importlib import reload
 import rjg.libs.file as rFile
 reload(rFile)
 
-def project(body=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_extras=None, rig_par='head_M_02_CTRL_CNST_GRP'):
+def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_extras=None, rig_par='head_M_02_CTRL_CNST_GRP'):
     # reparent face sections to main rig
-    mc.parent(f_model, 'MODEL')
+    mc.group(em=True, name='HIDE_FACE')
+    mc.parent('HIDE_FACE', char)
+    mc.parent(f_model, 'HIDE_FACE')
     mc.parent(f_rig, 'RIG')
     mc.parent(f_skel, 'SKEL')
 
@@ -14,12 +16,12 @@ def project(body=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_ext
 
     mc.select(f_extras, hi=True)
     f_ex_list = mc.ls(selection=True, type='transform')
-
+    mc.group(em=True, name='HIDE_FACE_EXTRAS')
+    mc.parent('HIDE_FACE_EXTRAS', 'HIDE_FACE')
     for f in f_ex_list[:0:-1]:
         f = mc.rename(f, f[len(f_extras):]+'_clone')
         mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
-        mc.parent(f, extras)
-        mc.hide(f)
+        mc.parent(f, "HIDE_FACE_EXTRAS")
 
     # duplcicate the face rig controls and constrain their root to rig_par
     f_rig_name = f_rig
@@ -43,5 +45,5 @@ def project(body=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_ext
         mc.rename(f_rig_sel[i], f_rig_sel[i].replace(og_suff, og_suff + '_clone'))
         mc.rename(f_rig_clone_sel[i], f_rig_clone_sel[i].replace(clone_suff, clone_suff[:-1]))
 
-    mc.hide(f_model)
+    mc.hide("HIDE_FACE")
     mc.hide(f_rig)
