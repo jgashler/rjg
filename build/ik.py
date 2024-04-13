@@ -100,13 +100,16 @@ class Ik:
             if not scale_attr:
                 scale_attr = rAttr.Attribute(node=self.base_ctrl.ctrl, type='double', value=1, keyable=True, name='globalScale')
             
+            self.squash_switch = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='squash', max=1, min=0)
             self.stretch_switch = rAttr.Attribute(node=self.main_ctrl.ctrl, type='double', value=0, keyable=True, name='stretch', max=1, min=0)
 
             dist = mc.createNode('distanceBetween', name=self.base_name + "_stretch_DIST")
             mdn = mc.createNode('multiplyDivide', name=self.base_name + "_stretch_MDN")
             mdl = mc.createNode('multDoubleLinear', name=self.base_name + "_stretch_MDL")
-            cond = mc.createNode('condition', name=self.base_name + "_stretch_COND")
-            bta = mc.createNode('blendTwoAttr', name=self.base_name + "_stretch_switch_BTA")
+            stretch_cond = mc.createNode('condition', name=self.base_name + "_stretch_COND")
+            squash_cond = mc.createNode('condition', name=self.base_name + "_squash_COND")
+            stretch_bta = mc.createNode('blendTwoAttr', name=self.base_name + "_stretch_switch_BTA")
+            squash_bta = mc.createNode('blendTwoAttr', name=self.base_name + '_squash_switch_BTA')
 
             # connect ik controls to drive distance calculation
             mc.connectAttr(self.base_ctrl.ctrl + '.worldMatrix[0]', dist + '.inMatrix1')
@@ -121,20 +124,38 @@ class Ik:
             mc.connectAttr(mdl + '.output', mdn + '.input2X')
             mc.setAttr(mdn + '.operation', 2)
 
-            # condition: if (start/end len == total len) stretch
-            mc.connectAttr(dist + '.distance', cond + '.firstTerm')
-            mc.connectAttr(mdl + '.output', cond + '.secondTerm')
-            mc.connectAttr(mdn + '.outputX', cond + '.colorIfTrueR')
-            mc.setAttr(cond + '.operation', 3)
+            # condition: if (start/end len >= total len) stretch
+            mc.connectAttr(dist + '.distance', stretch_cond + '.firstTerm')
+            mc.connectAttr(mdl + '.output', stretch_cond + '.secondTerm')
+            mc.connectAttr(mdn + '.outputX', stretch_cond + '.colorIfTrueR')
+            mc.setAttr(stretch_cond + '.operation', 3) #3
 
-            # connect condition output to bta blend value
-            mc.setAttr(bta + '.input[0]', 1)
-            mc.connectAttr(cond + '.outColorR', bta + '.input[1]')
-            mc.connectAttr(self.stretch_switch.attr, bta + '.attributesBlender')
+            # condition: if (start/end len < total len) squash
+            mc.connectAttr(dist + '.distance', squash_cond + '.firstTerm')
+            mc.connectAttr(mdl + '.output', squash_cond + '.secondTerm')
+            mc.connectAttr(mdn + '.outputX', squash_cond + '.colorIfTrueR')
+            mc.setAttr(squash_cond + '.operation', 5) 
+
+            # connect stretch condition output to stretch_bta blend value
+            mc.setAttr(stretch_bta + '.input[0]', 1)
+            mc.connectAttr(stretch_cond + '.outColorR', stretch_bta + '.input[1]')
+            mc.connectAttr(self.stretch_switch.attr, stretch_bta + '.attributesBlender')
+
+            # connect squash condition output to squash_bta blend value
+            mc.setAttr(squash_bta + '.input[0]', 1)
+            mc.connectAttr(squash_cond + '.outColorR', squash_bta + '.input[1]')
+            mc.connectAttr(self.squash_switch.attr, squash_bta + '.attributesBlender')
+
+            # multiply both squash and stretch values
+            mult = mc.createNode('multiplyDivide', name=self.base_name + '_squash_stretch_MDN')
+            mc.connectAttr(stretch_bta + '.output', mult + '.input1X')
+            mc.connectAttr(squash_bta + '.output', mult + '.input2X')
 
             # scale each joint's y accordingly
+            # for joint in self.ik_joints[:-1]:
+            #     mc.connectAttr(stretch_bta + '.output', joint + '.scaleY')
             for joint in self.ik_joints[:-1]:
-                mc.connectAttr(bta + '.output', joint + '.scaleY')
+                mc.connectAttr(mult + '.outputX', joint + '.scaleY')
 
 
 

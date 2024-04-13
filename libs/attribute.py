@@ -138,7 +138,7 @@ class Attribute:
             mc.connectAttr(self.attr, old_attr)
 
     def get_attr(self):
-        if 'stretch' in self.attr:
+        if 'stretch' in self.attr or 'squash' in self.attr:
             self.min, self.max = 0, 1
         if self.min == None:
             self.hasMinValue = False
