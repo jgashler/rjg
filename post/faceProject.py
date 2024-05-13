@@ -19,12 +19,10 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     f_ex_list = mc.ls(selection=True, type='transform')
     mc.group(em=True, name='HIDE_FACE_EXTRAS')
     mc.parent('HIDE_FACE_EXTRAS', 'HIDE_FACE')
-    print(f_ex_list)
     for f in f_ex_list[:0:-1]:
         # if 'brows' in f:
         #     continue
         f = mc.rename(f, f[len(f_extras):]+'_clone')
-        print(f)
         mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
         mc.parent(f, "HIDE_FACE_EXTRAS")
 
