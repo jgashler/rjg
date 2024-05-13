@@ -9,7 +9,7 @@ def rayden_clothes(skin_src, skin_trg_grp):
     sk_g = []
 
     for g in geo:
-        sk = mc.skinCluster(bind_joints, g, tsb=True)[0]
+        sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1)[0]
         sk_g.append(sk)
         
     for g in sk_g:
