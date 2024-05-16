@@ -14,9 +14,10 @@ reload(rBuild)
 reload(rFinal)
 reload(rFile)
 
-mp = groups + '/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_model_4.mb'
-gp = groups + '/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_guides_3.mb'
-ep = groups + '/dungeons/character/Rigging/Rigs/Rayden/ray_ubm_extras_4.mb'
+mp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_model.mb'
+gp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_guides.mb'
+ep = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_extras.mb'
+
 body_mesh = 'Rayden_UBM'
 
 mc.file(new=True, f=True)
@@ -58,7 +59,7 @@ mc.delete('Hips')
 bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
 geo = mc.ls(body_mesh)
 for g in geo:
-    mc.skinCluster(bind_joints, g, tsb=True, bindMethod=0)
+    mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, bindMethod=0)
 
 ### SKIN/CURVE IO
 
@@ -72,15 +73,23 @@ reload(rCtrlIO)
 print("Reading skin weight files...")
 
 rCtrlIO.read_ctrls(groups + "/dungeons/character/Rigging/Rigs/Rayden/Controls", curve_file='rayden_control_curves')
+
 rWeightNgIO.read_skin(body_mesh, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin', 'Dungeons_UBM_V2') 
 
 mc.copySkinWeights(ss='skinCluster1', ds='skinCluster1', mm='YZ', sa='closestPoint', ia='closestJoint') # necessary??
 
-import rjg.rayden_clothes as rc
+import rjg.build_scripts.rayden_clothes as rc
 reload(rc)
 rc.rayden_clothes(body_mesh, extras)
 
-
+'''
+rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
+for s in mc.ls(type='skinCluster'):
+    try:
+        rWeightNgIO.init_skc(s)
+    except Exception as e:
+        print(e)
+'''
 
 ##### PROJECT FACE
 reload(rFile)
@@ -88,16 +97,10 @@ face = rFile.import_hierarchy(groups + '/dungeons/anim/Rigs/RaydenFace.mb')
 import rjg.post.faceProject as rFaceProj
 reload(rFaceProj)
 rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras='Rayden_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT', tY=1.103)
-mc.delete("FACE")
+mc.delete(face)
 
-mc.select('Eyebrows_clone', 'FaceAtOrigin')
+mc.select('Eyebrows_clone', 'Eyelashes_clone', 'FaceAtOrigin')
 mc.CreateWrap()
-
-##### IMPORT CROSSBOW
-# cbow = rFile.import_hierarchy(groups + '/dungeons/anim/Rigs/Crossbow.mb')
-# import pipe.m.space_switch as spsw
-# mc.select("chest_M_02_CTRL", "arm_R_03_fk_CTRL", "arm_L_03_fk_CTRL", "Crossbow_Global_CTRL")
-# spsw.createSpaceSwitch()
 
 
 mc.select(clear=True)
@@ -107,6 +110,8 @@ print("Rayden rig build complete.")
 # Don't use this. Use export skin weights from ngskintools. rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')
 
 
+# rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", name='clothing_weights', force=True)
+# rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
 
 
 
