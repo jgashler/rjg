@@ -66,6 +66,8 @@ for g in geo:
 import rjg.post.dataIO.ng_weights as rWeightNgIO
 import rjg.post.dataIO.weights as rWeightIO
 import rjg.post.dataIO.controls as rCtrlIO
+import rjg.libs.util as rUtil
+reload(rUtil)
 reload(rWeightNgIO)
 reload(rWeightIO)
 reload(rCtrlIO)
@@ -99,9 +101,7 @@ reload(rFaceProj)
 rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras='Rayden_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT', tY=1.103)
 mc.delete(face)
 
-mc.select('Eyebrows_clone', 'Eyelashes_clone', 'FaceAtOrigin')
-mc.CreateWrap()
-
+util.create_pxWrap('Eyebrows_clone', 'Eyelashes_clone', 'FaceAtOrigin')
 
 mc.select(clear=True)
 print("Rayden rig build complete.")
