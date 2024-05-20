@@ -16,7 +16,7 @@ reload(rAttr)
 class Spine(rModule.RigModule, rSpline.Spline):
     def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, joint_num=4, mid_ctrl=True,
                  local_ctrl=False, stretchy=True, aim_vector=(0, 1, 0), up_vector=(0, 0, 1), world_up_vector=(0, 0, 1), 
-                 fk_offset=False, model_path=None, guide_path=None):
+                 fk_offset=False, model_path=None, guide_path=None, ctrl_rotate=False):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale,
                                     model_path=model_path, guide_path=guide_path)
         
@@ -38,11 +38,11 @@ class Spine(rModule.RigModule, rSpline.Spline):
 
     def control_rig(self):
         # create and parent controls
-        self.build_spline_ctrls()
+        self.build_spline_ctrls(self.ctrl_rotate)
 
         # build fk controls
         fk_chain = rChain.Chain(side=self.side, suffix='ctrl_JNT', name=self.part)
-        fk_chain.create_from_curve(joint_num=self.joint_num, curve=self.curve, stretch=None)
+        fk_chain.create_from_curve(joint_num=self.joint_num, curve=self.curve, stretch=None, ctrl_rotate=self.ctrl_rotate)
 
         self.fk_ctrl_list = []
         par = None

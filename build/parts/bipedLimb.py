@@ -191,9 +191,11 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                            self.base_name + '_up_twist_LOC',
                            self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
                            self.pv_control + '_CNST_GRP']
-            hide_list = [self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
-                         self.base_name + '_IK_BASE_CTRL_CNST_GRP',
-                         self.fk_ctrls[-1].top]
+            hide_list = [
+                         self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
+                         #self.base_name + '_IK_BASE_CTRL_CNST_GRP',
+                         self.fk_ctrls[-1].top
+                        ]
             pv_targets = ['CHAR',
                           'global_M_CTRL',
                           'root_02_M_CTRL',
@@ -216,7 +218,8 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                            self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
                            self.pv_control + '_CNST_GRP']
             hide_list = [self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
-                         self.base_name + '_IK_BASE_CTRL_CNST_GRP']
+                         #self.base_name + '_IK_BASE_CTRL_CNST_GRP'
+                         ]
             #hide_list = None
             pv_targets = ['CHAR',
                           'global_M_CTRL',

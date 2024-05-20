@@ -353,7 +353,7 @@ class Chain:
 
             i += 1
 
-    def create_from_curve(self, joint_num=5, curve=None, aim_vector=(0, 1, 0), up_vector=(0, 0, 1), world_up_vector=(0, 0, 1), stretch=None):
+    def create_from_curve(self, joint_num=5, curve=None, aim_vector=(0, 1, 0), up_vector=(0, 0, 1), world_up_vector=(0, 0, 1), stretch=None, ctrl_rotate=False):
         if not curve:
             mc.error('Please provide a valid curve along which to build joints.')
 
@@ -372,8 +372,9 @@ class Chain:
             mc.setAttr(joint + '.translate', *pos)
 
             if par:
-                #aim = mc.aimConstraint(joint, par, aim=aim_vector, upVector=up_vector, worldUpType='vector', worldUpVector=world_up_vector)
-                #mc.delete(aim)
+                if ctrl_rotate:
+                    aim = mc.aimConstraint(joint, par, aim=aim_vector, upVector=up_vector, worldUpType='vector', worldUpVector=world_up_vector)
+                    mc.delete(aim)
                 mc.parent(joint, par)
 
             par = joint

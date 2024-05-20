@@ -382,7 +382,7 @@ def add_rig_sets():
 
     mc.sets('MODEL', add=cache_set)
 
-def add_switch_ctrl(x, y, z, utScale):
+def add_switch_ctrl(x, y, z, utScale, quad=False):
     attr_util = rAttr.Attribute(add=False)
 
     if mc.objExists('global_M_CTRL'):
@@ -403,6 +403,8 @@ def add_switch_ctrl(x, y, z, utScale):
                 default_val = 1
             else:
                 default_val = 0
+            if quad:
+                default_val = 0
             if mc.objExists(s_ctrl.ctrl + '.' + switch_name):
                 switch_attr = rAttr.Attribute(node=s_ctrl.ctrl, name=switch_name, add=False)
             else:
@@ -414,11 +416,11 @@ def add_switch_ctrl(x, y, z, utScale):
 
 
 
-def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1):
+def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1, quad=False):
     if color_ctrl:
         c_ctrl = add_color_attrs(x=utX+DutX, y=utY+DutY, z=utZ+DutZ, utScale=utScale)
     if switch_ctrl:
-        s_ctrl = add_switch_ctrl(x=utX, y=utY, z=utZ, utScale=utScale)
+        s_ctrl = add_switch_ctrl(x=utX, y=utY, z=utZ, utScale=utScale, quad=quad)
     if vis_ctrl:
         v_ctrl = add_vis_ctrl(x=utX-DutX, y=utY-DutY, z=utZ-DutZ, utScale=utScale)
     assemble_skeleton()

@@ -11,10 +11,13 @@ reload(rCtrl)
 reload(rAttr)
 
 class Chest(rModule.RigModule):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, chest_shape='chest', model_path=None, guide_path=None):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=None, chest_shape='circle', chest_2_shape='circle', model_path=None, guide_path=None, rotate_ctrl=False):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
+        self.rotate_ctrl = rotate_ctrl
+
         self.chest_shape = chest_shape
+        self.chest_2_shape = chest_2_shape
         self.base_name = self.part + '_' + self.side
 
         self.create_module()
@@ -29,8 +32,8 @@ class Chest(rModule.RigModule):
 
 
     def control_rig(self):
-        self.chest_01 = rCtrl.Control(parent=self.control_grp, shape=self.chest_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
-        self.chest_02 = rCtrl.Control(parent=self.chest_01.ctrl, shape=self.chest_shape, side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale*0.35)
+        self.chest_01 = rCtrl.Control(parent=self.control_grp, shape=self.chest_shape, side=None, suffix='CTRL', name=self.base_name + '_01', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=self.guide_list[0] if self.rotate_ctrl else (0, 0, 0), ctrl_scale=self.ctrl_scale*0.4)
+        self.chest_02 = rCtrl.Control(parent=self.chest_01.ctrl, shape=self.chest_2_shape, side=None, suffix='CTRL', name=self.base_name + '_02', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=self.guide_list[0] if self.rotate_ctrl else (0, 0, 0), ctrl_scale=self.ctrl_scale*0.35)
         self.chest_01.tag_as_controller()
         self.chest_02.tag_as_controller()
 

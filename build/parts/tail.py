@@ -29,7 +29,7 @@ class Tail(rModule.RigModule, rFk.Fk):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        #self.add_plugs()
+        self.add_plugs()
 
     def control_rig(self):
         self.build_fk_controls()
@@ -52,9 +52,9 @@ class Tail(rModule.RigModule, rFk.Fk):
         self.tag_bind_joints(self.bind_joints)
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['hand_' + self.side + '_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=['COG_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        driver_list = ['hand_' + self.side + '_01_switch_JNT']
-        driven_list = [self.base_name + '_01_fk_CTRL_CNST_GRP']
+        driver_list = ['COG_M_CTRL']
+        driven_list = [self.base_name + '_01_fk_CTRL']
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
