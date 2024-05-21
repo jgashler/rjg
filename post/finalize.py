@@ -203,8 +203,10 @@ def add_vis_ctrl(x, y, z, utScale):
         mc.setAttr(p_vis.attr, cb=True)
         for side in sides:
             mc.connectAttr(p_vis.attr, '{}_{}_CONTROL.visibility'.format(side, part))
-    mc.setAttr(vis_ctrl.ctrl + '.F_Vis', 0)
-        
+    try:
+        mc.setAttr(vis_ctrl.ctrl + '.F_Vis', 0)
+    except:
+        pass    
         
     rAttr.Attribute(node=vis_ctrl.ctrl, type='separator', value=0, name='controlType')
     

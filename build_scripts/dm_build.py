@@ -31,6 +31,7 @@ neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_lis
 head = rBuild.build_module(module_type='head', side='M', part='head', guide_list=['Head'], ctrl_scale=5)
 
 tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail_' + str(t) for t in range(1, 15)], ctrl_scale=25, pad=2)
+jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
 
 for fs in ['Left', 'Right']:    
     arm = rBuild.build_module(module_type='biped_limb', side=fs[0], part='arm', guide_list=[fs + piece for piece in ['Arm', 'ForeArm', 'Hand']], offset_pv=50, ctrl_scale=35)
@@ -50,19 +51,19 @@ for fs in ['Left', 'Right']:
     
 ### BONE CONTROLS    
     
-bone_locs = rFile.import_hierarchy(bp)   
-bone_locs = mc.listRelatives('bone_locs', children=True)
+# bone_locs = rFile.import_hierarchy(bp)   
+# bone_locs = mc.listRelatives('bone_locs', children=True)
 
-bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
-for j in bind_joints:
-    mc.deleteAttr(j + '.bindJoint')
+# bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
+# for j in bind_joints:
+#     mc.deleteAttr(j + '.bindJoint')
 
-float_bone_grp = mc.group(empty=True, name='floatBones_F')
-mc.parent(float_bone_grp, 'RIG')
-for b in bone_locs:
-    floatBone = rBuild.build_module(module_type='float_bone', side='F', part=b[:-4], guide_list=[b], ctrl_scale=2, par_jnt='root_M_JNT', par_ctrl='root_02_M_CTRL')
-    mc.parent(floatBone.part_grp, float_bone_grp)
-mc.delete('bone_locs')
+# float_bone_grp = mc.group(empty=True, name='floatBones_F')
+# mc.parent(float_bone_grp, 'RIG')
+# for b in bone_locs:
+#     floatBone = rBuild.build_module(module_type='float_bone', side='F', part=b[:-4], guide_list=[b], ctrl_scale=2, par_jnt='root_M_JNT', par_ctrl='root_02_M_CTRL')
+#     mc.parent(floatBone.part_grp, float_bone_grp)
+# mc.delete('bone_locs')
 
 ### FINALIZE
     
