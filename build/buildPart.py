@@ -16,6 +16,7 @@ import rjg.build.parts.head as rHead
 import rjg.build.parts.metaFinger as rMetaFinger
 import rjg.build.parts.fingerAttr as rFingerAttr
 import rjg.build.parts.tail as rTail
+import rjg.build.parts.floatBone as rFloatBone
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -31,6 +32,7 @@ reload(rHead)
 reload(rMetaFinger)
 reload(rFingerAttr)
 reload(rTail)
+reload(rFloatBone)
 
 '''
 Wrapper for all part modules
@@ -51,6 +53,7 @@ MODULE_DICT = {
                'meta_finger': rMetaFinger.MetaFinger,
                'finger_attr': rFingerAttr.FingerAttr,
                'tail': rTail.Tail,
+               'float_bone' : rFloatBone.FloatBone,
                }
 
 

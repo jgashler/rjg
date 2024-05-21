@@ -18,7 +18,8 @@ class Control(rDraw.Draw, rGroup.Group):
                  group_type='main', rig_type='primary', ctrl_scale=1, translate=(0, 0, 0), rotate=(0, 0, 0), scale=(1, 1, 1)):
         self.group_dict = {
                            "main": ["CNST", "SDK", "OFF"],
-                           "offset": ["CNST", "OFF"]
+                           "offset": ["CNST", "OFF"],
+                           "float": ['CNST', 'OFF']
                           }
         self.parent = parent
         self.translate = translate

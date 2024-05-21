@@ -14,6 +14,7 @@ reload(rFile)
 
 mp = groups + '/dungeons/character/Rigging/Rigs/DungeonMonster/dm_model_combine.mb'
 gp = groups + '/dungeons/character/Rigging/Rigs/DungeonMonster/dm_guides.mb'
+bp = groups + '/dungeons/character/Rigging/Rigs/DungeonMonster/dm_bone_locs.mb'
 
 body_mesh = 'DM_combine'
 
@@ -47,6 +48,23 @@ for fs in ['Left', 'Right']:
     thumb = rBuild.build_module(module_type='finger', side=fs[0], part='fingerThumb', guide_list=[fs + 'HandThumb' + str(num+1) for num in range(4)], ctrl_scale=10, fk_shape='lollipop')
     fingers.append(thumb)    
     
+### BONE CONTROLS    
+    
+bone_locs = rFile.import_hierarchy(bp)   
+bone_locs = mc.listRelatives('bone_locs', children=True)
+
+bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
+for j in bind_joints:
+    mc.deleteAttr(j + '.bindJoint')
+
+float_bone_grp = mc.group(empty=True, name='floatBones_F')
+mc.parent(float_bone_grp, 'RIG')
+for b in bone_locs:
+    floatBone = rBuild.build_module(module_type='float_bone', side='F', part=b[:-4], guide_list=[b], ctrl_scale=2, par_jnt='root_M_JNT', par_ctrl='root_02_M_CTRL')
+    mc.parent(floatBone.part_grp, float_bone_grp)
+mc.delete('bone_locs')
+
+### FINALIZE
     
 rFinal.final(utX=150, utY=0, DutZ=20, utScale=50, quad=True)
 mc.delete('Hips')
@@ -56,7 +74,7 @@ mc.delete('Hips')
 bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
 geo = mc.ls(body_mesh)
 for g in geo:
-    mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, bindMethod=0)
+   mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, bindMethod=0)
     
 import rjg.post.dataIO.ng_weights as rWeightNgIO
 import rjg.post.dataIO.weights as rWeightIO
