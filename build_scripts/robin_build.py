@@ -51,7 +51,7 @@ for fs in ['Left', 'Right']:
     fingers.append(thumb)    
     
 
-rFinal.final(utX=90, utY=0, DutZ=15, utScale=3)
+rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
 mc.delete('Hips')
 
 ### DEFAULT SKIN
@@ -73,7 +73,7 @@ reload(rCtrlIO)
 print("Reading skin weight files...")
 
 rCtrlIO.read_ctrls(groups + "/dungeons/character/Rigging/Rigs/Robin/Controls", curve_file='robin_control_curves')
-rWeightNgIO.read_skin(body_mesh, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin', 'Dungeons_UBM_V2') 
+rWeightNgIO.read_skin(body_mesh, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin', 'rayden_skinning_file') 
 
 mc.copySkinWeights(ss='skinCluster1', ds='skinCluster1', mm='YZ', sa='closestPoint', ia='closestJoint') # necessary??
 

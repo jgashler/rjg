@@ -1,9 +1,13 @@
 import maya.cmds as mc
 import json, os
 
-def write_skin(directory, name='skin_weights', force=False):
+def write_skin(directory, name='skin_weights', force=False, full=False, version=False):
     skin = build_skin_dict()
-    path = '{}/{}.json'.format(directory, name)
+    if not full:
+        path = '{}/{}.json'.format(directory, name)
+    else:
+        path = directory
+    
     dump = json.dumps(skin, indent=4)
 
     if force or os.path.isfile(path) == False:

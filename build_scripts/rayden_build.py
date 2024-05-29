@@ -14,9 +14,9 @@ reload(rBuild)
 reload(rFinal)
 reload(rFile)
 
-mp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_model.mb'
+mp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_model_center.mb'
 gp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_guides.mb'
-ep = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_extras.mb'
+ep = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_extras_center.mb'
 
 body_mesh = 'Rayden_UBM'
 
@@ -51,7 +51,7 @@ for fs in ['Left', 'Right']:
     fingers.append(thumb)    
     
 
-rFinal.final(utX=90, utY=0, DutZ=15, utScale=3)
+rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
 mc.delete('Hips')
 
 ### DEFAULT SKIN
@@ -76,7 +76,7 @@ print("Reading skin weight files...")
 
 rCtrlIO.read_ctrls(groups + "/dungeons/character/Rigging/Rigs/Rayden/Controls", curve_file='rayden_control_curves')
 
-rWeightNgIO.read_skin(body_mesh, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin', 'Dungeons_UBM_V2') 
+rWeightNgIO.read_skin(body_mesh, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin', 'rayden_skinning_file') 
 
 mc.copySkinWeights(ss='skinCluster1', ds='skinCluster1', mm='YZ', sa='closestPoint', ia='closestJoint') # necessary??
 
@@ -84,14 +84,14 @@ import rjg.build_scripts.rayden_clothes as rc
 reload(rc)
 rc.rayden_clothes(body_mesh, extras)
 
-'''
-rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
+
+#rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
 for s in mc.ls(type='skinCluster'):
     try:
         rWeightNgIO.init_skc(s)
     except Exception as e:
         print(e)
-'''
+
 
 ##### PROJECT FACE
 reload(rFile)
@@ -101,7 +101,13 @@ reload(rFaceProj)
 rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras='Rayden_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT', tY=1.103)
 mc.delete(face)
 
-util.create_pxWrap('Eyebrows_clone', 'Eyelashes_clone', 'FaceAtOrigin')
+rUtil.create_pxWrap('Eyebrows_clone', 'Eyelashes_clone', 'FaceAtOrigin')
+
+#### CORRECTIVE BLENDSHAPES
+import rjg.build_scripts.corrective_info as rCorr
+reload(rCorr)
+rayden_corr = rCorr.CorrectiveInfo().rayden_correctives
+rUtil.corrective_setup('Rayden_UBM', input=rayden_corr)
 
 mc.select(clear=True)
 print("Rayden rig build complete.")
@@ -109,7 +115,7 @@ print("Rayden rig build complete.")
 #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
 # Don't use this. Use export skin weights from ngskintools. rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')
 
-
+# rc.write_clothes()
 # rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", name='clothing_weights', force=True)
 # rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
 

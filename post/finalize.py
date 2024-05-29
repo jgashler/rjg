@@ -245,7 +245,7 @@ def assemble_skeleton():
                 if mc.objExists(par):
                     mc.parent(child, par)
                 else:
-                    mc.warning(par + ' does not exist. Skipping...')
+                   mc.warning(par + ' does not exist. Skipping...')
 
 def add_global_scale(global_ctrl='global_M_CTRL'):
     gs_list = mc.ls('*.globalScale')
@@ -420,8 +420,27 @@ def add_switch_ctrl(x, y, z, utScale, quad=False):
     return s_ctrl.ctrl
 
 
+def polish_rig():
 
-def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1, quad=False):
+    # auto clav
+    for s in ['L', 'R']:
+        cond = mc.createNode('condition')
+        mc.setAttr(cond + ".operation", 3)
+
+        defaultZ = -15.0
+        restZ = rAttr.Attribute(node=f'clavicle_{s}_CTRL', type='double', value=defaultZ, name='restRotateZ', keyable=True)
+
+        mc.connectAttr(f"arm_{s}_01_fk_CTRL.rotateZ", cond + ".colorIfTrueB")
+        mc.connectAttr(f"arm_{s}_01_fk_CTRL.rotateZ", cond + ".firstTerm")
+        mc.connectAttr(cond + ".outColorB", f"clavicle_{s}_CTRL_OFF_GRP.rotateZ")
+        mc.connectAttr(restZ.attr, cond + '.secondTerm')
+        mc.connectAttr(restZ.attr, cond + '.colorIfFalseB')
+
+        
+
+
+
+def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1, quad=False, polish=False):
     if color_ctrl:
         c_ctrl = add_color_attrs(x=utX+DutX, y=utY+DutY, z=utZ+DutZ, utScale=utScale)
     if switch_ctrl:
@@ -432,6 +451,8 @@ def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=Fals
     assemble_rig()
     add_global_scale()
     add_rig_sets()
+    if polish:
+        polish_rig()
 
 
     if constrain_model:

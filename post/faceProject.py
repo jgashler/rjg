@@ -13,7 +13,7 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
 
     # project the face rig as an always-on blendShape
     #mc.xform(f_skel, t=[0, tY, 0])
-    mc.blendShape(f_model, body, name='FaceProjection', w=[(0, 1.0)], foc=True)
+    mc.blendShape(f_model, body, name='main_blendshapes', w=[(0, 1.0)], foc=True)
 
     mc.select(f_extras, hi=True)
     f_ex_list = mc.ls(selection=True, type='transform')

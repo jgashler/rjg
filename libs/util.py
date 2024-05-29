@@ -11,3 +11,45 @@ def create_pxWrap(*argv):
     pxWrap = mc.proximityWrap()
     mc.proximityWrap(pxWrap, e=True, addDrivers=driver)
     mc.setAttr(pxWrap[0] + '.falloffScale', 15.0)
+
+'''
+main_mesh: (str) name of mesh with the blendshape deformer
+blandshape: name of the blendshape
+driver: control attribute to drive shape
+driven: corrective blend shape
+driver_range: attribute values for key driver
+driven_range: blend shape envelope values for key driven 
+index: index to insert
+'''
+def connect_corrective(main_mesh, blendshape, driver, driven, driver_range, driven_range, curve='linear', index=0):
+    mc.select(driven)
+    mc.blendShape(blendshape, e=True, target=[main_mesh, index, driven, 1], w=[index, 0])
+
+    org = mc.getAttr(driver)
+
+    bst = blendshape + '.' + driven
+
+    for a, b in zip(driver_range, driven_range):
+        mc.setAttr(driver, a)
+        mc.setAttr(bst, b)
+        mc.select(blendshape)
+        mc.setDrivenKeyframe(at=driven, cd=driver, itt=curve, ott=curve)
+
+    mc.setAttr(driver, org)
+    mc.select(clear=True)
+
+    mc.delete(driven)
+
+
+def corrective_setup(mesh, input=None):
+    if not mc.objExists('main_blendshapes'):
+        mc.select(mesh)
+        bs = mc.blendShape(n='main_blendshapes', automatic=True)
+        mc.select(clear=True)
+    
+    imp = mc.file(input[0], i=True)
+
+    for id, s in enumerate(input[1:]):
+       connect_corrective(s[0], 'main_blendshapes', s[1], s[2], s[3], s[4], s[5], id+49)
+
+    mc.delete("*_DEFAULT")
