@@ -43,6 +43,9 @@ class FloatBone(rModule.RigModule):
         self.floatBone_jnt = mc.joint(float_jnt_grp, name=self.floatBone_ctrl.ctrl.replace('CTRL', 'JNT'))
         mc.parentConstraint(self.floatBone_ctrl.ctrl, self.floatBone_jnt, mo=True)
 
+        # self.floatBone_jnt = mc.joint(name=self.floatBone_ctrl.ctrl.replace('CTRL', 'JNT'))
+        # mc.parentConstraint(self.floatBone_ctrl.ctrl, self.floatBone_jnt, mo=False)
+
     def skeleton(self):
         floatBone_chain = rChain.Chain(transform_list=[self.floatBone_jnt], side=self.side, suffix='JNT', name=self.part)
         floatBone_chain.create_from_transforms(parent=self.skel, pad=False)
@@ -52,5 +55,4 @@ class FloatBone(rModule.RigModule):
 
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_jnt], name='skeletonPlugs', children_name=[self.bind_joints[0]])
-
-        rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_ctrl], name='pacRigPlugs', children_name=[self.base_name + '_F_CTRL_CNST_GRP'])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_jnt], name='pacRigPlugs', children_name=[self.base_name + '_CTRL_CNST_GRP'])

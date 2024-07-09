@@ -56,6 +56,9 @@ class Root(rModule.RigModule):
         mc.matchTransform(root_jnt_grp, self.root_02.ctrl)
         self.root_joint = mc.joint(root_jnt_grp, name=self.root_02.ctrl.replace('CTRL', 'JNT'))
 
+        self.world_joint = mc.joint(root_jnt_grp, name='world_M_JNT')
+        mc.parent(self.root_joint, self.world_joint)
+
         mc.parentConstraint(self.root_02.ctrl, self.root_joint, mo=True)
         mc.scaleConstraint(self.root_02.ctrl, self.root_joint, mo=True)
 

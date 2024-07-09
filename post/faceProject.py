@@ -22,9 +22,12 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     for f in f_ex_list[:0:-1]:
         # if 'brows' in f:
         #     continue
-        f = mc.rename(f, f[len(f_extras):]+'_clone')
-        mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
-        mc.parent(f, "HIDE_FACE_EXTRAS")
+        try:
+            f = mc.rename(f, f[len(f_extras):]+'_clone')
+            mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
+            mc.parent(f, "HIDE_FACE_EXTRAS")
+        except Exception as e:
+            print(f, ':', e)
 
     
     # duplcicate the face rig controls and constrain their root to rig_par
@@ -33,9 +36,9 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     f_rig_clone = mc.duplicate(f_rig, renameChildren=True)
     f_rig_clone = mc.rename(f_rig_clone[0], f_rig_name)
     mc.select(f_rig, hierarchy=True)
-    f_rig_sel = mc.ls(selection=True, type='transform')
+    f_rig_sel = mc.ls(selection=True, type='transform') #+ mc.ls(selection=True, type='joint') + mc.ls(selection=True, type='follicle')
     mc.select(f_rig_clone, hierarchy=True)
-    f_rig_clone_sel = mc.ls(selection=True, type='transform')
+    f_rig_clone_sel = mc.ls(selection=True, type='transform') #+ mc.ls(selection=True, type='joint') + mc.ls(selection=True, type='follicle')
     mc.parentConstraint(rig_par, f_rig_clone_sel[0], mo=True)
 
     # setup direct connections between the new and original rig and rename 
@@ -53,5 +56,43 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
             print(e)
             continue
 
+    try:
+        mc.select('*_driver')
+        drivers = mc.ls(selection=True)
+
+        for d in drivers:
+            try:
+                mc.connectAttr(d + '.rotate', d + '1.rotate')
+            except Exception as e:
+                print(e)
+                continue
+    except Exception as e:
+        print(e)
+        
+    try:
+        mc.select('*Mouth_offset_clone')
+        drivers = mc.ls(selection=True)
+
+        for d in drivers:
+            try:
+                mc.disconnectAttr(d[:-6] + '.translate', d + '.translate')
+                mc.disconnectAttr(d[:-6] + '.rotate', d + '.rotate')
+                mc.disconnectAttr(d[:-6] + '.scale', d + '.scale') 
+                mc.connectAttr(d + '.translateX', d[:-6] + '.translateX')
+            except Exception as e:
+                print(e)
+                continue
+    except Exception as e:
+        print(e)
+
+    try:
+        for s in ['R', 'L']:
+            for attr in ['Blink', 'Blink_Height', 'Blink_Influence', 'Eyelid_Follow']:
+                mc.connectAttr(f'{s}_eyeCTRL.{attr}', f'{s}_eyeCTRL_clone.{attr}')
+    except:
+        pass
+
+
+            
     mc.hide("HIDE_FACE")
     mc.hide(f_rig)

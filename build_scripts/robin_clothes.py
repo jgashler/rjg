@@ -1,5 +1,6 @@
 import maya.cmds as mc
 import rjg.post.dataIO.ng_weights as rWeightNgIO
+import rjg.libs.util as rUtil
 
 
 def robin_clothes(skin_src, skin_trg_grp):
@@ -10,7 +11,11 @@ def robin_clothes(skin_src, skin_trg_grp):
     
     sk_g = []
 
+    rUtil.create_pxWrap('Clothes', 'GroomBust', 'Robin')
+
     for g in geo:
+        if g == 'ClothesShape' or g == 'GroomBustShape':
+            continue
         sk = mc.skinCluster(bind_joints, g, tsb=True)[0]
         sk_g.append(sk)
         

@@ -58,9 +58,6 @@ class Spline:
 
         self.curve_ctrls = []
 
-        print(ctrl_rotate)
-        print(self.guide_list[0])
-
         self.base_ctrl = rCtrl.Control(parent=None, shape='cube', side=None, suffix='CTRL', name=self.base_name + '_base', axis='y', group_type='main', rig_type='primary', translate=self.guide_list[0], rotate=self.guide_list[0] if ctrl_rotate else (0, 0, 0), ctrl_scale=self.ctrl_scale)
         self.attr_util.lock_and_hide(node=self.base_ctrl.ctrl, translate=False, rotate=False)
         self.curve_ctrls.append(self.base_ctrl.top)
