@@ -53,3 +53,14 @@ def corrective_setup(mesh, input=None):
        connect_corrective(s[0], 'main_blendshapes', s[1], s[2], s[3], s[4], s[5], id+49)
 
     mc.delete("*_DEFAULT")
+
+
+def import_poseInterpolator(path):
+    try:
+        from maya import mel
+        mel.eval(f'poseInterpolatorImportPoses "{path}" 1;')
+        mc.select('*_poseInterpolator')
+        pi = mc.ls(selection=True)
+        mc.parent(pi, 'RIG')
+    except Exception as e:
+        mc.warning(e)

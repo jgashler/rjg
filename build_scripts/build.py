@@ -17,14 +17,11 @@ reload(rFile)
 #run(previs=True)
 
 
-def run(previs=False):
+def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=False):
     import rjg.build_scripts
     reload(rjg.build_scripts)
-    mp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_model_center.mb'
-    gp = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_guides.mb'
-    ep = groups + '/dungeons/character/Rigging/Rigs/Rayden/rayden_extras_center_merging_groom.mb'
 
-    body_mesh = 'Rayden_UBM'
+    body_mesh = f'{character}_UBM'
 
     mc.file(new=True, f=True)
 
@@ -38,6 +35,10 @@ def run(previs=False):
     spine = rBuild.build_module(module_type='spine', side='M', part='spine', guide_list=['Hips', 'Spine', 'Spine1', 'Spine2'], ctrl_scale=1, mid_ctrl=True)
     neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=1, mid_ctrl=False, joint_num=3)
     head = rBuild.build_module(module_type='head', side='M', part='head', guide_list=['Head'], ctrl_scale=50)
+
+    if character == "DungeonMonster":
+        tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail_' + str(t) for t in range(1, 15)], ctrl_scale=25, pad=2)
+        jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
 
     pvis_toggle = False if previs else True
 
@@ -84,15 +85,26 @@ def run(previs=False):
 
     print("Reading skin weight files...")
 
-    rCtrlIO.read_ctrls(groups + "/dungeons/character/Rigging/Rigs/Rayden/Controls", curve_file='rayden_control_curves')
+    if cp:
+        cp_div = cp.split('/')
+        dir = '/'.join(cp_div[:-1])
+        rCtrlIO.read_ctrls(dir, curve_file=cp_div[-1][:-5])
 
-    rWeightNgIO.read_skin(body_mesh, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin', 'rayden_skinning_file' + ('_pvis' if previs else ''))
+    if sp:
+        sp_div = sp.split('/')
+        dir = '/'.join(sp_div[:-1])
+        rWeightNgIO.read_skin(body_mesh, dir, sp_div[-1][:-5])
 
     #mc.copySkinWeights(ss='skinCluster1', ds='skinCluster1', mm='YZ', sa='closestPoint', ia='closestJoint') # necessary??
 
-    import rjg.build_scripts.rayden_clothes as rc
-    reload(rc)
-    rc.rayden_clothes(body_mesh, extras)
+    if character == 'Rayden':
+        import rjg.build_scripts.rayden_clothes as rc
+        reload(rc)
+        rc.rayden_clothes(body_mesh, extras)
+    elif character == 'Robin':
+        import rjg.build_scripts.robin_clothes as rc
+        reload(rc)
+        rc.robin_clothes(body_mesh, extras)
 
 
     for s in mc.ls(type='skinCluster'):
@@ -103,19 +115,21 @@ def run(previs=False):
 
 
     ##### PROJECT FACE
-    reload(rFile)
-    face = rFile.import_hierarchy(groups + '/dungeons/anim/Rigs/RaydenFace.mb')
-    import rjg.post.faceProject as rFaceProj
-    reload(rFaceProj)
-    rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras='Rayden_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT', tY=1.103)
-    mc.delete(face)
+    if face:
+        reload(rFile)
+        face = rFile.import_hierarchy(groups + f'/dungeons/anim/Rigs/{character}Face.mb')
+        import rjg.post.faceProject as rFaceProj
+        reload(rFaceProj)
+        rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras=f'{character}_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT')#, tY=1.103)
+        mc.delete(face)
 
     ##### IMPORT POSE INTERPOLATORS
-    import rjg.libs.util as rUtil
-    rUtil.import_poseInterpolator("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/ray_new_interp.pose")
+    if pp:
+        import rjg.libs.util as rUtil
+        rUtil.import_poseInterpolator(pp)
     
     mc.select(clear=True)
-    print("Rayden rig build complete.")
+    print(f"{character} rig build complete.")
 
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
     # Don't use this. Use export skin weights from ngskintools. rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')

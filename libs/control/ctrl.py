@@ -146,3 +146,8 @@ class Control(rDraw.Draw, rGroup.Group):
         # set parent
         if parent:
             mc.connectAttr(parent.ctrl + '.message', ctrl_tag + '.parent')
+            
+def tag_as_controller(ctrl):
+    ctrl_tag = mc.createNode('controller', name=ctrl + '_TAG')
+    mc.connectAttr(ctrl + '.message', ctrl_tag + '.controllerObject')
+    return ctrl_tag
