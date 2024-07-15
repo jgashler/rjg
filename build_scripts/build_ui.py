@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets, QtCore, QtGui
 
 import maya.cmds as mc
-import os
+import platform
 from typing import Optional
 from importlib import reload
 
@@ -13,36 +13,36 @@ class RigBuildUI(QtWidgets.QDialog):
         super().__init__(parent)
         
         self.setWindowTitle("Rig Build")
-        self.setFixedWidth(450)
-        self.setFixedHeight(425)
+
+        groups = 'G:' if platform.system() == 'Windows' else '/groups'
         
         self.default_dict = {
             "Rayden" : {
-                "mp" : "/groups/dungeons/character/Rigging/Rigs/Rayden/rayden_model_center.mb",
-                "gp" : "/groups/dungeons/character/Rigging/Rigs/Rayden/rayden_guides.mb",
-                "ep" : "/groups/dungeons/character/Rigging/Rigs/Rayden/rayden_extras_center_merging_groom.mb",
-                "cp" : "/groups/dungeons/character/Rigging/Rigs/Rayden/Controls/rayden_control_curves.json",
-                "sp" : "/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/rayden_skinning_file.json",
-                "pp" : "/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/ray_new_interp.pose",
-                "im" : "/groups/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/CursedRay128.jpg",
+                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_guides.mb",
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_model_center.mb",
+                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_extras_center_merging_groom.mb",
+                "cp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/Controls/rayden_control_curves.json",
+                "sp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/Skin/rayden_skinning_file.json",
+                "pp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/Skin/ray_new_interp.pose",
+                "im" : f"{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/CursedRay128.jpg",
             },
             "Robin" : {
-                "mp" : "/groups/dungeons/character/Rigging/Rigs/Robin/robin_model.mb",
-                "gp" : "/groups/dungeons/character/Rigging/Rigs/Robin/robin_guides.mb",
-                "ep" : "/groups/dungeons/character/Rigging/Rigs/Robin/robin_extras_merge_groom.mb",
-                "cp" : "/groups/dungeons/character/Rigging/Rigs/Robin/Controls/robin_control_curves.json",
-                "sp" : "/groups/dungeons/character/Rigging/Rigs/Robin/Skin/robin_skinning_file.json",
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_model.mb",
+                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_guides.mb",
+                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_extras_merge_groom.mb",
+                "cp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Controls/robin_control_curves.json",
+                "sp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Skin/robin_skinning_file.json",
                 "pp" : None,
-                "im" : "/groups/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/Robin128.jpg",
+                "im" : f"{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/Robin128.jpg",
             },
             "DungeonMonster" : {
-                "mp" : "/dungeons/character/Rigging/Rigs/DungeonMonster/dm_model_combine.mb",
-                "gp" : "/groups/dungeons/character/Rigging/Rigs/DungeonMonster/dm_guides.mb",
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/dm_model_combine.mb",
+                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/dm_guides.mb",
                 "ep" : None,
-                "cp" : "/groups/dungeons/character/Rigging/Rigs/DungeonMonster/Controls/dm_control_curves.json",
+                "cp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/Controls/dm_control_curves.json",
                 "sp" : None,
                 "pp" : None,
-                "im" : "/groups/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/DMSkull128.jpg",
+                "im" : f"{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/DMSkull128.jpg",
             },
         }
         
@@ -94,9 +94,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
         self.pixframe = QtWidgets.QLabel()
         self.pixmap = QtGui.QPixmap()
-        self.pic = QtGui.QPicture()
         self.pixframe.setPixmap(self.pixmap)
-        #self.pixframe.setPicture(self.pic)
         self.pixframe.setFixedHeight(128)
         self.pixframe.setFixedWidth(128)
         
