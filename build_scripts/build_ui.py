@@ -13,6 +13,7 @@ class RigBuildUI(QtWidgets.QDialog):
         super().__init__(parent)
         
         self.setWindowTitle("Rig Build")
+        self.setMinimumWidth(550)
 
         groups = 'G:' if platform.system() == 'Windows' else '/groups'
         
@@ -56,31 +57,43 @@ class RigBuildUI(QtWidgets.QDialog):
         self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster'])
         self.char_options.setFixedWidth(100)
         
+        self.model_label = QtWidgets.QLabel('Model:')
+        self.model_label.setFixedWidth(45)
         self.model_input = QtWidgets.QLineEdit()
         self.model_input.setPlaceholderText('Path to model')
         self.model_search = QtWidgets.QPushButton('search')
         self.model_search.setFixedHeight(17)
         
+        self.guides_label = QtWidgets.QLabel('Guides:')
+        self.guides_label.setFixedWidth(45)
         self.guides_input = QtWidgets.QLineEdit()
         self.guides_input.setPlaceholderText('Path to guides')
         self.guides_search = QtWidgets.QPushButton('search')
         self.guides_search.setFixedHeight(17)
         
+        self.extras_label = QtWidgets.QLabel('Extras:')
+        self.extras_label.setFixedWidth(45)
         self.extras_input = QtWidgets.QLineEdit()
         self.extras_input.setPlaceholderText('Path to extras')
         self.extras_search = QtWidgets.QPushButton('search')
         self.extras_search.setFixedHeight(17)
         
+        self.curve_label = QtWidgets.QLabel('Controls:')
+        self.curve_label.setFixedWidth(45)
         self.curve_input = QtWidgets.QLineEdit()
         self.curve_input.setPlaceholderText('Path to curve data')
         self.curve_search = QtWidgets.QPushButton('search')
         self.curve_search.setFixedHeight(17)
         
+        self.skin_label = QtWidgets.QLabel('Skin:')
+        self.skin_label.setFixedWidth(45)
         self.skin_input = QtWidgets.QLineEdit()
         self.skin_input.setPlaceholderText('Path to skin data')
         self.skin_search = QtWidgets.QPushButton('search')
         self.skin_search.setFixedHeight(17)
         
+        self.pose_label = QtWidgets.QLabel('Poses:')
+        self.pose_label.setFixedWidth(45)
         self.pose_input = QtWidgets.QLineEdit()
         self.pose_input.setPlaceholderText('Path to pose data')
         self.pose_search = QtWidgets.QPushButton('search')
@@ -108,26 +121,32 @@ class RigBuildUI(QtWidgets.QDialog):
         top_layout.addWidget(self.char_options, alignment=(QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom))
         
         model_layout = QtWidgets.QHBoxLayout()
+        model_layout.addWidget(self.model_label)
         model_layout.addWidget(self.model_input)
         model_layout.addWidget(self.model_search)
         
         guides_layout = QtWidgets.QHBoxLayout()
+        guides_layout.addWidget(self.guides_label)
         guides_layout.addWidget(self.guides_input)
         guides_layout.addWidget(self.guides_search)
         
         extras_layout = QtWidgets.QHBoxLayout()
+        extras_layout.addWidget(self.extras_label)
         extras_layout.addWidget(self.extras_input)
         extras_layout.addWidget(self.extras_search)
         
         curve_layout = QtWidgets.QHBoxLayout()
+        curve_layout.addWidget(self.curve_label)
         curve_layout.addWidget(self.curve_input)
         curve_layout.addWidget(self.curve_search)
         
         skin_layout = QtWidgets.QHBoxLayout()
+        skin_layout.addWidget(self.skin_label)
         skin_layout.addWidget(self.skin_input)
         skin_layout.addWidget(self.skin_search)
         
         pose_layout = QtWidgets.QHBoxLayout()
+        pose_layout.addWidget(self.pose_label)
         pose_layout.addWidget(self.pose_input)
         pose_layout.addWidget(self.pose_search)
         
@@ -139,7 +158,6 @@ class RigBuildUI(QtWidgets.QDialog):
         checks_layout.addWidget(self.face_check)
         checks_layout.addWidget(self.pvis_check)
         
-        #main_layout.addWidget(self.char_options, alignment=QtCore.Qt.AlignRight)
         main_layout.addLayout(top_layout)
         main_layout.addLayout(model_layout)
         main_layout.addLayout(guides_layout)
@@ -153,19 +171,22 @@ class RigBuildUI(QtWidgets.QDialog):
     def create_connections(self):
         self.char_options.currentTextChanged.connect(self.update_fields)
         
-        self.model_search.clicked.connect(lambda: self.on_search(self.model_input, '.mb files (*.mb)'))
-        self.guides_search.clicked.connect(lambda: self.on_search(self.guides_input, '.mb files (*.mb)'))
-        self.extras_search.clicked.connect(lambda: self.on_search(self.extras_input, '.mb files (*.mb)'))
-        self.skin_search.clicked.connect(lambda: self.on_search(self.skin_input, '.json files (*.json)'))
-        self.curve_search.clicked.connect(lambda: self.on_search(self.curve_input, '.json files (*.json)'))
-        self.pose_search.clicked.connect(lambda: self.on_search(self.pose_input, '.pose files (*.pose)'))
+        self.model_search.clicked.connect(lambda: self.on_search(self.model_input, 'Maya Files (*.ma *.mb);;Maya ASCII (*.ma);;Maya Binary (*.mb);;All Files (*.*)'))
+        self.guides_search.clicked.connect(lambda: self.on_search(self.guides_input, 'Maya Files (*.ma *.mb);;Maya ASCII (*.ma);;Maya Binary (*.mb);;All Files (*.*)'))
+        self.extras_search.clicked.connect(lambda: self.on_search(self.extras_input, 'Maya Files (*.ma *.mb);;Maya ASCII (*.ma);;Maya Binary (*.mb);;All Files (*.*)'))
+        self.skin_search.clicked.connect(lambda: self.on_search(self.skin_input, 'JSON files (*.json);;All Files (*.*)'))
+        self.curve_search.clicked.connect(lambda: self.on_search(self.curve_input, 'JSON files (*.json);;All Files (*.*)'))
+        self.pose_search.clicked.connect(lambda: self.on_search(self.pose_input, 'Pose files (*.pose);;All Files (*.*)'))
         
         self.build_btn.clicked.connect(self.on_build)
         self.close_btn.clicked.connect(self.on_cancel)
         
     def on_search(self, text_field, filter):
-        f = str(mc.fileDialog2(fm=1, ff=filter)[0])
-        text_field.setText(f)
+        f = mc.fileDialog2(fm=1, ff=filter)
+        try:
+            text_field.setText(str(f[0]))
+        except:
+            pass # here if file dialog closed w/o file selected
         
     def on_cancel(self):
         self.close()
