@@ -100,6 +100,7 @@ class RigBuildUI(QtWidgets.QDialog):
         self.pose_search.setFixedHeight(17)
         
         self.build_btn = QtWidgets.QPushButton("Build")
+        self.build_btn.setDefault(True)
         self.close_btn = QtWidgets.QPushButton("Close")
         
         self.face_check = QtWidgets.QCheckBox("Build face")

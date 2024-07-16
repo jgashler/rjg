@@ -1,5 +1,5 @@
 import maya.cmds as mc
-import platform
+import sys, platform
 from importlib import reload
 
 groups = 'G:' if platform.system() == 'Windows' else '/groups'
@@ -81,7 +81,8 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     reload(rWeightIO)
     reload(rCtrlIO)
     
-    import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
+    if 'ngSkinTools2' not in sys.modules:
+        import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
 
     print("Reading skin weight files...")
 
