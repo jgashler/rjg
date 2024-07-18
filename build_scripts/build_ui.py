@@ -62,42 +62,42 @@ class RigBuildUI(QtWidgets.QDialog):
         self.model_input = QtWidgets.QLineEdit()
         self.model_input.setPlaceholderText('Path to model')
         self.model_search = QtWidgets.QPushButton('search')
-        self.model_search.setFixedHeight(17)
+        #self.model_search.setFixedHeight(17)
         
         self.guides_label = QtWidgets.QLabel('Guides:')
         self.guides_label.setFixedWidth(45)
         self.guides_input = QtWidgets.QLineEdit()
         self.guides_input.setPlaceholderText('Path to guides')
         self.guides_search = QtWidgets.QPushButton('search')
-        self.guides_search.setFixedHeight(17)
+        #self.guides_search.setFixedHeight(17)
         
         self.extras_label = QtWidgets.QLabel('Extras:')
         self.extras_label.setFixedWidth(45)
         self.extras_input = QtWidgets.QLineEdit()
         self.extras_input.setPlaceholderText('Path to extras')
         self.extras_search = QtWidgets.QPushButton('search')
-        self.extras_search.setFixedHeight(17)
+        #self.extras_search.setFixedHeight(17)
         
         self.curve_label = QtWidgets.QLabel('Controls:')
         self.curve_label.setFixedWidth(45)
         self.curve_input = QtWidgets.QLineEdit()
         self.curve_input.setPlaceholderText('Path to curve data')
         self.curve_search = QtWidgets.QPushButton('search')
-        self.curve_search.setFixedHeight(17)
+        #self.curve_search.setFixedHeight(17)
         
         self.skin_label = QtWidgets.QLabel('Skin:')
         self.skin_label.setFixedWidth(45)
         self.skin_input = QtWidgets.QLineEdit()
         self.skin_input.setPlaceholderText('Path to skin data')
         self.skin_search = QtWidgets.QPushButton('search')
-        self.skin_search.setFixedHeight(17)
+        #self.skin_search.setFixedHeight(17)
         
         self.pose_label = QtWidgets.QLabel('Poses:')
         self.pose_label.setFixedWidth(45)
         self.pose_input = QtWidgets.QLineEdit()
         self.pose_input.setPlaceholderText('Path to pose data')
         self.pose_search = QtWidgets.QPushButton('search')
-        self.pose_search.setFixedHeight(17)
+        #self.pose_search.setFixedHeight(17)
         
         self.build_btn = QtWidgets.QPushButton("Build")
         self.build_btn.setDefault(True)
@@ -223,6 +223,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
         import rjg.build_scripts.build as build
         reload(build)
+        self.close()
         build.run(character=character, mp=mp, gp=gp, ep=ep, cp=cp, sp=sp, pp=pp, face=face, previs=previs)
         
         
