@@ -20,8 +20,8 @@ class RigBuildUI(QtWidgets.QDialog):
         self.default_dict = {
             "Rayden" : {
                 "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_guides.mb",
-                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_model_center.mb",
-                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_extras_center_merging_groom.mb",
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_model.mb",
+                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/rayden_extras.mb",
                 "cp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/Controls/rayden_control_curves.json",
                 "sp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/Skin/rayden_skinning_file.json",
                 "pp" : f"{groups}/dungeons/character/Rigging/Rigs/Rayden/Skin/ray_new_interp.pose",

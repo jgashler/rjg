@@ -71,6 +71,9 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         mc.setAttr(skc + '.dqsSupportNonRigid', 1)
 
     ### SKIN/CURVE IO
+    
+    #if 'ngSkinTools2' not in sys.modules:
+    import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
 
     import rjg.post.dataIO.ng_weights as rWeightNgIO
     import rjg.post.dataIO.weights as rWeightIO
@@ -80,9 +83,6 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     reload(rWeightNgIO)
     reload(rWeightIO)
     reload(rCtrlIO)
-    
-    if 'ngSkinTools2' not in sys.modules:
-        import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
 
     print("Reading skin weight files...")
 
@@ -130,7 +130,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         rUtil.import_poseInterpolator(pp)
     
     mc.select(clear=True)
-    print(f"{character} rig build complete.")
+    print(f"\n{character} rig build complete.")
 
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
     # Don't use this. Use export skin weights from ngskintools. rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')
