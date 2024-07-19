@@ -73,7 +73,10 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     ### SKIN/CURVE IO
     
     #if 'ngSkinTools2' not in sys.modules:
-    import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
+    try:
+        import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
+    except Exception as e:
+        print(e)
 
     import rjg.post.dataIO.ng_weights as rWeightNgIO
     import rjg.post.dataIO.weights as rWeightIO
@@ -128,6 +131,15 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     if pp:
         import rjg.libs.util as rUtil
         rUtil.import_poseInterpolator(pp)
+        
+    import maya.mel as mel
+    mel.eval('hyperShadePanelMenuCommand("hyperShadePanel1", "deleteUnusedNodes");')
+    
+    for item in mc.ls('*_MT1'):
+        mc.rename(item, item[:-1])
+        
+    if not character == 'DungeonMonster':
+        create_groom_bust(body_mesh)
     
     mc.select(clear=True)
     print(f"\n{character} rig build complete.")
@@ -142,6 +154,25 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
 
 
 
+def create_groom_bust(model):
+    mc.select(f'{model}.vtx[0:2157]', 
+              f'{model}.vtx[6008:6026]', 
+              f'{model}.vtx[6043:6045]', 
+              f'{model}.vtx[6103:6108]', 
+              f'{model}.vtx[6166:6167]', 
+              f'{model}.vtx[6223:6225]', 
+              f'{model}.vtx[6893]', 
+              f'{model}.vtx[7216:9350]', 
+              f'{model}.vtx[13144:13160]', 
+              f'{model}.vtx[13177:13179]', 
+              f'{model}.vtx[13237:13242]', 
+              f'{model}.vtx[13300:13301]', 
+              f'{model}.vtx[13354:13356]', 
+              f'{model}.vtx[14010]', 
+              f'{model}.vtx[14333:14972]')
+    mc.polyColorPerVertex(r=1, g=1, b=1, a=1)
+    mc.polyColorSet(rename=True, colorSet='colorSet1', newColorSet='GroomBust')
+              
 
 
 

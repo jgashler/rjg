@@ -24,8 +24,13 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         #     continue
         try:
             f = mc.rename(f, f[len(f_extras):]+'_clone')
+            if mc.objExists('Fingernails_clone'):
+                mc.delete('Fingernails_clone')
+                continue
             mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
             mc.parent(f, "HIDE_FACE_EXTRAS")
+
+            mc.hyperShade(f, assign='standardSurface1')
         except Exception as e:
             print(f, ':', e)
 
