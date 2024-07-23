@@ -58,8 +58,6 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         thumb = rBuild.build_module(module_type='finger', side=fs[0], part='fingerThumb', guide_list=[fs + 'HandThumb' + str(num+1) for num in range(4)], ctrl_scale=1, fk_shape='lollipop')
         fingers.append(thumb)    
         
-
-    rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
     mc.delete('Hips')
 
     ### DEFAULT SKIN
@@ -74,7 +72,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     
     #if 'ngSkinTools2' not in sys.modules:
     try:
-        import ngSkinTools2; ngSkinTools2.workspace_control_main_window()
+        import ngSkinTools2; ngSkinTools2.workspace_control_main_window(); ngSkinTools2.open_ui()
     except Exception as e:
         print(e)
 
@@ -126,6 +124,9 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         reload(rFaceProj)
         rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras=f'{character}_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT')#, tY=1.103)
         mc.delete(face)
+        
+        
+    rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
 
     ##### IMPORT POSE INTERPOLATORS
     if pp:
@@ -140,9 +141,14 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         
     if not character == 'DungeonMonster':
         create_groom_bust(body_mesh)
+        
+    mc.BakeAllNonDefHistory()
+    mc.bakePartialHistory(all=True)    
     
     mc.select(clear=True)
     print(f"\n{character} rig build complete.")
+    
+    
 
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
     # Don't use this. Use export skin weights from ngskintools. rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')
@@ -155,23 +161,26 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
 
 
 def create_groom_bust(model):
-    mc.select(f'{model}.vtx[0:2157]', 
-              f'{model}.vtx[6008:6026]', 
-              f'{model}.vtx[6043:6045]', 
-              f'{model}.vtx[6103:6108]', 
-              f'{model}.vtx[6166:6167]', 
-              f'{model}.vtx[6223:6225]', 
-              f'{model}.vtx[6893]', 
-              f'{model}.vtx[7216:9350]', 
-              f'{model}.vtx[13144:13160]', 
-              f'{model}.vtx[13177:13179]', 
-              f'{model}.vtx[13237:13242]', 
-              f'{model}.vtx[13300:13301]', 
-              f'{model}.vtx[13354:13356]', 
-              f'{model}.vtx[14010]', 
-              f'{model}.vtx[14333:14972]')
-    mc.polyColorPerVertex(r=1, g=1, b=1, a=1)
-    mc.polyColorSet(rename=True, colorSet='colorSet1', newColorSet='GroomBust')
+    mc.select(f'{model}.f[0:2041]',
+              f'{model}.f[5887:5903]',
+              f'{model}.f[5920]', 
+              f'{model}.f[5981:5982]', 
+              f'{model}.f[6042]', 
+              f'{model}.f[6099]', 
+              f'{model}.f[6762]', 
+              f'{model}.f[7086:9274]', 
+              f'{model}.f[13120:13136]', 
+              f'{model}.f[13153]', 
+              f'{model}.f[13214:13215]', 
+              f'{model}.f[13275]', 
+              f'{model}.f[13332]', 
+              f'{model}.f[13995]', 
+              f'{model}.f[14319:14649]', 
+              f'{model}.f[14722:14953]')
+              
+    mc.componentTag(create=True, ntn='GroomBust')
+    # mc.polyColorPerVertex(r=1, g=1, b=1, a=1)
+    # mc.polyColorSet(rename=True, colorSet='colorSet1', newColorSet='GroomBust')
               
 
 

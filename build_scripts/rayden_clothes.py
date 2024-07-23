@@ -96,10 +96,7 @@ def rayden_clothes(skin_src, skin_trg_grp):
     sk_g = []
 
     #sk = mc.skinCluster(['world_M_JNT'] + bind_joints, 'Clothes', tsb=True, skinMethod=1, n='clothingSkc')
-    if mc.objExists('GroomBust'):
-        rUtil.create_pxWrap('Clothes', 'Shirt', 'GroomBust', 'Rayden_UBM')
-    else:
-        rUtil.create_pxWrap('Clothes', 'Shirt', 'Fingernails', 'Rayden_UBM')
+    rUtil.create_pxWrap('Clothes', 'Shirt', 'Fingernails', 'Rayden_UBM')
     rUtil.create_pxWrap('VestFluff', 'Clothes')
     mc.parent('Fingernails', 'Rayden_EXTRAS')
 

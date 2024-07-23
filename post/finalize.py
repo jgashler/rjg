@@ -10,6 +10,10 @@ reload(rSpace)
 
 def get_ctrl_types():
     type_dict = {}
+
+    if mc.objExists('face_M'):
+        type_dict['face'] = ['face_M']
+
     for x in mc.ls('*.ctrlDict'):
         ctrl = rCtrl.Control(ctrl=x.split('.')[0])
         if ctrl.fail:
@@ -108,11 +112,14 @@ def add_color_attrs(x, y, z, utScale):
         mc.setAttr(color.attr, cb=True)
         for ctrl in ctrl_list:
             cond = '{}_CCOND'.format(ctrl)
-            mc.connectAttr(color.attr, cond + '.colorIfFalse')
-            for shape in mc.listRelatives(ctrl, shapes=True, type='nurbsCurve'):
-                mc.setAttr(shape + '.overrideEnabled', 1)
-                mc.setAttr(shape + '.overrideRGBColors', 1)
-                #mc.connectAttr(color.attr, shape + '.overrideColorRGB')
+            try:
+                mc.connectAttr(color.attr, cond + '.colorIfFalse')
+                for shape in mc.listRelatives(ctrl, shapes=True, type='nurbsCurve'):
+                    mc.setAttr(shape + '.overrideEnabled', 1)
+                    mc.setAttr(shape + '.overrideRGBColors', 1)
+                    #mc.connectAttr(color.attr, shape + '.overrideColorRGB')
+            except Exception as e:
+                print(e)
 
     set_color_defaults(c_ctrl.ctrl)
     mc.setAttr('color_CTRL.v', cb=False)
@@ -213,7 +220,7 @@ def add_vis_ctrl(x, y, z, utScale):
 
     for type, ctrl_list in type_dict.items():
 
-        if type in ['global', 'primary', 'fk', 'root', 'pv', 'tangent', 'bendy', 'pivot']:
+        if type in ['global', 'primary', 'fk', 'root', 'pv', 'tangent', 'bendy', 'pivot', 'face']:
             val = 1
         elif type in ['offset', 'gimbal', 'secondary']:
             val = 0
@@ -222,10 +229,18 @@ def add_vis_ctrl(x, y, z, utScale):
         t_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=val, keyable=False, name=type + '_Vis')
         mc.setAttr(t_vis.attr, cb=True)
         for ctrl in ctrl_list:
-            shapes = mc.listRelatives(ctrl, shapes=True, path=True)
-            for shape in shapes:
-                if mc.nodeType(shape) == 'nurbsCurve':
-                    mc.connectAttr(t_vis.attr, shape + '.visibility')
+            try:
+                shapes = mc.listRelatives(ctrl, shapes=True, path=True)
+            except:
+                continue
+            if shapes:
+                for shape in shapes:
+                    if mc.nodeType(shape) == 'nurbsCurve':
+                        mc.connectAttr(t_vis.attr, shape + '.visibility')
+        try:
+            mc.connectAttr(vis_ctrl.ctrl + '.face_Vis', 'face_M.visibility')
+        except:
+            print('no face')
 
     mc.setAttr('vis_CTRL.v', cb=False)
     return vis_ctrl.ctrl
