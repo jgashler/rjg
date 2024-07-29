@@ -148,6 +148,9 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     mc.select(clear=True)
     print(f"\n{character} rig build complete.")
     
+    ### TEMP ###
+    mc.hide('Eyelashes')
+    ###########
     
 
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')

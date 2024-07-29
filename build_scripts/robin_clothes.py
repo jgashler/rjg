@@ -11,7 +11,7 @@ def robin_clothes(skin_src, skin_trg_grp):
     
     sk_g = []
 
-    rUtil.create_pxWrap('Clothes', 'GroomBust', skin_src)
+    rUtil.create_pxWrap('Clothes', 'Fingernails', skin_src)
 
     for g in geo:
         if g == 'ClothesShape' or g == 'GroomBustShape':
