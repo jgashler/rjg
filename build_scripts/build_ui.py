@@ -30,7 +30,7 @@ class RigBuildUI(QtWidgets.QDialog):
             "Robin" : {
                 "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_model.mb",
                 "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_guides.mb",
-                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_extrasd.mb",
+                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_extras.mb",
                 "cp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Controls/robin_control_curves.json",
                 "sp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Skin/robin_skinning_file.json",
                 "pp" : None,
