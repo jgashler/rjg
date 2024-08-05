@@ -142,6 +142,10 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     if not character == 'DungeonMonster':
         create_groom_bust(body_mesh)
         
+    import rjg.post.textures as rTex
+    reload(rTex)
+    rTex.set_textures(character)
+        
     mc.BakeAllNonDefHistory()
     mc.bakePartialHistory(all=True)    
     
@@ -154,7 +158,6 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     
 
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
-    # Don't use this. Use export skin weights from ngskintools. rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin", force=True, name='rayden_skin_weights')
 
     # rc.write_clothes()
     # rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", name='clothing_weights', force=True)
