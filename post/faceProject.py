@@ -1,7 +1,9 @@
 import maya.cmds as mc
 from importlib import reload
 import rjg.libs.file as rFile
+import rjg.libs.control.ctrl as rCtrl
 reload(rFile)
+reload(rCtrl)
 
 def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_extras=None, rig_par='head_M_02_CTRL_CNST_GRP', tY=0):
     # reparent face sections to main rig
@@ -45,6 +47,12 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     mc.select(f_rig_clone, hierarchy=True)
     f_rig_clone_sel = mc.ls(selection=True, type='transform') #+ mc.ls(selection=True, type='joint') + mc.ls(selection=True, type='follicle')
     mc.parentConstraint(rig_par, f_rig_clone_sel[0], mo=True)
+
+    # tag incoming controls
+    new_controls = mc.listRelatives('face_M', ad=True, type='nurbsCurve')
+    for nc in new_controls:
+        ct = mc.listRelatives(nc, parent=True)[0]
+        rCtrl.tag_as_controller(ct)
 
     # setup direct connections between the new and original rig and rename 
     for i in range(1, len(f_rig_sel)):
@@ -97,7 +105,42 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     except:
         pass
 
+    try:
+        mc.select('*_parentConstraint1_clone')
+        driver_pc = mc.ls(selection=True)
 
+        for d in driver_pc:
+            try:
+                mc.connectAttr(d + '.constraintRotate', d[:-24] + '.rotate')
+                mc.connectAttr(d + '.constraintTranslate', d[:-24] + '.translate')
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
+
+    try:
+        mc.select('*_eyelid_*_Pointer_driver_rotateX')
+        driver_rx = mc.ls(selection=True)
+
+        for d in driver_rx:
+            try:
+                mc.connectAttr(d + '.output', d[:-8] + '.rotateX')
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
+
+    try:
+        mc.select('*_eyelid_*_Pointer_driver_aimConstraint1_clone')
+        driver_ac = mc.ls(selection = True)
+
+        try:
+            for d in driver_ac:
+                mc.connectAttr(d + '.constraintRotateY', d[:-21])
+        except Exception as e:
+            print(e)
+    except Exception as e:
+        print(e)
             
     mc.hide("HIDE_FACE")
     mc.hide(f_rig)

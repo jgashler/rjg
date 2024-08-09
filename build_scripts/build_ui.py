@@ -33,7 +33,7 @@ class RigBuildUI(QtWidgets.QDialog):
                 "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/robin_extras.mb",
                 "cp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Controls/robin_control_curves.json",
                 "sp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Skin/robin_skinning_file.json",
-                "pp" : None,
+                "pp" : f"{groups}/dungeons/character/Rigging/Rigs/Robin/Skin/robin_new_interp.pose",
                 "im" : f"{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/Robin128.jpg",
             },
             "DungeonMonster" : {
