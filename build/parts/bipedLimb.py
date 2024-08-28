@@ -231,8 +231,8 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
             ik_ctrl = ['hand_' + self.side + '_01_CTRL']
 
             rAttr.Attribute(node=self.part_grp, type='plug', value=['clavicle_' + self.side + '_02_driver_JNT'], name='pocRigPlugs', children_name=['arm_' + self.side + '_01_fk_CTRL_CNST_GRP'])
-            target_list = ['chest_M_01_CTRL', 'chest_M_02_CTRL', 'clavicle_' + self.side + '_02_driver_JNT', '0']
-            name_list = ['chest01', 'chest02', 'clavicle', 'default_value']
+            target_list = ['CHAR', 'global_M_CTRL', 'root_02_M_CTRL', 'chest_M_01_CTRL', 'chest_M_02_CTRL', 'clavicle_' + self.side + '_02_driver_JNT', '3']
+            name_list = ['world', 'global', 'root', 'chest01', 'chest02', 'clavicle', 'default_value']
             orient_names = ['orient' + name.title() for name in name_list]
             rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.fk_ctrls[0].ctrl + '_orient', children_name=orient_names)
         elif 'finger' in self.part:
