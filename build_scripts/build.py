@@ -107,6 +107,14 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         import rjg.build_scripts.robin_clothes as rc
         reload(rc)
         rc.robin_clothes(body_mesh, extras)
+        
+        mc.parent('hair_M', 'RIG')
+        mc.parent('hair_root_jnt', 'head_M_JNT')
+        mc.parentConstraint('head_M_01_CTRL', 'bang_01_ofst', mo=True)
+        mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
+        
+        rUtil.create_pxWrap('bun_guides', 'bun_clump')
+        rUtil.create_pxWrap('left_bang_guides', 'left_bang_clump')
 
 
     for s in mc.ls(type='skinCluster'):
