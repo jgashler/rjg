@@ -47,8 +47,11 @@ class Neck(rModule.RigModule, rSpline.Spline):
         mc.matchTransform(base_jnt, self.spline_joints[0])
         mc.matchTransform(tip_jnt, self.spline_joints[-1])
         mc.parentConstraint(self.base_driver, base_jnt, mo=True)
-        mc.parentConstraint(self.tip_driver, tip_jnt, mo=True)
+        tip_pc = mc.parentConstraint(self.tip_driver, tip_jnt, mo=True)
         #mc.parentConstraint(self.fk_ctrl_list[-1].ctrl, self.tip_ctrl.top, mo=True)
+
+        for dim in 'XYZ':
+            mc.disconnectAttr(tip_jnt + '_parentConstraint1.constraintRotate' + dim , tip_jnt + '.rotate' + dim)
 
         if self.mid_ctrl:
             #blend = rAttr.Attribute(node=self.mid_ctrl.ctrl, type='double', value=1, min=0, max=1, keyable=True, name='blendBetween')
