@@ -12,6 +12,21 @@ def create_pxWrap(*argv):
     mc.proximityWrap(pxWrap, e=True, addDrivers=driver)
     mc.setAttr(pxWrap[0] + '.falloffScale', 15.0)
 
+
+def create_pxPin(x, y, z, target_vtx, n='default'):
+    pin = mc.spaceLocator(n=n)
+    mc.move(x, y, z, r=True, os=True, wd=True)
+
+    mc.select(target_vtx, pin)
+    pxPin = mc.ProximityPin()
+
+    return pin, pxPin
+
+
+def reverse_hair_project():
+    pass
+
+
 '''
 main_mesh: (str) name of mesh with the blendshape deformer
 blandshape: name of the blendshape

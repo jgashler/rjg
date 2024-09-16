@@ -1,4 +1,5 @@
 import maya.cmds as mc
+import maya.mel as mel
 import sys, platform
 from importlib import reload
 
@@ -9,6 +10,8 @@ import rjg.build.buildPart as rBuild
 import rjg.post.finalize as rFinal
 import rjg.build.prop as rProp
 import rjg.libs.file as rFile
+import rjg.libs.util as rUtil
+reload(rUtil)
 reload(rProp)
 reload(rBuild)
 reload(rFinal)
@@ -20,6 +23,8 @@ reload(rFile)
 def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=False):
     import rjg.build_scripts
     reload(rjg.build_scripts)
+    
+    pvis_toggle = False if previs else True
 
     body_mesh = f'{character}_UBM'
 
@@ -33,14 +38,14 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=['Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
     chest = rBuild.build_module(module_type='chest', side='M', part='chest', guide_list=['Spine2'], ctrl_scale=70, chest_shape='circle')
     spine = rBuild.build_module(module_type='spine', side='M', part='spine', guide_list=['Hips', 'Spine', 'Spine1', 'Spine2'], ctrl_scale=1, mid_ctrl=True)
-    neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=1, mid_ctrl=False, joint_num=3)
+    #neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=1, mid_ctrl=False, joint_num=3)
+    neck = rBuild.build_module(module_type='biped_limb', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=10, bendy=False, twisty=False, stretchy=False, segments=1, create_ik=False)
     head = rBuild.build_module(module_type='head', side='M', part='head', guide_list=['Head'], ctrl_scale=50)
 
     if character == "DungeonMonster":
         tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail_' + str(t) for t in range(1, 15)], ctrl_scale=25, pad=2)
         jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
 
-    pvis_toggle = False if previs else True
 
     for fs in ['Left', 'Right']:    
         arm = rBuild.build_module(module_type='biped_limb', side=fs[0], part='arm', guide_list=[fs + piece for piece in ['Arm', 'ForeArm', 'Hand']], offset_pv=50, ctrl_scale=5, bendy=pvis_toggle, twisty=pvis_toggle, stretchy=pvis_toggle, segments=4 if pvis_toggle else 1)
@@ -67,6 +72,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     for g in geo:
         skc = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, bindMethod=0)[0]
         mc.setAttr(skc + '.dqsSupportNonRigid', 1)
+
 
     ### SKIN/CURVE IO
     
@@ -102,19 +108,44 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     if character == 'Rayden':
         import rjg.build_scripts.rayden_clothes as rc
         reload(rc)
-        rc.rayden_clothes(body_mesh, extras)
+        if pvis_toggle:
+            rc.rayden_clothes(body_mesh, extras)
+        else:
+            rc.rayden_clothes_pvis(body_mesh, ['Shirt', 'VestFluff', 'Clothes', 'Fingernails'])
     elif character == 'Robin':
         import rjg.build_scripts.robin_clothes as rc
         reload(rc)
         rc.robin_clothes(body_mesh, extras)
         
-        mc.parent('hair_M', 'RIG')
-        mc.parent('hair_root_jnt', 'head_M_JNT')
-        mc.parentConstraint('head_M_01_CTRL', 'bang_01_ofst', mo=True)
-        mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
+        if pvis_toggle:
+            mc.parent('hair_M', 'RIG')
+            mc.parent('hair_root_jnt', 'head_M_JNT')
+            #mc.parent('hair_export_root_jn', 'SKEL')
+            mc.parentConstraint('head_M_01_CTRL', 'bang_01_ofst', mo=True)
+            mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
+            
+            rUtil.create_pxWrap('bun_guides', 'bun_clump')#_export')
+            rUtil.create_pxWrap('left_bang_guides', 'left_bang_clump')#_export')
+        else:
+            mc.delete('HairCurves')
+            mc.delete('hair_root_jnt')
         
-        rUtil.create_pxWrap('bun_guides', 'bun_clump')
-        rUtil.create_pxWrap('left_bang_guides', 'left_bang_clump')
+        mc.select('LowerTeeth', 'UpperTeeth', 'Tongue')
+        mel.eval('hyperShade -assign Robin_Skin1;')
+        
+        mc.select(clear=True)
+        
+        rUtil.create_pxPin(0, 132.481, -11.065, 'Clothes.vtx[54013]', 'pick_pin')
+        
+        mc.group('pick_pin', n='PROP')
+        mc.parent('PROP', 'ROOT')
+        #mc.parent('pick_pin', 'Robin_EXTRAS')
+        mc.parent('pick', 'pick_pin')
+        mc.hide('pinInput')
+        
+        
+        
+        
 
 
     for s in mc.ls(type='skinCluster'):
@@ -123,14 +154,13 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         except Exception as e:
             print(e)
 
-
     ##### PROJECT FACE
     if face:
         reload(rFile)
         face = rFile.import_hierarchy(groups + f'/dungeons/anim/Rigs/{character}Face.mb')
         import rjg.post.faceProject as rFaceProj
         reload(rFaceProj)
-        rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras=f'{character}_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT')#, tY=1.103)
+        rFaceProj.project(body=body_mesh, char='ROOT', f_model='FaceAtOrigin', f_rig='face_M', extras=f'{character}_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT')#, tY=1.103)
         mc.delete(face)
         
         
@@ -141,7 +171,6 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         import rjg.libs.util as rUtil
         rUtil.import_poseInterpolator(pp)
         
-    import maya.mel as mel
     mel.eval('hyperShadePanelMenuCommand("hyperShadePanel1", "deleteUnusedNodes");')
     
     for item in mc.ls('*_MT1'):
@@ -162,6 +191,9 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     
     ### TEMP ###
     mc.hide('Eyelashes')
+    #mc.setAttr('skinCluster2.envelope', 0)
+    # for dim in 'XYZ':
+    #     mc.disconnectAttr('neck_M_tip_JNT_parentConstraint1.constraintRotate' + dim, 'neck_M_tip_JNT.rotate' + dim)
     ###########
     
 

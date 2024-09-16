@@ -274,11 +274,14 @@ def add_global_scale(global_ctrl='global_M_CTRL'):
     gs.lock_and_hide(translate=False, rotate=False)
     
     for ps in gs_list:
-        part = ps.split('.')[0]
-        mc.connectAttr(gs.attr, ps)
-        mc.connectAttr(ps, part + '.sx')
-        mc.connectAttr(ps, part + '.sy')
-        mc.connectAttr(ps, part + '.sz')
+        try:
+            part = ps.split('.')[0]
+            mc.connectAttr(gs.attr, ps)
+            mc.connectAttr(ps, part + '.sx')
+            mc.connectAttr(ps, part + '.sy')
+            mc.connectAttr(ps, part + '.sz')
+        except Exception as e:
+            print(e)
 
 def assemble_rig():
     for part in mc.listRelatives('RIG'):
@@ -393,14 +396,21 @@ def add_rig_sets():
     rig_set = mc.sets(name='rig_SET', empty=True)
     ctrl_set = mc.sets(name='control_SET', empty=True)
     cache_set = mc.sets(name='cache_SET', empty=True)
+    prop_set = mc.sets(name='prop_SET', empty=True)
     mc.sets(ctrl_set, add=rig_set)
     mc.sets(cache_set, add=rig_set)
+    mc.sets(prop_set, add=rig_set)
 
     for part in mc.listRelatives('RIG'):
         part_set = mc.sets(mc.ls(part+'*_CTRL'), name=part + '_SET')
         mc.sets(part_set, add=ctrl_set)
 
     mc.sets('MODEL', add=cache_set)
+
+    try:
+        mc.sets('PROP', add=prop_set)
+    except:
+        pass
 
 def add_switch_ctrl(x, y, z, utScale, quad=False):
     attr_util = rAttr.Attribute(add=False)
@@ -468,6 +478,10 @@ def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=Fals
     add_rig_sets()
     if polish:
         polish_rig()
+
+    mc.rename('neck_M_01_fk_CTRL', 'neck_01_FK_M_CTRL')
+    mc.rename('neck_M_02_fk_CTRL', 'neck_02_FK_M_CTRL')
+    mc.rename('neck_M_03_fk_CTRL', 'neck_03_FK_M_CTRL')
 
 
     if constrain_model:
