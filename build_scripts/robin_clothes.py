@@ -11,12 +11,16 @@ def robin_clothes(skin_src, skin_trg_grp):
     
     sk_g = []
 
-    rUtil.create_pxWrap('Clothes', 'Fingernails', skin_src)
-    #rUtil.create_pxWrap('Cornea', 'Eyes', 'Earrings', 'Hairtie', 'Clothes', 'Eyebrows', 'Eyelashes', 'Fingernails', 'static_hair', skin_src)
+    rUtil.create_pxWrap('Clothes', 'Fingernails', 'Eyebrows', skin_src)
+    #rUtil.create_pxWrap('Cornea', 'Eyes', 'Earrings', 'Hairtie', 'Clothes', 'Eyebrows', 'Eyelashes', 'Fingernails', 'static_hair', 'UpperTeeth', 'LowerTeeth', 'Tongue', skin_src)
     #rUtil.create_pxWrap('cornea', 'eyes', 'earrings',  'Clothes', 'eyebrows', 'eyelashes', 'Fingernails', skin_src)
 
+    no_skin = ['ClothesShape', 'GroomBustShape', 'bun_clump', 'left_bang_clump', 'pickShape', 'bun_clump_exportShape', 'left_bang_clump_exportShape', 'EyebrowsShape']
+
+    #geo = list(set(geo) - set(no_skin))
+
     for g in geo:
-        if g == 'ClothesShape' or g == 'GroomBustShape' or g == 'bun_clump' or g == 'left_bang_clump':
+        if g in no_skin:
             continue
         try:
             sk = mc.skinCluster(bind_joints, g, tsb=True)[0]

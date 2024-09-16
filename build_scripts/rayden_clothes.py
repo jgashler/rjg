@@ -64,7 +64,7 @@ def rayden_clothes(skin_src, skin_trg_grp):
         "LowerTeeth",
         "Eyebrows",
         "Eyelashes",
-        "Hair",
+        #"Hair",
         "Eyeballs",
         "Corneas",
         # "Shirt_grp",
@@ -104,6 +104,8 @@ def rayden_clothes(skin_src, skin_trg_grp):
         sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
         sk_g.append(sk)
         #rUtil.create_pxWrap([g, 'Rayden_UBM'])
+
+    mc.skinCluster('head_M_JNT', 'Hair', tsb=True, skinMethod=1, n='hairSkc') #skin the hair to only the head joint in order to avoid weird stretching
         
     for g in sk_g:
         pass
@@ -120,3 +122,19 @@ def rayden_clothes(skin_src, skin_trg_grp):
     #     rWeightNgIO.init_skc(ms)
     #     #rWeightNgIO.read_skin(ms, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes', ms)
     #     #TODO: import each of the manual skin latest version files and convert to ngSkinTools2 compatible
+
+
+    def rayden_clothes_pvis(skin_src, skin_trg_grp):
+        bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
+        geo = mc.ls(mc.select(skin_trg_grp, hierarchy=True), selection=True)
+        mc.select(skin_trg_grp, hierarchy=True)
+        geo = mc.ls(selection=True, type='mesh')
+
+        sk_g = []
+
+        for g in geo:
+            sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
+            sk_g.append(sk)
+
+        for g in sk_g:
+            mc.copySkinWeights(ss='skinCluster1', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
