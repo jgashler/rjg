@@ -21,7 +21,7 @@ class RigBase():
 
     # create base hierarachy
     def rig_hierarchy(self):
-        self.root = self.rig_group(name='CHAR')                         # contains all other hierarchy groups
+        self.root = self.rig_group(name='ROOT')                         # contains all other hierarchy groups
         self.model = self.rig_group(name='MODEL', parent=self.root)     # contains all geometry of a character
         self.rig = self.rig_group(name='RIG', parent=self.root)         # contains all rig systems
         self.skel = self.rig_group(name='SKEL', parent=self.root)       # contains the skeleton driven by the rig

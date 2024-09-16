@@ -53,13 +53,14 @@ class Head(rModule.RigModule):
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("neck_' + self.side + '_??_JNT")[-1]'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        target_list = ['CHAR', 
+        target_list = ['ROOT', 
                        'global_M_CTRL',
                        'root_02_M_CTRL',
                        'COG_M_CTRL',
                        'chest_M_01_CTRL',
                        'chest_M_02_CTRL',
-                       'neck_02_FK_M_CTRL',
+                       #'neck_02_FK_M_CTRL',
+                       'neck_M_03_JNT',
                        '6']
         name_list = ['world', 'global', 'root', 'cog', 'chest_01', 'chest_02', 'neck', 'default_value']
         point_names = ['point' + name.title() for name in name_list]
@@ -68,7 +69,7 @@ class Head(rModule.RigModule):
         rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.head_01.ctrl +'_orient', children_name=orient_names)
 
         delete_list = [self.base_name + '_02_JNT_pointConstraint1']
-        rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
+        #rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=[self.head_01.ctrl], name='transferAttributes', children_name=['neck_M_tip_CTRL'])
 

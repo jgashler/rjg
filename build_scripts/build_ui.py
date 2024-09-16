@@ -7,6 +7,9 @@ from importlib import reload
 
 from pipe.m.local import get_main_qt_window
 
+import rjg.build_scripts.build as build
+reload(build)
+
 
 class RigBuildUI(QtWidgets.QDialog):
     def __init__(self, parent=get_main_qt_window()):
@@ -221,8 +224,6 @@ class RigBuildUI(QtWidgets.QDialog):
             if v == "":
                 v = None
         
-        import rjg.build_scripts.build as build
-        reload(build)
         self.close()
         build.run(character=character, mp=mp, gp=gp, ep=ep, cp=cp, sp=sp, pp=pp, face=face, previs=previs)
         

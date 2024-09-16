@@ -62,7 +62,7 @@ class Chest(rModule.RigModule):
         rAttr.Attribute(node=self.part_grp, type='plug', value=['mc.ls("spine_M_??_driver_JNT")[-1]'], name='pocRigPlugs', children_name=[self.chest_jnt + '_point'])
         rAttr.Attribute(node=self.part_grp, type='plug', value=[self.chest_02.ctrl], name='orcRigPlugs', children_name=[self.chest_jnt + '_orient'])
 
-        target_list = ['CHAR',
+        target_list = ['ROOT',
                        'global_M_CTRL',
                        'root_02_M_CTRL',
                        'spine_03_FK_M_CTRL',

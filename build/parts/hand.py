@@ -83,7 +83,7 @@ class Hand(rModule.RigModule):
         hide_list = ['hand_'+ self.side + '_fk_CTRL_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(hide_list)], name='hideRigPlugs', children_name=['hideNodes'])
 
-        target_list = ['CHAR',
+        target_list = ['ROOT',
                        'global_M_CTRL',
                        'root_02_M_CTRL',
                        'COG_M_CTRL',

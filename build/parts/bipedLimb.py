@@ -196,7 +196,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                          #self.base_name + '_IK_BASE_CTRL_CNST_GRP',
                          self.fk_ctrls[-1].top
                         ]
-            pv_targets = ['CHAR',
+            pv_targets = ['ROOT',
                           'global_M_CTRL',
                           'root_02_M_CTRL',
                           'COG_M_CTRL',
@@ -221,7 +221,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                          #self.base_name + '_IK_BASE_CTRL_CNST_GRP'
                          ]
             #hide_list = None
-            pv_targets = ['CHAR',
+            pv_targets = ['ROOT',
                           'global_M_CTRL',
                           'root_02_M_CTRL',
                           'chest_M_01_CTRL',
@@ -231,7 +231,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
             ik_ctrl = ['hand_' + self.side + '_01_CTRL']
 
             rAttr.Attribute(node=self.part_grp, type='plug', value=['clavicle_' + self.side + '_02_driver_JNT'], name='pocRigPlugs', children_name=['arm_' + self.side + '_01_fk_CTRL_CNST_GRP'])
-            target_list = ['CHAR', 'global_M_CTRL', 'root_02_M_CTRL', 'chest_M_01_CTRL', 'chest_M_02_CTRL', 'clavicle_' + self.side + '_02_driver_JNT', '3']
+            target_list = ['ROOT', 'global_M_CTRL', 'root_02_M_CTRL', 'chest_M_01_CTRL', 'chest_M_02_CTRL', 'clavicle_' + self.side + '_02_driver_JNT', '3']
             name_list = ['world', 'global', 'root', 'chest01', 'chest02', 'clavicle', 'default_value']
             orient_names = ['orient' + name.title() for name in name_list]
             rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.fk_ctrls[0].ctrl + '_orient', children_name=orient_names)
@@ -249,7 +249,7 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                            self.pv_control + '_CNST_GRP',
                            self.base_name + '_IK_MAIN_CTRL_CNST_GRP']
             hide_list = [self.base_name + '_IK_BASE_CTRL_CNST_GRP']
-            pv_targets = ['CHAR',
+            pv_targets = ['ROOT',
                           'global_M_CTRL',
                           'root_02_M_CTRL',
                           'chest_M_01_CTRL',
@@ -257,7 +257,22 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                           '2']
             pv_names = ['world', 'global', 'root', 'hip', 'hand', 'default_value']
             ik_ctrl = None
+        elif self.part == 'neck':
+            
+            rAttr.Attribute(node=self.part_grp, type='plug', value=['chest_M_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
+            driver_list = ['chest_M_02_JNT', 'head_M_02_CTRL']
+            driven_list = [self.base_name + '_base_CTRL_CNST_GRP', self.base_name + '_tip_CTRL_CNST_GRP']
+
+            driver_list = ['chest_M_02_JNT']#, 'head_M_02_CTRL']
+            driven_list = ['neck_M_01_fk_CTRL_CNST_GRP']#, 'neck_M_03_fk_CTRL_CNST_GRP']
+            rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+
+            hide_list = [self.base_name + '_tip_CTRL_CNST_GRP', self.base_name + '_base_CTRL_CNST_GRP', 'neck_03_FK_M_CTRL_CNST_GRP']
+            rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(hide_list)], name='hideRigPlugs', children_name=['hideNodes'])
+
+            mc.hide('neck_M_03_fk_CTRL_CNST_GRP')
+            return
         else:
             par = 'insert limb plug here'
             driver_list = ['driver list']

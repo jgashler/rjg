@@ -194,7 +194,7 @@ class Foot(rModule.RigModule):
         delete_list = [self.base_name + '_01_translate_BCN']
         rAttr.Attribute(node=self.part_grp, type='plug', value=[' '.join(delete_list)], name='deleteRigPlugs', children_name=['deleteNodes'])
 
-        target_list = ['CHAR',
+        target_list = ['ROOT',
                        'global_M_CTRL',
                        'root_02_M_CTRL',
                        'COG_M_CTRL',

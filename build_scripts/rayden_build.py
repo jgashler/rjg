@@ -107,7 +107,7 @@ def run(previs=False):
     face = rFile.import_hierarchy(groups + '/dungeons/anim/Rigs/RaydenFace.mb')
     import rjg.post.faceProject as rFaceProj
     reload(rFaceProj)
-    rFaceProj.project(body=body_mesh, char='CHAR', f_model='FaceAtOrigin', f_rig='face_M', extras='Rayden_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT', tY=1.103)
+    rFaceProj.project(body=body_mesh, char='ROOT', f_model='FaceAtOrigin', f_rig='face_M', extras='Rayden_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT', tY=1.103)
     mc.delete(face)
 
     ##### IMPORT POSE INTERPOLATORS
