@@ -17,12 +17,21 @@ reload(rBuild)
 reload(rFinal)
 reload(rFile)
 
-#run(previs=True)
+
 
 
 def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=False):
     import rjg.build_scripts
     reload(rjg.build_scripts)
+    
+    import rjg.post.dataIO.ng_weights as rWeightNgIO
+    import rjg.post.dataIO.weights as rWeightIO
+    import rjg.post.dataIO.controls as rCtrlIO
+    import rjg.libs.util as rUtil
+    reload(rUtil)
+    reload(rWeightNgIO)
+    reload(rWeightIO)
+    reload(rCtrlIO)
     
     pvis_toggle = False if previs else True
 
@@ -38,12 +47,25 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=['Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
     chest = rBuild.build_module(module_type='chest', side='M', part='chest', guide_list=['Spine2'], ctrl_scale=70, chest_shape='circle')
     spine = rBuild.build_module(module_type='spine', side='M', part='spine', guide_list=['Hips', 'Spine', 'Spine1', 'Spine2'], ctrl_scale=1, mid_ctrl=True)
-    #neck = rBuild.build_module(module_type='spine', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=1, mid_ctrl=False, joint_num=3)
     neck = rBuild.build_module(module_type='biped_limb', side='M', part='neck', guide_list=['Neck', 'Neck1', 'Head'], ctrl_scale=10, bendy=False, twisty=False, stretchy=False, segments=1, create_ik=False)
     head = rBuild.build_module(module_type='head', side='M', part='head', guide_list=['Head'], ctrl_scale=50)
 
+    # dungeon monster tail and jaw
     if character == "DungeonMonster":
         tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail_' + str(t) for t in range(1, 15)], ctrl_scale=25, pad=2)
+        jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
+
+    # previs face rig
+    if not pvis_toggle:
+        arbit_guides = mc.listRelatives('FaceGuides', children=True)
+        for ag in arbit_guides:
+            if ag in ['lipLower', 'lipLeft', 'lipRight']:
+                pj = 'jaw_M_JNT'
+                pc = ['jaw_M_M_CTRL', 'head_M_01_CTRL']
+            else:
+                pj = 'head_M_JNT'
+                pc = ['head_M_01_CTRL']            
+            arb = rBuild.build_module(module_type='arbitrary', side='M', part=ag, guide_list=mc.getAttr(ag + '.translate'), ctrl_scale=1, par_jnt=pj, par_ctrl=pc)
         jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
 
 
@@ -63,7 +85,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         thumb = rBuild.build_module(module_type='finger', side=fs[0], part='fingerThumb', guide_list=[fs + 'HandThumb' + str(num+1) for num in range(4)], ctrl_scale=1, fk_shape='lollipop')
         fingers.append(thumb)    
         
-    mc.delete('Hips')
+    mc.delete('Guides')
 
     ### DEFAULT SKIN
 
@@ -75,84 +97,72 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
 
 
     ### SKIN/CURVE IO
-    
-    #if 'ngSkinTools2' not in sys.modules:
     try:
         import ngSkinTools2; ngSkinTools2.workspace_control_main_window(); ngSkinTools2.open_ui()
     except Exception as e:
         print(e)
 
-    import rjg.post.dataIO.ng_weights as rWeightNgIO
-    import rjg.post.dataIO.weights as rWeightIO
-    import rjg.post.dataIO.controls as rCtrlIO
-    import rjg.libs.util as rUtil
-    reload(rUtil)
-    reload(rWeightNgIO)
-    reload(rWeightIO)
-    reload(rCtrlIO)
 
-    print("Reading skin weight files...")
-
-    if cp:
-        cp_div = cp.split('/')
-        dir = '/'.join(cp_div[:-1])
-        rCtrlIO.read_ctrls(dir, curve_file=cp_div[-1][:-5])
-
+    # read skin data
     if sp:
+        if not pvis_toggle:
+            sp = sp[:-5]
+            sp += '_pvis.json'
         sp_div = sp.split('/')
         dir = '/'.join(sp_div[:-1])
         rWeightNgIO.read_skin(body_mesh, dir, sp_div[-1][:-5])
 
-    #mc.copySkinWeights(ss='skinCluster1', ds='skinCluster1', mm='YZ', sa='closestPoint', ia='closestJoint') # necessary??
 
+    #### RAYDEN SPECIFICS
     if character == 'Rayden':
         import rjg.build_scripts.rayden_clothes as rc
         reload(rc)
         if pvis_toggle:
             rc.rayden_clothes(body_mesh, extras)
         else:
-            rc.rayden_clothes_pvis(body_mesh, ['Shirt', 'VestFluff', 'Clothes', 'Fingernails'])
+            rc.rayden_clothes_pvis(body_mesh, ['Shirt', 'VestFluff', 'Clothes', 'Fingernails', 'Eyeballs', 'Corneas', 'Tongue', 'LowerTeeth', 'UpperTeeth', 'RaydenHair'])
+        
+        rUtil.create_pxPin(0, 142.159, -12.095, 'Clothes.vtx[83073]', 'crossbow', ctrl=True, prop='crossbow_geo')
+        
+        mc.parent('crossbow_geo', 'crossbow')
+        mc.hide('pinInput')
+        mc.parent('crossbow', 'MODEL')
+        
+        
+    #### ROBIN SPECIFICS
     elif character == 'Robin':
         import rjg.build_scripts.robin_clothes as rc
         reload(rc)
-        rc.robin_clothes(body_mesh, extras)
         
         if pvis_toggle:
-            mc.parent('hair_M', 'RIG')
-            mc.parent('hair_root_jnt', 'head_M_JNT')
-            #mc.parent('hair_export_root_jn', 'SKEL')
-            mc.parentConstraint('head_M_01_CTRL', 'bang_01_ofst', mo=True)
-            mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
-            
-            rUtil.create_pxWrap('bun_guides', 'bun_clump')#_export')
-            rUtil.create_pxWrap('left_bang_guides', 'left_bang_clump')#_export')
+            rc.robin_clothes(body_mesh, extras)
         else:
-            mc.delete('HairCurves')
-            mc.delete('hair_root_jnt')
+            rc.robin_clothes_pvis(body_mesh, ['Clothes', 'Hairtie', 'Earrings', 'Tongue', 'UpperTeeth', 'LowerTeeth', 'Eyes', 'Cornea', 'Eyebrows', 'static_hair', 'Fingernails'])
+        
+        mc.parent('hair_M', 'RIG')
+        mc.parent('hair_root_jnt', 'head_M_JNT')
+        mc.parentConstraint('head_M_01_CTRL', 'bang_01_ofst', mo=True)
+        mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
         
         mc.select('LowerTeeth', 'UpperTeeth', 'Tongue')
         mel.eval('hyperShade -assign Robin_Skin1;')
         
         mc.select(clear=True)
         
-        rUtil.create_pxPin(0, 132.481, -11.065, 'Clothes.vtx[54013]', 'pick_pin')
+        rUtil.create_pxPin(0, 132.481, -11.065, 'Clothes.vtx[54013]', 'icepick', ctrl=True, prop='icepick_geo')
         
-        mc.group('pick_pin', n='PROP')
-        mc.parent('PROP', 'ROOT')
-        #mc.parent('pick_pin', 'Robin_EXTRAS')
-        mc.parent('pick', 'pick_pin')
+        mc.parent('icepick_geo', 'icepick')
         mc.hide('pinInput')
-        
-        
-        
+        mc.parent('icepick', 'MODEL')
         
 
-
+    # initialize skin clusters as ngST layers
     for s in mc.ls(type='skinCluster'):
         try:
             rWeightNgIO.init_skc(s)
         except Exception as e:
             print(e)
+
 
     ##### PROJECT FACE
     if face:
@@ -163,46 +173,72 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         rFaceProj.project(body=body_mesh, char='ROOT', f_model='FaceAtOrigin', f_rig='face_M', extras=f'{character}_Extras', f_extras='F_EXTRAS', f_skel='faceRoot_JNT')#, tY=1.103)
         mc.delete(face)
         
+        mc.joint(n='root_root_JNT')
+        mc.parent('root_root_JNT', 'SKEL')
+        mc.parent('root_M_JNT', 'faceRoot_JNT', 'root_root_JNT')
         
+    # set up control shapes
+    if cp:
+        cp_div = cp.split('/')
+        dir = '/'.join(cp_div[:-1])
+        rCtrlIO.read_ctrls(dir, curve_file=cp_div[-1][:-5])    
+        
+    # delete anim curves
+    mc.select(all=True)
+    ac = mc.ls(selection=True, type='animCurve')
+    mc.delete(ac)
+
+    # finalize. create all connections/constraints
     rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
+    
+    # add prop to set
+    if character == 'Robin':
+        mc.sets('icepick', add='prop_SET')
+    elif character == 'Rayden':
+        mc.sets('crossbow', add='prop_SET')
 
     ##### IMPORT POSE INTERPOLATORS
-    if pp:
+    if pp and pvis_toggle:
         import rjg.libs.util as rUtil
         rUtil.import_poseInterpolator(pp)
         
+    # clean up scene
     mel.eval('hyperShadePanelMenuCommand("hyperShadePanel1", "deleteUnusedNodes");')
     
-    for item in mc.ls('*_MT1'):
-        mc.rename(item, item[:-1])
-        
+    # create groom bust
     if not character == 'DungeonMonster':
         create_groom_bust(body_mesh)
         
+    # set up textures
     import rjg.post.textures as rTex
     reload(rTex)
+    for item in mc.ls('*_MT1'):
+        mc.rename(item, item[:-1])
     rTex.set_textures(character)
         
     mc.BakeAllNonDefHistory()
     mc.bakePartialHistory(all=True)    
     
-    mc.select(clear=True)
-    print(f"\n{character} rig build complete.")
     
     ### TEMP ###
     mc.hide('Eyelashes')
-    #mc.setAttr('skinCluster2.envelope', 0)
-    # for dim in 'XYZ':
-    #     mc.disconnectAttr('neck_M_tip_JNT_parentConstraint1.constraintRotate' + dim, 'neck_M_tip_JNT.rotate' + dim)
-    ###########
+    try:
+        mc.parent('Fingernails', body_mesh[:-4] + '_EXTRAS')
+    except:
+        pass
+    try:
+        mc.delete('locator1')
+    except:
+        pass
+    try:
+        mc.parentConstraint('head_M_01_CTRL', 'lipLeft_M_M_CTRL_CNST_GRP', mo=True)
+        mc.parentConstraint('head_M_01_CTRL', 'lipRight_M_M_CTRL_CNST_GRP', mo=True)
+    except:
+        pass
+    ######
     
-
-    #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
-
-    # rc.write_clothes()
-    # rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", name='clothing_weights', force=True)
-    # rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
-
+    mc.select(clear=True)
+    print(f"\n{character} rig build complete.")
 
 
 
@@ -225,15 +261,14 @@ def create_groom_bust(model):
               f'{model}.f[14722:14953]')
               
     mc.componentTag(create=True, ntn='GroomBust')
-    # mc.polyColorPerVertex(r=1, g=1, b=1, a=1)
-    # mc.polyColorSet(rename=True, colorSet='colorSet1', newColorSet='GroomBust')
-              
 
+            
 
+    #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
+    #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Robin/Controls", force=True, name='robin_control_curves')
 
-
-
-
-
+    # rc.write_clothes()
+    # rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", name='clothing_weights', force=True)
+    # rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
 
 
