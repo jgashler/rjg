@@ -397,9 +397,11 @@ def add_rig_sets():
     ctrl_set = mc.sets(name='control_SET', empty=True)
     cache_set = mc.sets(name='cache_SET', empty=True)
     prop_set = mc.sets(name='prop_SET', empty=True)
+    unreal_set = mc.sets(name='unreal_SET', empty=True)
     mc.sets(ctrl_set, add=rig_set)
     mc.sets(cache_set, add=rig_set)
     mc.sets(prop_set, add=rig_set)
+    mc.sets(unreal_set, add=rig_set)
 
     for part in mc.listRelatives('RIG'):
         part_set = mc.sets(mc.ls(part+'*_CTRL'), name=part + '_SET')
@@ -411,6 +413,13 @@ def add_rig_sets():
         mc.sets('PROP', add=prop_set)
     except:
         pass
+
+    mc.sets('MODEL', add=unreal_set)
+    try:
+        mc.sets('root_root_JNT', add=unreal_set)
+    except:
+        mc.sets('root_M_JNT', add=unreal_set)
+
 
 def add_switch_ctrl(x, y, z, utScale, quad=False):
     attr_util = rAttr.Attribute(add=False)

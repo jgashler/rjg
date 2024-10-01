@@ -7,6 +7,8 @@ from importlib import reload
 
 from pipe.m.local import get_main_qt_window
 
+import rjg
+reload(rjg)
 import rjg.build_scripts.build as build
 reload(build)
 

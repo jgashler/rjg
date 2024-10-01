@@ -23,7 +23,7 @@ def set_textures(character):
             mc.setAttr(f'{m[:-3]}_file.aiAutoTx', 0)
             mc.setAttr(f'{m[:-3]}_file.uvTileProxyQuality', 1)
         except Exception as e:
-            print(e)
+            print(f"Texture setup exception on {m}:", e)
 
     # create script node to load textures on file open
     if not mc.objExists('previewTex'):

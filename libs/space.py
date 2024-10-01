@@ -43,7 +43,7 @@ def space_switch(node, driver, target_list=[], name_list=[], name='space', const
         wal = temp
 
     space = rAttr.Attribute(node=driver, type='enum', value=value, enum_list=name_list, keyable=True, name=name)
-
+    print("making space:", name)
     for i in range(len(targets)):
         if i > 0:
             mc.setDrivenKeyframe(cnst + '.' + wal[i-1], currentDriver=space.attr, driverValue=i, value=0)
