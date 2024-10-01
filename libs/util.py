@@ -1,4 +1,5 @@
 import maya.cmds as mc
+import rjg.libs.control.ctrl as rCtrl
 
 def create_pxWrap(*argv):
     a = argv if len(argv) > 1 else argv[0]
@@ -13,14 +14,25 @@ def create_pxWrap(*argv):
     mc.setAttr(pxWrap[0] + '.falloffScale', 15.0)
 
 
-def create_pxPin(x, y, z, target_vtx, n='default'):
+def create_pxPin(x, y, z, target_vtx, n='default', ctrl=False, prop=None):
     pin = mc.spaceLocator(n=n)
     mc.move(x, y, z, r=True, os=True, wd=True)
 
     mc.select(target_vtx, pin)
     pxPin = mc.ProximityPin()
 
-    return pin, pxPin
+    if ctrl:
+        rig_grp = mc.group(empty=True, n=n + '_M', parent='RIG')
+        pin_ctrl = rCtrl.Control(parent=rig_grp, name=n, shape='lollipop', side='M', suffix='CTRL', axis='y', group_type='main', rig_type='primary', translate=pin[0], rotate=(0, 0, 0), ctrl_scale=5)
+        pin_ctrl.tag_as_controller()
+
+        #mc.parentConstraint(pin_ctrl.ctrl, pin[0])
+        mc.parentConstraint(pin[0], pin_ctrl.top, mo=True)
+        mc.parentConstraint(pin_ctrl.ctrl, prop, mo=True)
+
+    mc.delete(pxPin)
+
+    return pin
 
 
 def reverse_hair_project():
