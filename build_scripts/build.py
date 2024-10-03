@@ -67,6 +67,8 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
                 pc = ['head_M_01_CTRL']            
             arb = rBuild.build_module(module_type='arbitrary', side='M', part=ag, guide_list=mc.getAttr(ag + '.translate'), ctrl_scale=1, par_jnt=pj, par_ctrl=pc)
         jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
+        eyes = rBuild.build_module(module_type='look_eyes', side='M', part='lookEyes', guide_list=['eye_L', 'eye_R', 'look_L', 'look_R'], ctrl_scale=1, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
+
 
 
     for fs in ['Left', 'Right']:    
@@ -231,10 +233,23 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     except:
         pass
     try:
-        mc.parentConstraint('head_M_01_CTRL', 'lipLeft_M_M_CTRL_CNST_GRP', mo=True)
+        #mc.parentConstraint('head_M_01_CTRL', 'lipLeft_M_M_CTRL_CNST_GRP', mo=True)
         mc.parentConstraint('head_M_01_CTRL', 'lipRight_M_M_CTRL_CNST_GRP', mo=True)
     except:
         pass
+        
+    if not pvis_toggle:
+        try:
+            mc.select('Eyes', 'Cornea')
+            mel.eval('doDetachSkin 3 { "1", "1", "1" };')
+            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Cornea', mi=1, tsb=True)
+            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Eyes', mi=1, tsb=True)
+        except:
+            mc.select('Eyeballs', 'Corneas')
+            mel.eval('doDetachSkin 3 { "1", "1", "1" };')
+            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Corneas', mi=1, tsb=True)
+            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Eyeballs', mi=1, tsb=True)
+
     ######
     
     mc.select(clear=True)
@@ -266,9 +281,3 @@ def create_groom_bust(model):
 
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
     #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Robin/Controls", force=True, name='robin_control_curves')
-
-    # rc.write_clothes()
-    # rWeightIO.write_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", name='clothing_weights', force=True)
-    # rWeightIO.read_skin("/groups/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes/v1", weights_file='clothing_weights')
-
-

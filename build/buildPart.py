@@ -19,6 +19,7 @@ import rjg.build.parts.tail as rTail
 import rjg.build.parts.floatBone as rFloatBone
 import rjg.build.parts.hinge as rHinge
 import rjg.build.parts.arbit as rArbit
+import rjg.build.parts.lookEyes as rLookEyes
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -37,6 +38,7 @@ reload(rTail)
 reload(rFloatBone)
 reload(rHinge)
 reload(rArbit)
+reload(rLookEyes)
 
 '''
 Wrapper for all part modules
@@ -60,6 +62,7 @@ MODULE_DICT = {
                'float_bone' : rFloatBone.FloatBone,
                'hinge' : rHinge.Hinge,
                'arbitrary' : rArbit.Arbitrary,
+               'look_eyes' : rLookEyes.LookEyes,
                }
 
 
