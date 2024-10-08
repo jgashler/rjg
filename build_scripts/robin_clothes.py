@@ -10,51 +10,33 @@ def robin_clothes(skin_src, skin_trg_grp):
     geo = mc.ls(selection=True, type='mesh')
     
     sk_g = []
-
-    rUtil.create_pxWrap('Clothes', 
-                        'Fingernails', 
-                        'Eyebrows', 
-                        'Eyes', 
-                        'Cornea', 
-                        'static_hair',
-                        'Hairtie',
-                        'Earrings',
-                        'LowerTeeth',
-                        'UpperTeeth',
-                        'Tongue',
-                        skin_src)
-    #rUtil.create_pxWrap('Cornea', 'Eyes', 'Earrings', 'Hairtie', 'Clothes', 'Eyebrows', 'Eyelashes', 'Fingernails', 'static_hair', 'UpperTeeth', 'LowerTeeth', 'Tongue', skin_src)
-    #rUtil.create_pxWrap('cornea', 'eyes', 'earrings',  'Clothes', 'eyebrows', 'eyelashes', 'Fingernails', skin_src)
-
-    no_skin = ['ClothesShape', 
-               'GroomBustShape', 
-               'bun_clump', 
-               'left_bang_clump', 
-               'pickShape', 
-               'bun_clump_exportShape', 
-               'left_bang_clump_exportShape', 
-               'EyebrowsShape',
-               ''
-               ]
     
+    geo = [
+        "Tongue",
+        "UpperTeeth",
+        "LowerTeeth",
+        "Eyebrows",
+        "Eyelashes",
+        "Cornea",
+        "Eyes",
+        "Earrings",
+        "static_hair",
+        "Hairtie"
+    ]
+
+    rUtil.create_pxWrap('Clothes', 'Fingernails', 'Robin_UBM')
+
+    for g in geo:
+        sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
+        sk_g.append(sk)
+  
     for g in sk_g:
+        pass
         print(g)
         try:                    
             mc.copySkinWeights(ss='skinCluster1', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
         except Exception as e:
             print(e)
-
-    #geo = list(set(geo) - set(no_skin))
-'''
-    for g in geo:
-        if g in no_skin:
-            continue
-        try:
-            sk = mc.skinCluster(bind_joints, g, tsb=True)[0]
-            sk_g.append(sk)
-        except Exception as e:
-            print(e)
-'''
 
 
 def robin_clothes_pvis(skin_src, skin_trg_grp):

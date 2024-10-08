@@ -31,32 +31,7 @@ def rayden_clothes(skin_src, skin_trg_grp):
     mc.select(skin_trg_grp, hierarchy=True)
     geo = mc.ls(selection=True, type='mesh')
 
-    geo = [
-        # "Pants", 
-        # "Underbelt",
-        # "Boots",
-        # #"Houlster",
-        # "SecondaryHoulsterStrap",
-        # #"Shirt",
-        # #"ShirtCollar",
-        # "Vest",
-        # "VestFlaps",
-        # # "UnderGlove",
-        # # "LeatherGlove",
-        # # "R_ArmWraps",
-        # # "ShoulderStraps",
-        # # "Bracer",
-
-        # "Tongue",
-        # "UpperTeeth",
-        # "LowerTeeth",
-        # "Eyebrows",
-        # "Eyelashes",
-        # "Hair",
-        # "Fingernails",
-        # "Eyeballs",
-        # "Corneas"
-    ]
+    sk_g = []
 
     geo = [
         "Tongue",
@@ -64,38 +39,10 @@ def rayden_clothes(skin_src, skin_trg_grp):
         "LowerTeeth",
         "Eyebrows",
         "Eyelashes",
-        #"Hair",
         "Eyeballs",
         "Corneas",
-        # "Shirt_grp",
-        # "Vest_grp",
-        # "Belt_grp",
-        # "Boots_grp",
-        # "Undervest_grp",
-        # "Pants_grp"
     ]
 
-    wrap_sets = [
-        #['Pockets', 'Pants'],
-        ['Belt', 'Underbelt'],
-        ['BeltLoop', 'BeltFasteners', "BeltBuckle", "Belt"],
-        ['BootStraps', 'Boots'],
-        ['BootBuckles', 'BootStraps'],
-        ['StrapFasteners', 'Houlster'],
-        ['VestBuckles', 'UnderVestFluff', 'Houlster', 'Vest'],
-        ['LegWraps', 'Pants'],
-        ['HoulsterMetalSnap', 'CrossbowStraps', 'Houlster'],
-        ['UnderVestFlapsFluff', 'VestFlaps'],
-        ['ShoulderStraps', 'Bracer', "UnderGlove", "LeatherGlove", "R_ArmWraps",'Shirt'],
-        ['Shirt', 'ShirtCollar', 'Rayden_UBM'],
-        manual_skins + ['Rayden_UBM']
-    ]
-
-
-
-    sk_g = []
-
-    #sk = mc.skinCluster(['world_M_JNT'] + bind_joints, 'Clothes', tsb=True, skinMethod=1, n='clothingSkc')
     rUtil.create_pxWrap('Clothes', 'Shirt', 'Fingernails', 'Rayden_UBM')
     rUtil.create_pxWrap('VestFluff', 'Clothes')
     mc.parent('Fingernails', 'Rayden_EXTRAS')
@@ -103,7 +50,6 @@ def rayden_clothes(skin_src, skin_trg_grp):
     for g in geo:
         sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
         sk_g.append(sk)
-        #rUtil.create_pxWrap([g, 'Rayden_UBM'])
 
     mc.skinCluster('head_M_JNT', 'Hair', tsb=True, skinMethod=1, n='hairSkc') #skin the hair to only the head joint in order to avoid weird stretching
         
@@ -112,17 +58,7 @@ def rayden_clothes(skin_src, skin_trg_grp):
         mc.copySkinWeights(ss='skinCluster1', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
         #rUtil.create_pxWrap([g, 'Rayden_UBM'])
 
-    # for ws in wrap_sets:
-    #     rUtil.create_pxWrap(ws)
-    #     #for g in ws[:-1]:
-    #     #    rUtil.create_pxWrap([g, 'Rayden_UBM'])
-
-    # for ms in manual_skins:
-    #     pass
-    #     rWeightNgIO.init_skc(ms)
-    #     #rWeightNgIO.read_skin(ms, groups + '/dungeons/character/Rigging/Rigs/Rayden/Skin/Clothes', ms)
-    #     #TODO: import each of the manual skin latest version files and convert to ngSkinTools2 compatible
-
+   
 
 def rayden_clothes_pvis(skin_src, skin_trg_grp):
     bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
