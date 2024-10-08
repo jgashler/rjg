@@ -47,8 +47,17 @@ class RigBuildUI(QtWidgets.QDialog):
                 "ep" : None,
                 "cp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/Controls/dm_control_curves.json",
                 "sp" : None,
-                "pp" : None,
+                "pp" : f'{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/dm_bone_locs.mb',
                 "im" : f"{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/DMSkull128.jpg",
+            },
+            "Skeleton" : {
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Skeleton/skeleton_model.mb",
+                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Skeleton/skeleton_guides.mb",
+                "ep" : None,
+                "cp" : None,
+                "sp" : None,
+                "pp" : f'{groups}/dungeons/character/Rigging/Rigs/Skeleton/sk_bone_locs.mb',
+                "im" : None,
             },
         }
         
@@ -59,7 +68,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
     def create_widgets(self):
         self.char_options = QtWidgets.QComboBox()
-        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster'])
+        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton'])
         self.char_options.setFixedWidth(100)
         
         self.model_label = QtWidgets.QLabel('Model:')

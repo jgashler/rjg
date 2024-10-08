@@ -1,6 +1,6 @@
 import maya.cmds as mc
 
-all_bones = mc.listRelatives('DM_combine', children=True)
+all_bones = mc.listRelatives('skeleton_grp', children=True)
 
 print(len(all_bones), all_bones)
 loc_grp = mc.group(empty=True, n='bone_locs')

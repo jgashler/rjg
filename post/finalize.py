@@ -200,6 +200,13 @@ def add_vis_ctrl(x, y, z, utScale):
     for c in mc.ls('*_CONTROL'):
         part = c.split('_')[1]
         side = c.split('_')[0]
+
+        if '_F_' in c:
+            items = c.split('_')
+            pos = items.index('F')
+            part = 'F'
+            side = '_'.join(items[:pos])
+
         if part in part_dict:
             part_dict[part].append(side)
         else:

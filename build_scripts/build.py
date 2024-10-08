@@ -20,7 +20,7 @@ reload(rFile)
 
 
 
-def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=False):
+def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=True, previs=False):
     import rjg.build_scripts
     reload(rjg.build_scripts)
     
@@ -34,6 +34,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     reload(rCtrlIO)
     
     pvis_toggle = False if previs else True
+    bony = False if (character == 'Robin' or character == 'Rayden') else True
 
     body_mesh = f'{character}_UBM'
 
@@ -41,8 +42,12 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
 
     ### BUILD SCRIPT
     root = rBuild.build_module(module_type='root', side='M', part='root', model_path=mp, guide_path=gp)
-    extras = rFile.import_hierarchy(ep, parent='MODEL')[0]
+    if ep:
+        extras = rFile.import_hierarchy(ep, parent='MODEL')[0]
     mc.viewFit('perspShape', fitFactor=1, all=True, animate=True)
+    
+    if character == 'Skeleton':
+        body_mesh = mc.listRelatives('skeleton_grp', children=True)
 
     hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=['Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
     chest = rBuild.build_module(module_type='chest', side='M', part='chest', guide_list=['Spine2'], ctrl_scale=70, chest_shape='circle')
@@ -88,14 +93,69 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         fingers.append(thumb)    
         
     mc.delete('Guides')
+    
+    if bony and pp:
+        import rjg.build_scripts.dm_bone_dict as dm_bd
+        import rjg.build_scripts.sk_bone_dict as sk_bd
+        reload(dm_bd)
+        reload(sk_bd)
+        
+        if character == 'DungeonMonster':
+            bone_dict = dm_bd.BoneDict().bone_dict
+        elif character == 'Skeleton':
+            bone_dict = sk_bd.BoneDict().bone_dict
+
+        bp = pp
+        
+        bone_locs = rFile.import_hierarchy(bp)   
+        bone_locs = mc.listRelatives('bone_locs', children=True)
+        
+        bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
+        for j in bind_joints:
+            mc.deleteAttr(j + '.bindJoint')
+            
+        float_bone_grp = mc.group(empty=True, name='floatBones_F')
+        mc.parent(float_bone_grp, 'RIG')
+        for b in bone_locs:
+            bone_name = b[:-4]
+            if bone_name in bone_dict:
+                par_jnt = bone_dict[bone_name][0]
+                par_ctrl = bone_dict[bone_name][1]
+                if len(bone_dict[bone_name]) > 2:
+                    print("TODO: handle extra cases")
+            else:
+                #print(f'    Bone {bone_name} not found in bone dictionary')
+                par_jnt = 'root_M_JNT'
+                par_ctrl = 'root_02_M_CTRL'
+            floatBone = rBuild.build_module(module_type='float_bone', side='F', part=b[:-4], guide_list=[b], ctrl_scale=2, par_jnt=par_jnt, par_ctrl=par_ctrl)
+            mc.parent(floatBone.part_grp, float_bone_grp)
+            #mc.connectJoint(floatBone.floatBone_jnt, par_jnt, pm=True)
+            mc.connectJoint(floatBone.bind_joints[0], par_jnt, pm=True)
+            mc.parentConstraint(par_jnt, floatBone.floatBone_ctrl.top, mo=True)
+
+
+            
+        mc.delete('bone_locs')d
+
 
     ### DEFAULT SKIN
-
-    bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
-    geo = mc.ls(body_mesh)
-    for g in geo:
-        skc = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, bindMethod=0)[0]
-        mc.setAttr(skc + '.dqsSupportNonRigid', 1)
+    if not bony:
+        bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
+        geo = mc.ls(body_mesh)
+        for g in geo:
+            skc = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, bindMethod=0)[0]
+            mc.setAttr(skc + '.dqsSupportNonRigid', 1)
+    else:
+        geo = mc.ls(body_mesh)
+        bone_skcs = []
+        for g in geo:
+            mc.select(g, g + '_F_JNT')
+            skc = mc.skinCluster(g + '_F_JNT', g, tsb=True)
+            bone_skcs.append(skc)
+        merged = mc.polyUniteSkinned(geo, ch=1, mergeUVSets=1)
+        mc.rename(merged[0], 'skeleton_geo')
+        mc.rename(merged[1], 'skeleton_skc')
+        mc.parent('skeleton_geo', 'MODEL')
 
 
     ### SKIN/CURVE IO
@@ -159,11 +219,12 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         
 
     # initialize skin clusters as ngST layers
-    for s in mc.ls(type='skinCluster'):
-        try:
-            rWeightNgIO.init_skc(s)
-        except Exception as e:
-            print(e)
+    if not bony:
+        for s in mc.ls(type='skinCluster'):
+            try:
+                rWeightNgIO.init_skc(s)
+            except Exception as e:
+                print(e)
 
 
     ##### PROJECT FACE
@@ -200,7 +261,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
         mc.sets('crossbow', add='prop_SET')
 
     ##### IMPORT POSE INTERPOLATORS
-    if pp and pvis_toggle:
+    if pp and pvis_toggle and not bony:
         import rjg.libs.util as rUtil
         rUtil.import_poseInterpolator(pp)
         
@@ -208,7 +269,7 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     mel.eval('hyperShadePanelMenuCommand("hyperShadePanel1", "deleteUnusedNodes");')
     
     # create groom bust
-    if not character == 'DungeonMonster':
+    if not bony:
         create_groom_bust(body_mesh)
         
     # set up textures
@@ -223,7 +284,10 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     
     
     ### TEMP ###
-    mc.hide('Eyelashes')
+    try:
+        mc.hide('Eyelashes')
+    except:
+        pass
     try:
         mc.parent('Fingernails', body_mesh[:-4] + '_EXTRAS')
     except:
@@ -233,10 +297,12 @@ def run(character, mp, gp, ep, cp=None, sp=None, pp=None, face=True, previs=Fals
     except:
         pass
     try:
-        #mc.parentConstraint('head_M_01_CTRL', 'lipLeft_M_M_CTRL_CNST_GRP', mo=True)
-        mc.parentConstraint('head_M_01_CTRL', 'lipRight_M_M_CTRL_CNST_GRP', mo=True)
-    except:
-        pass
+        lpc = mc.parentConstraint('head_M_01_CTRL', 'lipLeft_M_M_CTRL_CNST_GRP', mo=True)
+        rpc = mc.parentConstraint('head_M_01_CTRL', 'lipRight_M_M_CTRL_CNST_GRP', mo=True)
+        mc.setAttr(lpc[0] + '.interpType', 0)
+        mc.setAttr(rpc[0] + '.interpType', 0)
+    except Exception as e:
+        print(e)
         
     if not pvis_toggle:
         try:
