@@ -74,6 +74,8 @@ class Control(rDraw.Draw, rGroup.Group):
         rXform.match_pose(node=self.top, translate=self.translate, rotate=self.rotate, scale=self.scale)
         mc.setAttr(self.ctrl_name + '.v', keyable=False, cb=True)
 
+        mc.setAttr(self.ctrl_name + '.rotateOrder', k=True)
+
         if self.parent:
             mc.parent(self.top, self.parent)
         self.tag_control()

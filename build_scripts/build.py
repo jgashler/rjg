@@ -135,7 +135,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
 
 
             
-        mc.delete('bone_locs')d
+        mc.delete('bone_locs')
 
 
     ### DEFAULT SKIN
@@ -203,8 +203,8 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         
         mc.parent('hair_M', 'RIG')
         mc.parent('hair_root_jnt', 'head_M_JNT')
-        mc.parentConstraint('head_M_01_CTRL', 'bang_01_ofst', mo=True)
-        mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
+        mc.parentConstraint('head_M_01_CTRL', 'CoG_hair_root_ctrl_OFST', mo=True)
+        #mc.parentConstraint('head_M_01_CTRL', 'bun_01_ofst', mo=True)
         
         mc.select('LowerTeeth', 'UpperTeeth', 'Tongue')
         mel.eval('hyperShade -assign Robin_Skin1;')

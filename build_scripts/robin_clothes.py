@@ -27,7 +27,7 @@ def robin_clothes(skin_src, skin_trg_grp):
     rUtil.create_pxWrap('Clothes', 'Fingernails', 'Robin_UBM')
 
     for g in geo:
-        sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
+        sk = mc.skinCluster('head_M_JNT', g, tsb=True, skinMethod=1, n='clothingSkc')[0]
         sk_g.append(sk)
   
     for g in sk_g:
