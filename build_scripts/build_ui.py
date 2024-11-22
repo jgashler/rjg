@@ -1,4 +1,7 @@
-from PySide2 import QtWidgets, QtCore, QtGui
+try:
+    from PySide6 import QtWidgets, QtCore, QtGui
+except ImportError:
+    from PySide2 import QtWidgets, QtCore, QtGui
 
 import maya.cmds as mc
 import platform
@@ -45,7 +48,7 @@ class RigBuildUI(QtWidgets.QDialog):
                 "mp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/dm_model.mb",
                 "gp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/dm_guides.mb",
                 "ep" : None,
-                "cp" : None,
+                "cp" : f"{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/Controls/dm_control_curves.json",
                 "sp" : None,
                 "pp" : f'{groups}/dungeons/character/Rigging/Rigs/DungeonMonster/dm_bone_locs.mb',
                 "im" : f"{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/ui_images/DMSkull128.jpg",
@@ -59,12 +62,21 @@ class RigBuildUI(QtWidgets.QDialog):
                 "pp" : f'{groups}/dungeons/character/Rigging/Rigs/Skeleton/sk_bone_locs.mb',
                 "im" : None,
             },
-            "Jet" : {
-                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Jet/jet_model.mb",
-                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Jet/jet_guides.mb",
-                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Jet/jet_extras.mb",
+            "Jett" : {
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Jett/jet_model.mb",
+                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Jett/jet_guides.mb",
+                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Jett/jet_extras.mb",
                 "cp" : None,
-                "sp" : None,
+                "sp" : f"{groups}/skyguard/Anim/Rigging/Jett/Skin/SkyguardUBMSkin2.json", #None, #f"{groups}/dungeons/character/Rigging/Rigs/Jett/Skin/SkyguardUBMSkin.json",
+                "pp" : None,
+                "im" : None,
+            },
+            "Blitz" : {
+                "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/blitz_model.mb",
+                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/blitz_guides.mb",
+                "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/blitz_extras.mb",
+                "cp" : None,
+                "sp" : f"{groups}/skyguard/Anim/Rigging/Jet/Skin/SkyguardUBMSkin2.json",
                 "pp" : None,
                 "im" : None,
             },
@@ -77,7 +89,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
     def create_widgets(self):
         self.char_options = QtWidgets.QComboBox()
-        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton'])
+        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz'])
         self.char_options.setFixedWidth(100)
         
         self.model_label = QtWidgets.QLabel('Model:')

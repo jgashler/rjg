@@ -35,8 +35,14 @@ def create_pxPin(x, y, z, target_vtx, n='default', ctrl=False, prop=None):
     return pin
 
 
-def reverse_hair_project():
-    pass
+def pvis_blink(jnt, blink, dist):
+    mc.setDrivenKeyframe(jnt + '.rotateX', cd=blink+'.blink')
+    mc.setAttr(blink + '.blink', 1)
+    mc.setAttr(jnt + '.rotateX', dist)
+    mc.setDrivenKeyframe(jnt + '.rotateX', cd=blink + '.blink')
+    mc.setAttr(blink + '.blink', 0)
+    
+
 
 
 '''

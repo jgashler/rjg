@@ -121,7 +121,10 @@ class Control(rDraw.Draw, rGroup.Group):
                             }
         tag_string = str(self.control_dict)
 
-        rAttr.Attribute(type='string', node=self.ctrl, name='ctrlDict', value=tag_string, lock=True)    
+        try:
+            rAttr.Attribute(type='string', node=self.ctrl, name='ctrlDict', value=tag_string, lock=True)    
+        except:
+            rAttr.Attribute(type='string', node=self.ctrl, name='ctrlDict', value='ctrlDict', lock=True)  
 
     #TODO figure out how to set, query pickwalk targets    
     def tag_as_controller(self, new=True, parent=None, query=False):

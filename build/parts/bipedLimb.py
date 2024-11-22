@@ -181,13 +181,13 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
             par = 'COG_M_JNT'
             driver_list = ['waist_M_CTRL',
                            'waist_M_CTRL', 
-                           'waist_M_CTRL', 
+                           #'waist_M_CTRL', 
                            self.base_name + '_IK_BASE_CTRL', 
                            'foot_' + self.side + '_01_ik_JNT',
                            'root_02_M_CTRL']
             driven_list = [self.limb_grp, 
                            self.base_name + '_IK_BASE_CTRL_CNST_GRP', 
-                           self.base_name + '_01_fk_CTRL_CNST_GRP',
+                           #self.base_name + '_01_fk_CTRL_CNST_GRP',
                            self.base_name + '_up_twist_LOC',
                            self.base_name + '_IK_MAIN_CTRL_CNST_GRP',
                            self.pv_control + '_CNST_GRP']
@@ -205,6 +205,16 @@ class BipedLimb(rModule.RigModule, rIk.Ik, rFk.Fk):
                           '4']
             pv_names = ['world', 'global', 'root', 'hip', 'foot', 'default_value']
             ik_ctrl = ['foot_' + self.side + '_01_' + self.side + '_CTRL']
+
+            target_list = ['ROOT', 'global_M_CTRL', 'root_02_M_CTRL', 'COG_M_CTRL', 'waist_M_CTRL', '4']
+            name_list = ['world', 'global', 'root', 'COG', 'waist', 'default_value']
+            orient_names = ['point' + name.title() for name in name_list]
+            rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.fk_ctrls[0].ctrl + '_point', children_name=orient_names)
+
+            target_list = ['ROOT', 'global_M_CTRL', 'root_02_M_CTRL', 'COG_M_CTRL', 'waist_M_CTRL', '4']
+            name_list = ['world', 'global', 'root', 'COG', 'waist', 'default_value']
+            orient_names = ['orient' + name.title() for name in name_list]
+            rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.fk_ctrls[0].ctrl + '_orient', children_name=orient_names)
         elif self.part == 'arm':
             par = 'clavicle_' + self.side + '_02_JNT'
             driver_list = ['clavicle_' + self.side + '_02_driver_JNT',

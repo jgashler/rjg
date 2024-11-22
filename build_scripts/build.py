@@ -11,13 +11,14 @@ import rjg.post.finalize as rFinal
 import rjg.build.prop as rProp
 import rjg.libs.file as rFile
 import rjg.libs.util as rUtil
+import rjg.post.dataIO.controls as rCtrlIO
 reload(rUtil)
 reload(rProp)
 reload(rBuild)
 reload(rFinal)
 reload(rFile)
 
-
+import pipe.m.space_switch as spsw
 
 
 def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=True, previs=False):
@@ -33,8 +34,8 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
     reload(rWeightIO)
     reload(rCtrlIO)
     
-    pvis_toggle = False if previs else True
-    bony = False if (character == 'Robin' or character == 'Rayden') else True
+    not_previs = False if previs or character == 'DungeonMonster' else True
+    bony = False if (character in ['Robin', 'Rayden', 'Jett', 'Blitz']) else True
 
     body_mesh = f'{character}_UBM'
 
@@ -48,6 +49,8 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
     
     if character == 'Skeleton':
         body_mesh = mc.listRelatives('skeleton_grp', children=True)
+    elif character == 'DungeonMonster':
+        body_mesh = mc.listRelatives('dungeonmonster_FINAL_GEO', children=True)
 
     hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=['Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
     chest = rBuild.build_module(module_type='chest', side='M', part='chest', guide_list=['Spine2'], ctrl_scale=70, chest_shape='circle')
@@ -57,14 +60,14 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
 
     # dungeon monster tail and jaw
     if character == "DungeonMonster":
-        tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail_' + str(t) for t in range(1, 15)], ctrl_scale=25, pad=2)
+        tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail_' + str(t) for t in range(1, 8)], ctrl_scale=25, pad=2)
         jaw = rBuild.build_module(module_type='hinge', side='M', part='jaw', guide_list=['JawBase', 'JawTip'], ctrl_scale=40, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
 
     # previs face rig
-    if not pvis_toggle:
+    if not not_previs and not bony and character != 'Jett' and character != 'Blitz':
         arbit_guides = mc.listRelatives('FaceGuides', children=True)
         for ag in arbit_guides:
-            if ag in ['lipLower', 'lipLeft', 'lipRight']:
+            if ag in ['lipLower']:#, 'lipLeft', 'lipRight']:
                 pj = 'jaw_M_JNT'
                 pc = ['jaw_M_M_CTRL', 'head_M_01_CTRL']
             else:
@@ -75,19 +78,18 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         eyes = rBuild.build_module(module_type='look_eyes', side='M', part='lookEyes', guide_list=['eye_L', 'eye_R', 'look_L', 'look_R'], ctrl_scale=1, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
 
 
-
     for fs in ['Left', 'Right']:    
-        arm = rBuild.build_module(module_type='biped_limb', side=fs[0], part='arm', guide_list=[fs + piece for piece in ['Arm', 'ForeArm', 'Hand']], offset_pv=50, ctrl_scale=5, bendy=pvis_toggle, twisty=pvis_toggle, stretchy=pvis_toggle, segments=4 if pvis_toggle else 1)
+        arm = rBuild.build_module(module_type='biped_limb', side=fs[0], part='arm', guide_list=[fs + piece for piece in ['Arm', 'ForeArm', 'Hand']], offset_pv=50, ctrl_scale=5, bendy=not_previs, twisty=not_previs, stretchy=not_previs, segments=4 if not_previs else 1)
         clavicle = rBuild.build_module(module_type='clavicle', side=fs[0], part='clavicle', guide_list=[fs + piece for piece in ['Shoulder', 'Arm']], local_orient=False, ctrl_scale=9) 
         hand = rBuild.build_module(module_type='hand', side=fs[0], part='hand', guide_list=[fs + 'Hand'], ctrl_scale=8)
         
-        leg = rBuild.build_module(module_type='biped_limb', side=fs[0], part='leg', guide_list=[fs + piece for piece in ['UpLeg', 'Leg', 'Foot']], offset_pv=50, ctrl_scale=8, bendy=pvis_toggle, twisty=pvis_toggle, stretchy=pvis_toggle, segments=4 if pvis_toggle else 1)
+        leg = rBuild.build_module(module_type='biped_limb', side=fs[0], part='leg', guide_list=[fs + piece for piece in ['UpLeg', 'Leg', 'Foot']], offset_pv=50, ctrl_scale=8, bendy=not_previs, twisty=not_previs, stretchy=not_previs, segments=4 if not_previs else 1)
         foot = rBuild.build_module(module_type='foot', side=fs[0], part='foot', guide_list=[fs + piece for piece in ['Foot', 'ToeBase', 'Toe_End']], ctrl_scale=10, toe_piv=fs+'ToePiv', heel_piv=fs+'HeelPiv', in_piv=fs+'In', out_piv=fs+'Out')
         
         fingers = []
             
         for f in ['Index', 'Middle', 'Ring', 'Pinky']:
-            finger = rBuild.build_module(module_type='finger', side=fs[0], part='finger'+f, guide_list=[fs + 'Hand' + f + str(num) for num in range(5)], ctrl_scale=1, fk_shape='lollipop')
+            finger = rBuild.build_module(module_type='finger', side=fs[0], part='finger'+f, guide_list=[fs + 'Hand' + f + str(num) for num in range(4 if character == 'DungeonMonster' else 5)], ctrl_scale=1, fk_shape='lollipop')
             fingers.append(finger)
         thumb = rBuild.build_module(module_type='finger', side=fs[0], part='fingerThumb', guide_list=[fs + 'HandThumb' + str(num+1) for num in range(4)], ctrl_scale=1, fk_shape='lollipop')
         fingers.append(thumb)    
@@ -104,10 +106,8 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             bone_dict = dm_bd.BoneDict().bone_dict
         elif character == 'Skeleton':
             bone_dict = sk_bd.BoneDict().bone_dict
-
-        bp = pp
         
-        bone_locs = rFile.import_hierarchy(bp)   
+        bone_locs = rFile.import_hierarchy(pp)   
         bone_locs = mc.listRelatives('bone_locs', children=True)
         
         bind_joints = [jnt.split('.')[0] for jnt in mc.ls('*.bindJoint')]
@@ -152,10 +152,13 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             mc.select(g, g + '_F_JNT')
             skc = mc.skinCluster(g + '_F_JNT', g, tsb=True)
             bone_skcs.append(skc)
-        merged = mc.polyUniteSkinned(geo, ch=1, mergeUVSets=1)
-        mc.rename(merged[0], 'skeleton_geo')
-        mc.rename(merged[1], 'skeleton_skc')
-        mc.parent('skeleton_geo', 'MODEL')
+        try:
+            merged = mc.polyUniteSkinned(geo, ch=1, mergeUVSets=1)
+            mc.rename(merged[0], 'skeleton_geo')
+            mc.rename(merged[1], 'skeleton_skc')
+            mc.parent('skeleton_geo', 'MODEL')
+        except Exception as e:
+            mc.warning(e)
 
 
     ### SKIN/CURVE IO
@@ -167,7 +170,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
 
     # read skin data
     if sp:
-        if not pvis_toggle:
+        if not not_previs and character != 'Jett' and character != 'Blitz':
             sp = sp[:-5]
             sp += '_pvis.json'
         sp_div = sp.split('/')
@@ -179,16 +182,28 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
     if character == 'Rayden':
         import rjg.build_scripts.rayden_clothes as rc
         reload(rc)
-        if pvis_toggle:
+        if not_previs:
             rc.rayden_clothes(body_mesh, extras)
         else:
-            rc.rayden_clothes_pvis(body_mesh, ['Shirt', 'VestFluff', 'Clothes', 'Fingernails', 'Eyeballs', 'Corneas', 'Tongue', 'LowerTeeth', 'UpperTeeth', 'RaydenHair'])
-        
-        rUtil.create_pxPin(0, 142.159, -12.095, 'Clothes.vtx[83073]', 'crossbow', ctrl=True, prop='crossbow_geo')
-        
-        mc.parent('crossbow_geo', 'crossbow')
-        mc.hide('pinInput')
-        mc.parent('crossbow', 'MODEL')
+            try:
+                rc.rayden_clothes_pvis(body_mesh, ['Shirt', 'VestFluff', 'Clothes', 'Fingernails', 'Eyeballs', 'Corneas', 'Tongue', 'LowerTeeth', 'UpperTeeth', 'RaydenHair'])
+            except:
+                rc.rayden_clothes_pvis(body_mesh, ['Clothes'])    
+        try:
+            rUtil.create_pxPin(0, 142.159, -12.095, 'Clothes.vtx[83073]', 'S_Crossbow:crossbow', ctrl=True, prop='S_Crossbow:crossbow_geo')
+    
+            mc.parent('S_Crossbow:crossbow_geo', 'S_Crossbow:crossbow')
+            mc.hide('pinInput')
+            mc.parent('S_Crossbow:ROOT', world=True)
+            mc.select('chest_M_02_CTRL', 'arm_R_03_fk_CTRL', 'arm_L_03_fk_CTRL', 'crossbow_M_CTRL')
+            spsw.run()
+            mc.addAttr('crossbow_M_CTRL.spaceSwitch', e=True, enumName='world:back:right hand:left hand:')
+            mc.setAttr('crossbow_M_CTRL.spaceSwitch', 1)
+            mc.parent('crossbow_M_CTRL_space_switch_GRP', 'RIG')
+            mc.parent('S_Crossbow:crossbow', 'S_Crossbow:MODEL')
+            
+        except:
+            pass
         
         
     #### ROBIN SPECIFICS
@@ -196,7 +211,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         import rjg.build_scripts.robin_clothes as rc
         reload(rc)
         
-        if pvis_toggle:
+        if not_previs:
             rc.robin_clothes(body_mesh, extras)
         else:
             rc.robin_clothes_pvis(body_mesh, ['Clothes', 'Hairtie', 'Earrings', 'Tongue', 'UpperTeeth', 'LowerTeeth', 'Eyes', 'Cornea', 'Eyebrows', 'static_hair', 'Fingernails'])
@@ -216,6 +231,11 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         mc.parent('icepick_geo', 'icepick')
         mc.hide('pinInput')
         mc.parent('icepick', 'MODEL')
+        mc.select('chest_M_02_CTRL', 'arm_R_03_fk_CTRL', 'arm_L_03_fk_CTRL', 'icepick_M_CTRL')
+        spsw.run()
+        mc.addAttr('icepick_M_CTRL.spaceSwitch', e=True, enumName='world:back:right hand:left hand:')
+        mc.setAttr('icepick_M_CTRL.spaceSwitch', 1)
+        mc.parent('icepick_M_CTRL_space_switch_GRP', 'RIG')
         
 
     # initialize skin clusters as ngST layers
@@ -225,6 +245,18 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
                 rWeightNgIO.init_skc(s)
             except Exception as e:
                 print(e)
+                
+    if not_previs and not bony:
+        try:
+            mc.blendShape(n='breath_blendshapes', foc=True, ip=groups + f'/dungeons/character/Rigging/Rigs/{character}/Skin/breath_shapes.shp')
+            mc.select('chest_M_01_CTRL')
+            mc.addAttr(at='float', longName='chestBreath', min=0, max=1, k=True)
+            mc.addAttr(at='float', longName='bellyBreath', min=0, max=1, k=True)
+
+            mc.connectAttr('chest_M_01_CTRL.chestBreath', 'breath_blendshapes.chest_breath')
+            mc.connectAttr('chest_M_01_CTRL.bellyBreath', 'breath_blendshapes.belly_breath')
+        except Exception as e:
+            print('no breath blendshapes connected:', e)
 
 
     ##### PROJECT FACE
@@ -240,11 +272,16 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         mc.parent('root_root_JNT', 'SKEL')
         mc.parent('root_M_JNT', 'faceRoot_JNT', 'root_root_JNT')
         
-    # set up control shapes
-    if cp:
-        cp_div = cp.split('/')
-        dir = '/'.join(cp_div[:-1])
-        rCtrlIO.read_ctrls(dir, curve_file=cp_div[-1][:-5])    
+        mc.select('head_M_01_CTRL', 'Look_Control')
+        spsw.run()
+        mc.addAttr('Look_Control.spaceSwitch', e=True, enumName='world:head:')
+        mc.setAttr('Look_Control.spaceSwitch', 1)
+        mc.parent('Look_Control_space_switch_GRP', 'RIG')
+        
+        
+
+        
+
         
     # delete anim curves
     mc.select(all=True)
@@ -252,18 +289,31 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
     mc.delete(ac)
 
     # finalize. create all connections/constraints
-    rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
+    if not bony:
+        rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False, character=character)
+    else:
+        rFinal.final(utX=90, utY=0, DutZ=15, utScale=3, polish=False)
+    
+    # set up control shapes
+    if cp:
+        cp_div = cp.split('/')
+        dir = '/'.join(cp_div[:-1])
+        rCtrlIO.read_ctrls(dir, curve_file=cp_div[-1][:-5])    
     
     # add prop to set
     if character == 'Robin':
         mc.sets('icepick', add='prop_SET')
     elif character == 'Rayden':
-        mc.sets('crossbow', add='prop_SET')
+        mc.parent('S_Crossbow:crossbow', 'S_Crossbow:MODEL')
+        mc.sets('S_Crossbow:MODEL', add='prop_SET')
 
     ##### IMPORT POSE INTERPOLATORS
-    if pp and pvis_toggle and not bony:
+    if pp and not_previs and not bony:
         import rjg.libs.util as rUtil
         rUtil.import_poseInterpolator(pp)
+        
+    if character == 'Rayden':
+        mc.connectAttr('cbow_rev.outputX', 'S_Crossbow:crossbow.visibility')
         
     # clean up scene
     mel.eval('hyperShadePanelMenuCommand("hyperShadePanel1", "deleteUnusedNodes");')
@@ -278,16 +328,49 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
     for item in mc.ls('*_MT1'):
         mc.rename(item, item[:-1])
     rTex.set_textures(character)
-        
-    mc.BakeAllNonDefHistory()
-    mc.bakePartialHistory(all=True)    
     
+    if not not_previs and not bony:
+        try:
+            mc.blendShape(character + '_UBM', name = 'pvis_shapes', foc=True)
+            mc.blendShape('pvis_shapes', e=True, ip=f'/groups/dungeons/character/Rigging/Rigs/{character}/Skin/pvis_shapes.shp')
+            mc.connectAttr('look_L_CTRL.blink', 'pvis_shapes.blink_LShape')
+            mc.connectAttr('look_R_CTRL.blink', 'pvis_shapes.blink_RShape')
+        except:
+            pass
+        
+
+            
+    if not not_previs and not bony:
+        try:
+            for o in ['lipLeft_M_M_CTRL_SDK_GRP.', 'lipRight_M_M_CTRL_SDK_GRP.']:
+                for a in ['translateY', 'rotateX']:
+                    mc.setDrivenKeyframe(o, at=a, cd='jaw_M_M_CTRL.rotateX')
+            mc.setAttr('jaw_M_M_CTRL.rotateX', 38)
+            mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.translateY', -1.773)
+            mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.rotateX', 21.592)
+            mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.translateZ', -.56)
+            mc.setAttr('lipRight_M_M_CTRL_SDK_GRP.translateY', -1.773)
+            mc.setAttr('lipRight_M_M_CTRL_SDK_GRP.rotateX', 21.592)
+            mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.translateZ', -.56)
+            for o in ['lipLeft_M_M_CTRL_SDK_GRP.', 'lipRight_M_M_CTRL_SDK_GRP.']:
+                for a in ['translateY', 'rotateX']:
+                    mc.setDrivenKeyframe(o, at=a, cd='jaw_M_M_CTRL.rotateX')
+            mc.setAttr('jaw_M_M_CTRL.rotateX', 0)
+        except:
+            pass
+        
+    try:
+        mc.BakeAllNonDefHistory()
+        mc.bakePartialHistory(all=True)    
+    except Exception as e:
+        mc.warning("Delete history error:", e)
     
     ### TEMP ###
-    try:
-        mc.hide('Eyelashes')
-    except:
-        pass
+    # try:
+    #     if character == 'Rayden':
+    #         mc.hide('Eyelashes')
+    # except:
+    #     pass
     try:
         mc.parent('Fingernails', body_mesh[:-4] + '_EXTRAS')
     except:
@@ -303,19 +386,73 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         mc.setAttr(rpc[0] + '.interpType', 0)
     except Exception as e:
         print(e)
+    try:
+        mc.disconnectAttr('Robin_H_file.outColor', 'Robin_Hair.baseColor')
+        mc.disconnectAttr('Robin_S_file.outColor', 'Robin_Silk.baseColor')
+        mc.setAttr('Robin_Silk.baseColor', 0.124521, 0.0142565, 0.00418706, type='double3')
+    except Exception as e:
+        print(e)
         
-    if not pvis_toggle:
-        try:
-            mc.select('Eyes', 'Cornea')
-            mel.eval('doDetachSkin 3 { "1", "1", "1" };')
-            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Cornea', mi=1, tsb=True)
-            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Eyes', mi=1, tsb=True)
-        except:
-            mc.select('Eyeballs', 'Corneas')
-            mel.eval('doDetachSkin 3 { "1", "1", "1" };')
-            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Corneas', mi=1, tsb=True)
-            mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Eyeballs', mi=1, tsb=True)
+    if character == 'DungeonMonster':
+        mc.setAttr('switch_CTRL.armL_IKFK', 0)
+        mc.setAttr('switch_CTRL.armR_IKFK', 0)
+    try:
+        orig = mc.select('*ShapeOrig1')
+        orig = mc.ls(selection=True)
+        clean_o, broken_o = [], []
+        for o in orig:
+            if '_' not in o:
+                clean_o.append(o)
 
+        for o1 in clean_o:
+            if mc.objExists(o1[:-1]):
+                broken_o.append(o1)
+            
+        for o in broken_o:
+            conn = mc.listConnections(o, d=True)
+            skc = conn[0]
+            bs = conn[1]
+            o_new = o[:-1]
+            mc.connectAttr(o_new + '.outMesh', bs + '.originalGeometry[0]', f=True)
+            mc.connectAttr(o_new + '.outMesh', skc + '.originalGeometry[0]', f=True)
+            mc.connectAttr(o_new + '.worldMesh[0]', bs + '.input[0].inputGeometry', f=True)
+            mc.delete(o)
+    except Exception as e:
+        print('shapeOrig1 error:',e)
+        if character == 'Robin' and face:
+            run(character, mp=mp, gp=gp, ep=ep, cp=cp, sp=sp, pp=pp, face=face, previs=previs)
+            print("attempt etc.")
+            return
+    
+
+    ############
+        
+    if not not_previs and not bony:
+        try:
+            try:
+                mc.select('Eyes', 'Cornea', 'LowerTeeth', 'UpperTeeth', 'Tongue')
+                mel.eval('doDetachSkin 3 { "1", "1", "1" };')
+                mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Cornea', mi=1, tsb=True)
+                mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Eyes', mi=1, tsb=True)
+                mc.skinCluster('jaw_M_JNT', 'LowerTeeth', mi=1, tsb=True)
+                mc.skinCluster('jaw_M_JNT', 'Tongue', mi=1, tsb=True)
+                mc.skinCluster('head_M_JNT', 'UpperTeeth', mi=1, tsb=True)
+            except Exception as e:
+                mc.select('Eyeballs', 'Corneas', 'LowerTeeth', 'UpperTeeth', 'Tongue')
+                mel.eval('doDetachSkin 3 { "1", "1", "1" };')
+                mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Corneas', mi=1, tsb=True)
+                mc.skinCluster('eyeBind_L_JNT', 'eyeBind_R_JNT', 'Eyeballs', mi=1, tsb=True)
+                mc.skinCluster('jaw_M_JNT', 'LowerTeeth', mi=1, tsb=True)
+                mc.skinCluster('jaw_M_JNT', 'Tongue', mi=1, tsb=True)
+                mc.skinCluster('head_M_JNT', 'UpperTeeth', mi=1, tsb=True)
+            try:
+                rUtil.pvis_blink('eyelid_L_JNT', 'look_L_CTRL', 40)
+                rUtil.pvis_blink('eyelid_R_JNT', 'look_R_CTRL', 40)
+            except Exception as e:
+                print(e)
+        except:
+            pass
+            
     ######
     
     mc.select(clear=True)
@@ -345,5 +482,24 @@ def create_groom_bust(model):
 
             
 
-    #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
-    #rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Robin/Controls", force=True, name='robin_control_curves')
+#rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Rayden/Controls", force=True, name='rayden_control_curves')
+#rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/Robin/Controls", force=True, name='robin_control_curves')
+#rCtrlIO.write_ctrls("/groups/dungeons/character/Rigging/Rigs/DungeonMonster/Controls", force=True, name='dm_control_curves')
+
+
+'''   
+for o in ['lipLeft_M_M_CTRL_SDK_GRP.', 'lipRight_M_M_CTRL_SDK_GRP.']:
+    for a in ['translateY', 'rotateX']:
+        mc.setDrivenKeyframe(o, at=a, cd='jaw_M_M_CTRL.rotateX')
+mc.setAttr('jaw_M_M_CTRL.rotateX', 38)
+mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.translateY', -1.773)
+mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.rotateX', 21.592)
+mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.translateZ', -.56)
+mc.setAttr('lipRight_M_M_CTRL_SDK_GRP.translateY', -1.773)
+mc.setAttr('lipRight_M_M_CTRL_SDK_GRP.rotateX', 21.592)
+mc.setAttr('lipLeft_M_M_CTRL_SDK_GRP.translateZ', -.56)
+for o in ['lipLeft_M_M_CTRL_SDK_GRP.', 'lipRight_M_M_CTRL_SDK_GRP.']:
+    for a in ['translateY', 'rotateX']:
+        mc.setDrivenKeyframe(o, at=a, cd='jaw_M_M_CTRL.rotateX')
+mc.setAttr('jaw_M_M_CTRL.rotateX', 0)
+'''

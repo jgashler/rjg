@@ -21,7 +21,7 @@ def robin_clothes(skin_src, skin_trg_grp):
         "Eyes",
         "Earrings",
         "static_hair",
-        "Hairtie"
+        #"Hairtie"
     ]
 
     rUtil.create_pxWrap('Clothes', 'Fingernails', 'Robin_UBM')
@@ -48,8 +48,11 @@ def robin_clothes_pvis(skin_src, skin_trg_grp):
     sk_g = []
 
     for g in geo:
-        sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
-        sk_g.append(sk)
+        try:
+            sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
+            sk_g.append(sk)
+        except:
+            pass
 
     for g in sk_g:
-        mc.copySkinWeights(ss='skinCluster6', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
+        mc.copySkinWeights(ss='skinCluster13', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
