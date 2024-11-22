@@ -75,7 +75,7 @@ class RigBuildUI(QtWidgets.QDialog):
                 "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/blitz_model.mb",
                 "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/blitz_guides.mb",
                 "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/blitz_extras.mb",
-                "cp" : f"{groups}/dungeons\character\Rigging\Rigs\Blitz\Controls\blitz_control_curves.json",
+                "cp" : f"{groups}/dungeons/character/Rigging/Rigs/Blitz/Controls/blitz_control_curves.json",
                 "sp" : f"{groups}/skyguard/Anim/Rigging/Blitz/Skin/BlitzSkinV1.json",
                 "pp" : None,
                 "im" : None,
