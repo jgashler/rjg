@@ -519,3 +519,4 @@ def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=Fals
             mc.parentConstraint('root_M_JNT', 'MODEL', mo=True)
             mc.scaleConstraint('root_M_JNT', 'MODEL', mo=True)
 
+
