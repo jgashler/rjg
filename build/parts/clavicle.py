@@ -148,3 +148,18 @@ class Clavicle(rModule.RigModule):
         driven_list = ['clavicle_' + self.side + '_CTRL_CNST_GRP',
                        'clavicle_' + self.side + '_CNST_GRP']
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)
+
+        # target_list = ['ROOT', 
+        #                'global_M_CTRL',
+        #                'root_02_M_CTRL',
+        #                'COG_M_CTRL',
+        #                'chest_M_01_CTRL',
+        #                'chest_M_02_CTRL',
+        #                '5']
+        # name_list = ['world', 'global', 'root', 'cog', 'chest_01', 'chest_02', 'default_value']
+        # point_names = ['point' + name.title() for name in name_list]
+        # orient_names = ['orient' + name.title() for name in name_list]
+        # rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.main_ctrl.ctrl +'_point', children_name=point_names)
+        # rAttr.Attribute(node=self.part_grp, type='plug', value=target_list, name=self.main_ctrl.ctrl +'_orient', children_name=orient_names)
+
+    

@@ -399,7 +399,7 @@ def spine_switch_transfer(driven):
     mc.connectAttr('spine_M_SW_REV.outputX', stretch.attr, force=True)
     mc.connectAttr(stretch.attr, driven + '.stretch', force=True)
 
-def add_rig_sets():
+def add_rig_sets(character=None):
     rig_set = mc.sets(name='rig_SET', empty=True)
     ctrl_set = mc.sets(name='control_SET', empty=True)
     cache_set = mc.sets(name='cache_SET', empty=True)
@@ -414,7 +414,11 @@ def add_rig_sets():
         part_set = mc.sets(mc.ls(part+'*_CTRL'), name=part + '_SET')
         mc.sets(part_set, add=ctrl_set)
 
-    mc.sets('MODEL', add=cache_set)
+    if not character:
+        mc.sets('MODEL', add=cache_set)
+    else:
+        mc.sets(f'{character}_UBM', add=cache_set)
+        mc.sets(f'{character}_EXTRAS', add=cache_set)
 
     try:
         mc.sets('PROP', add=prop_set)
@@ -428,7 +432,7 @@ def add_rig_sets():
         mc.sets('root_M_JNT', add=unreal_set)
 
 
-def add_switch_ctrl(x, y, z, utScale, quad=False):
+def add_switch_ctrl(x, y, z, utScale, quad=False, character=None):
     attr_util = rAttr.Attribute(add=False)
 
     if mc.objExists('global_M_CTRL'):
@@ -457,6 +461,11 @@ def add_switch_ctrl(x, y, z, utScale, quad=False):
                 switch_attr = rAttr.Attribute(node=s_ctrl.ctrl, type='double', value=default_val, keyable=True, min=0, max=1, name=switch_name)
             mc.connectAttr(switch_attr.attr, part + '.switch')
 
+    if character == 'Rayden':
+        rev = mc.createNode('reverse', n='cbow_rev')
+        cbow_attr = rAttr.Attribute(node=s_ctrl.ctrl, type='double', value=0, keyable=True, min=0, max=1, name='staticCbowRiggedCbow')
+        mc.connectAttr('switch_CTRL.staticCbowRiggedCbow', 'cbow_rev.inputX')
+
     mc.setAttr('switch_CTRL.v', cb=False)
     return s_ctrl.ctrl
 
@@ -481,17 +490,17 @@ def polish_rig():
 
 
 
-def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1, quad=False, polish=False):
+def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=False, utX=0, utY=0, utZ=0, DutX=0, DutY=0, DutZ=0, utScale=1, quad=False, polish=False, character=None):
     if color_ctrl:
         c_ctrl = add_color_attrs(x=utX+DutX, y=utY+DutY, z=utZ+DutZ, utScale=utScale)
     if switch_ctrl:
-        s_ctrl = add_switch_ctrl(x=utX, y=utY, z=utZ, utScale=utScale, quad=quad)
+        s_ctrl = add_switch_ctrl(x=utX, y=utY, z=utZ, utScale=utScale, quad=quad, character=character)
     if vis_ctrl:
         v_ctrl = add_vis_ctrl(x=utX-DutX, y=utY-DutY, z=utZ-DutZ, utScale=utScale)
     assemble_skeleton()
     assemble_rig()
     add_global_scale()
-    add_rig_sets()
+    add_rig_sets(character)
     if polish:
         polish_rig()
 
@@ -499,6 +508,11 @@ def final(vis_ctrl=True, color_ctrl=True, switch_ctrl=True, constrain_model=Fals
     mc.rename('neck_M_02_fk_CTRL', 'neck_02_FK_M_CTRL')
     mc.rename('neck_M_03_fk_CTRL', 'neck_03_FK_M_CTRL')
 
+    try:
+        mc.delete('*xgm*')
+        mc.delete('*:xgm*')
+    except:
+        pass
 
     if constrain_model:
         if mc.objExists('root_M_JNT'):

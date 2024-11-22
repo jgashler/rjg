@@ -44,6 +44,11 @@ class LookEyes(rModule.RigModule):
         self.main_look_ctrl = rCtrl.Control(parent=self.control_grp, shape='square', side='M', suffix='CTRL', name='lookMain', axis='z', group_type='main', rig_type='primary', translate=look_avg, rotate=(0, 0, 0), ctrl_scale=self.ctrl_scale)
         self.main_look_ctrl.tag_as_controller()
 
+        mc.addAttr(self.right_look_ctrl.ctrl, ln='blink', at='double', min=0, max=1, dv=0)
+        mc.setAttr(self.right_look_ctrl.ctrl + '.blink', e=True, keyable=True)
+        mc.addAttr(self.left_look_ctrl.ctrl, ln='blink', at='double', min=0, max=1, dv=0)
+        mc.setAttr(self.left_look_ctrl.ctrl + '.blink', e=True, keyable=True)
+
         mc.parent(self.right_look_ctrl.top, self.left_look_ctrl.top, self.main_look_ctrl.ctrl)
 
     def output_rig(self):
@@ -56,6 +61,13 @@ class LookEyes(rModule.RigModule):
         self.right_eyeball_jnt = mc.joint(self.guide_list[1], name='eye_R_JNT')
         mc.parent(self.right_eyeball_jnt, look_eyes_grp)
 
+        # self.left_eyelid_jnt = mc.joint(self.guide_list[0], name='eyelid_L_JNT')
+        # mc.xform(self.left_eyelid_jnt, r=True, t=[0, 0.01, 0])
+        # mc.parent(self.left_eyelid_jnt, look_eyes_grp)
+        # self.right_eyelid_jnt = mc.joint(self.guide_list[1], name='eyelid_R_JNT')
+        # mc.xform(self.right_eyelid_jnt, r=True, t=[0, 0.01, 0])
+        # mc.parent(self.right_eyelid_jnt, look_eyes_grp)
+
         mc.aimConstraint(self.left_look_ctrl.ctrl, self.left_eyeball_jnt, mo=True)
         mc.aimConstraint(self.right_look_ctrl.ctrl, self.right_eyeball_jnt, mo=True)
 
@@ -66,9 +78,18 @@ class LookEyes(rModule.RigModule):
         self.right_chain = rChain.Chain(transform_list=[self.right_eyeball_jnt], side='R', suffix='JNT', name='eyeBind')
         self.right_chain.create_from_transforms(parent=self.skel, pad=False)
 
+        # self.left_lid_chain = rChain.Chain(transform_list=[self.left_eyelid_jnt], side='L', suffix='JNT', name='eyelidBind')
+        # self.left_lid_chain.create_from_transforms(parent=self.skel, pad=False)
+
+        # self.right_lid_chain = rChain.Chain(transform_list=[self.right_eyelid_jnt], side='R', suffix='JNT', name='eyelidBind')
+        # self.right_lid_chain.create_from_transforms(parent=self.skel, pad=False)
+
+        # self.bind_joints = self.right_lid_chain.joints + self.left_lid_chain.joints
+        # self.tag_bind_joints(self.bind_joints)
+
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_jnt, self.par_jnt], name='skeletonPlugs', children_name=[self.left_chain.joints[0], self.right_chain.joints[0]])#children_name=[self.left_eyeball_jnt, self.right_eyeball_jnt])
+        # rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_jnt]*4, name='skeletonPlugs', children_name=[self.left_chain.joints[0], self.right_chain.joints[0], self.left_lid_chain.joints[0], self.right_lid_chain.joints[0]])#children_name=[self.left_eyeball_jnt, self.right_eyeball_jnt])
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_ctrl], name='pacRigPlugs', children_name=['lookMain_M_CTRL_CNST_GRP'])
 

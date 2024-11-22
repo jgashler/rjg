@@ -1,4 +1,6 @@
 import maya.cmds as mc
+import maya.mel as mel
+
 from importlib import reload
 import rjg.libs.file as rFile
 import rjg.libs.control.ctrl as rCtrl
@@ -81,7 +83,7 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
                 continue
     except Exception as e:
         print(e)
-        
+
     try:
         mc.select('*Mouth_offset_clone')
         drivers = mc.ls(selection=True)
@@ -102,6 +104,18 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         for s in ['R', 'L']:
             for attr in ['Blink', 'Blink_Height', 'Blink_Influence', 'Eyelid_Follow']:
                 mc.connectAttr(f'{s}_eyeCTRL.{attr}', f'{s}_eyeCTRL_clone.{attr}')
+    except:
+        pass
+
+    try:
+        for attr in ['LipInfluence', 'LipSquishValue']:
+            mc.connectAttr(f'jaw_ctrl.{attr}', f'jaw_ctrl_clone.{attr}')
+    except:
+        pass
+
+    try:
+        for attr in ['L_Lip_Corner_Pinch', 'L_NLF_Crease', 'Pucker', 'R_Lip_Corner_Pinch', 'R_NLF_Crease']:
+            mc.connectAttr(f'Mouth_Global_ctrl.{attr}', f'Mouth_Global_ctrl_clone.{attr}')
     except:
         pass
 
@@ -141,6 +155,46 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
             print(e)
     except Exception as e:
         print(e)
+
+    try:
+        mc.select('*_eyelid_??_OFST')
+        el_ofst = mc.ls(selection=True)
+
+        for n in el_ofst:
+            try:
+                mc.disconnectAttr(n + '_parentConstraint1_clone.constraintRotate', n + '.rotate')
+            except Exception as e:
+                print('100:', e)
+                continue
+    except Exception as e:
+        print('103:', e)
+
+    # try:
+    #     orig = mc.select('*ShapeOrig1')
+    #     orig = mc.ls(selection=True)
+    #     clean_o, broken_o = [], []
+    #     for o in orig:
+    #         if '_' not in o:
+    #             clean_o.append(o)
+
+    #     for o1 in clean_o:
+    #         if mc.objExists(o1[:-1]):
+    #             broken_o.append(o1)
+            
+    #     for o in broken_o:
+    #         conn = mc.listConnections(o, d=True)
+    #         skc = conn[0]
+    #         bs = conn[1]
+    #         o_new = o[:-1]
+    #         mc.connectAttr(o_new + '.outMesh', bs + '.originalGeometry[0]', f=True)
+    #         mc.connectAttr(o_new + '.outMesh', skc + '.originalGeometry[0]', f=True)
+    #         mc.connectAttr(o_new + '.worldMesh[0]', bs + '.input[0].inputGeometry', f=True)
+    #         mc.delete(o)
+    # except Exception as e:
+    #     print(e)
+
+    mc.select(cl=True)
             
     mc.hide("HIDE_FACE")
     mc.hide(f_rig)
+
