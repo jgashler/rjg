@@ -12,11 +12,13 @@ import rjg.build.prop as rProp
 import rjg.libs.file as rFile
 import rjg.libs.util as rUtil
 import rjg.post.dataIO.controls as rCtrlIO
+import rjg.post.usd as rUSD
 reload(rUtil)
 reload(rProp)
 reload(rBuild)
 reload(rFinal)
 reload(rFile)
+reload(rUSD)
 
 import pipe.m.space_switch as spsw
 
@@ -364,6 +366,8 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         mc.bakePartialHistory(all=True)    
     except Exception as e:
         mc.warning("Delete history error:", e)
+        
+    rUSD.connectUSDAttr()
     
     ### TEMP ###
     # try:
