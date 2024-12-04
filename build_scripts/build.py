@@ -197,11 +197,11 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             mc.parent('S_Crossbow:crossbow_geo', 'S_Crossbow:crossbow')
             mc.hide('pinInput')
             mc.parent('S_Crossbow:ROOT', world=True)
-            mc.select('chest_M_02_CTRL', 'arm_R_03_fk_CTRL', 'arm_L_03_fk_CTRL', 'crossbow_M_CTRL')
+            mc.select('chest_M_02_CTRL', 'arm_R_03_fk_CTRL', 'arm_L_03_fk_CTRL', 'S_Crossbow:crossbow_M_CTRL')
             spsw.run()
-            mc.addAttr('crossbow_M_CTRL.spaceSwitch', e=True, enumName='world:back:right hand:left hand:')
-            mc.setAttr('crossbow_M_CTRL.spaceSwitch', 1)
-            mc.parent('crossbow_M_CTRL_space_switch_GRP', 'RIG')
+            mc.addAttr('S_Crossbow:crossbow_M_CTRL.spaceSwitch', e=True, enumName='world:back:right hand:left hand:')
+            mc.setAttr('S_Crossbow:crossbow_M_CTRL.spaceSwitch', 1)
+            mc.parent('S_Crossbow:crossbow_M_CTRL_space_switch_GRP', 'RIG')
             mc.parent('S_Crossbow:crossbow', 'S_Crossbow:MODEL')
             
         except:
@@ -262,7 +262,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
 
 
     ##### PROJECT FACE
-    if face:
+    if face and not bony:
         reload(rFile)
         face = rFile.import_hierarchy(groups + f'/dungeons/anim/Rigs/{character}Face.mb')
         import rjg.post.faceProject as rFaceProj
