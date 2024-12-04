@@ -100,7 +100,7 @@ class BoneDict:
             'finger_pinky_02_L_geo' : ['fingerPinky_L_02_JNT', 'fingerPinky_L_02_fk_CTRL'],
             'finger_pinky_01_L_geo' : ['fingerPinky_L_01_JNT', 'fingerPinky_L_01_fk_CTRL'],
 
-            'metacarpal_L_geo' : ['arm_L_03_JNT', 'arm_L_03_fk_CTRL'],
+            'metacarpal_L_geo' : ['hand_L_JNT', 'hand_L_local_CTRL'],
             'ulna_L_geo' : ['arm_L_02_JNT', 'arm_L_02_fk_CTRL'],
             'radius_L_geo' : ['arm_L_02_JNT', 'arm_L_02_fk_CTRL'],
             'humerus_L_geo' : ['arm_L_01_JNT', 'arm_L_01_fk_CTRL'],
@@ -127,7 +127,7 @@ class BoneDict:
             'finger_pinky_02_R_geo' : ['fingerPinky_R_02_JNT', 'fingerPinky_R_02_fk_CTRL'],
             'finger_pinky_01_R_geo' : ['fingerPinky_R_01_JNT', 'fingerPinky_R_01_fk_CTRL'],
 
-            'metacarpal_R_geo' : ['arm_R_03_JNT', 'arm_R_03_fk_CTRL'],
+            'metacarpal_R_geo' : ['hand_R_JNT', 'hand_R_local_CTRL'],
             'ulna_R_geo' : ['arm_R_02_JNT', 'arm_R_02_fk_CTRL'],
             'radius_R_geo' : ['arm_R_02_JNT', 'arm_R_02_fk_CTRL'],
             'humerus_R_geo' : ['arm_R_01_JNT', 'arm_R_01_fk_CTRL'],
