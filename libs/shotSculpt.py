@@ -595,5 +595,5 @@ with main_frame:
 pm.showWindow(window_obj)
 
 
-setupMenu()
+#setupMenu()
 

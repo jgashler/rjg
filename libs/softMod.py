@@ -818,4 +818,4 @@ def sm_create ():
 				sys.stdout.write ("Sticky Mod created! However, relevant viewport display options were not enabled because a viewport was not found.")
 
 
-ui()
+#ui()
