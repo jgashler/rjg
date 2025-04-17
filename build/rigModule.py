@@ -54,7 +54,10 @@ class RigModule(rBase.RigBase):
 
         # global scale attribute added to root
         if self.part != 'root':
-            self.global_scale = rAttr.Attribute(node=self.part_grp, type='double', value=1, keyable=True, name='globalScale')
+            try:
+                self.global_scale = rAttr.Attribute(node=self.part_grp, type='double', value=1, keyable=True, name='globalScale')
+            except Exception as e:
+                mc.warning('GlobalScale:', e)
         
     # tag joints to be used for skinning
     def tag_bind_joints(self, joints):

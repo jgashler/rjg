@@ -17,22 +17,13 @@ from pipe.m.local import get_main_qt_window
 
 rig_list = [
     "select rig",
-    "RobinNew",
-    "RobinFace",
-    "Rayden",
-    "RaydenFace",
-    "DungeonMonster",
-    "Jett",
-    "Blitz",
     "Bobo",
     "BoboFace",
-    "Crossbow",
-    "Cipher",
-    "LootBag",
-    "ManCannon",
-    "Door",
-    "Robin",
-    "test",
+    "Gretchen",
+    "GretchenFace",
+    "bee",
+    "HeroBeeHive01"
+    
 ]
 
 
@@ -99,7 +90,10 @@ class RigPublishUI(QtWidgets.QDialog):
         if file_name in ['Jett', 'Blitz', 'ManCannon']:
             dir_path = f'{groups}/skyguard/Anim/Rigging/{file_name}/RigVersions'
             dir_path = pathlib.Path(dir_path)
-
+        if file_name in ["Bobo","BoboFace","Gretchen","GretchenFace","bee","HeroBeeHive01"]:
+            dir_path = f'{groups}/bobo/anim/Rigging/{file_name}/RigVersions'
+            dir_path = pathlib.Path(dir_path)
+        #/groups/bobo/anim/Rigging/Bobo/RigVersions
         # search directory for all versions and determine new version number
         ls_dir = dir_path.iterdir()
         latest_version = 0
@@ -131,6 +125,35 @@ class RigPublishUI(QtWidgets.QDialog):
             print(
                 f"Link to file created or updated at '{game_link_dir_path}/{file_name}.mb'\n"
             )        
+        elif file_name in ['Jett', 'Blitz', 'ManCannon'] and update_anim:
+            anim_link_dir_path = su.get_anim_path() / "Rigs"
+            temp_name = f"{anim_link_dir_path}\\tmp"
+            os.symlink(full_name, temp_name)
+            os.rename(temp_name, f"{anim_link_dir_path}/{file_name}.mb")
+
+            print(
+                f"Link to file created or updated at '{anim_link_dir_path}/{file_name}.mb'\n"
+            )
+        elif file_name in ['Jett', 'Blitz', 'ManCannon'] and update_pvis:
+            pvis_link_dir_path = su.get_previs_path() / "Rigs"
+            temp_name = f"{pvis_link_dir_path}\\tmp"
+            os.symlink(full_name, temp_name)
+            os.rename(temp_name, f"{pvis_link_dir_path}/{file_name}.mb")
+
+            print(
+                f"Link to file created or updated at '{pvis_link_dir_path}/{file_name}.mb'\n"
+            )
+        self.close()
+        
+        if file_name in ["Bobo","BoboFace","Gretchen","GretchenFace","bee", "HeroBeeHive01"] and update_anim:
+            game_link_dir_path = f'{groups}/bobo/anim/Rigs'
+            temp_name = f"{game_link_dir_path}\\tmp"
+            os.symlink(full_name, temp_name)
+            os.rename(temp_name, f"{game_link_dir_path}/{file_name}.mb")
+
+            print(
+                f"Link to file created or updated at '{game_link_dir_path}/{file_name}.mb'\n"
+            )        
         elif update_anim:
             anim_link_dir_path = su.get_anim_path() / "Rigs"
             temp_name = f"{anim_link_dir_path}\\tmp"
@@ -140,8 +163,8 @@ class RigPublishUI(QtWidgets.QDialog):
             print(
                 f"Link to file created or updated at '{anim_link_dir_path}/{file_name}.mb'\n"
             )
-        elif update_pvis:
-            pvis_link_dir_path = su.get_previs_path() / "Rigs"
+        elif file_name in ["Bobo","BoboFace","Gretchen","GretchenFace","bee", "HeroBeeHive01"] and update_pvis:
+            pvis_link_dir_path = f'{groups}/bobo/previs/Rigs'
             temp_name = f"{pvis_link_dir_path}\\tmp"
             os.symlink(full_name, temp_name)
             os.rename(temp_name, f"{pvis_link_dir_path}/{file_name}.mb")
@@ -149,9 +172,6 @@ class RigPublishUI(QtWidgets.QDialog):
             print(
                 f"Link to file created or updated at '{pvis_link_dir_path}/{file_name}.mb'\n"
             )
-            
-        os.remove('/groups/dungeons/anim/Rigs/DM.mb')
-        os.symlink('/groups/dungeons/anim/Rigs/DungeonMonster.mb', '/groups/dungeons/anim/Rigs/DM.mb')
         self.close()
 
     def on_cancel(self):

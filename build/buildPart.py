@@ -19,7 +19,12 @@ import rjg.build.parts.tail as rTail
 import rjg.build.parts.floatBone as rFloatBone
 import rjg.build.parts.hinge as rHinge
 import rjg.build.parts.arbit as rArbit
+import rjg.build.parts.arbit2 as rArbit2
+import rjg.build.parts.arbit3 as rArbit3
 import rjg.build.parts.lookEyes as rLookEyes
+import rjg.build.parts.unreal_corrective_bones as rUeCorr
+import rjg.build.parts.Unreal_NoControls as rUeCorrCONT
+import rjg.build.parts.ear as rEar
 reload(rAttr)
 reload(rRoot)
 reload(rHip)
@@ -38,7 +43,12 @@ reload(rTail)
 reload(rFloatBone)
 reload(rHinge)
 reload(rArbit)
+reload(rArbit2)
+reload(rArbit3)
 reload(rLookEyes)
+reload(rUeCorr)
+reload(rUeCorrCONT)
+reload(rEar)
 
 '''
 Wrapper for all part modules
@@ -62,7 +72,12 @@ MODULE_DICT = {
                'float_bone' : rFloatBone.FloatBone,
                'hinge' : rHinge.Hinge,
                'arbitrary' : rArbit.Arbitrary,
+               'arbitrary2' : rArbit2.Arbitrary2,
+               'arbitrary3' : rArbit3.Arbitrary3,
                'look_eyes' : rLookEyes.LookEyes,
+               'UeCorrective' : rUeCorr.Unreal_Correctives,
+               'UeCorrective2' : rUeCorrCONT.Unreal_Correctives2,
+               'ear' : rEar.Ear
                }
 
 

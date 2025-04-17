@@ -47,7 +47,10 @@ class Attribute:
         mc.setAttr(self.attr, self.value, type='string')
 
     def add_bool(self):
-        mc.addAttr(self.node, attributeType='bool', defaultValue=self.value, keyable=self.keyable, longName=self.name)
+        try:
+            mc.addAttr(self.node, attributeType='bool', defaultValue=self.value, keyable=self.keyable, longName=self.name)
+        except Exception as e:
+            pass
 
     def add_double(self):
         if not self.value:

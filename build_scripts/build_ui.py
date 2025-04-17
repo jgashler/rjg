@@ -21,7 +21,7 @@ class RigBuildUI(QtWidgets.QDialog):
         super().__init__(parent)
         
         self.setWindowTitle("Rig Build")
-        self.setMinimumWidth(550)
+        self.setMinimumWidth(1000)
 
         groups = 'G:' if platform.system() == 'Windows' else '/groups'
         
@@ -64,7 +64,7 @@ class RigBuildUI(QtWidgets.QDialog):
             },
             "Jett" : {
                 "mp" : f"{groups}/dungeons/character/Rigging/Rigs/Jett/jet_model.mb",
-                "gp" : f"{groups}/dungeons/character/Rigging/Rigs/Jett/jet_guides.mb",
+                "gp" : f"{groups}/skyguard/Anim/Rigging/Jett/jet_guides.mb",
                 "ep" : f"{groups}/dungeons/character/Rigging/Rigs/Jett/jet_extras.mb",
                 "cp" : None,
                 "sp" : f"{groups}/skyguard/Anim/Rigging/Jett/Skin/SkyguardUBMSkin2.json", #None, #f"{groups}/dungeons/character/Rigging/Rigs/Jett/Skin/SkyguardUBMSkin.json",
@@ -80,6 +80,42 @@ class RigBuildUI(QtWidgets.QDialog):
                 "pp" : None,
                 "im" : None,
             },
+            "Bobo" : {
+                "mp" : f"{groups}/bobo/character/Rigs/Bobo/Bobo_Model.mb",
+                "gp" : f"{groups}/bobo/character/Rigs/Bobo/Bobo_Guides.mb",
+                "ep" : f"{groups}/bobo/character/Rigs/Bobo/Bobo_Extras.mb",
+                "cp" : f"{groups}/bobo/character/Rigs/Bobo/Controls/bobo_control_curves.json",
+                "sp" : f"{groups}/bobo/character/Rigs/Bobo/SkinFiles/Bobo_Weights.json",
+                "pp" : f"{groups}/bobo/character/Rigs/Bobo/Poses/Bobo.pose",
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bobo.jpg",
+            },
+            "BoboQuad" : {
+                "mp" : f"{groups}/bobo/character/Rigs/BoboQuad/BoboQuad_Model.mb",
+                "gp" : f"{groups}/bobo/character/Rigs/BoboQuad/BoboQuad_Guides.mb",
+                "ep" : f"{groups}/bobo/character/Rigs/BoboQuad/BoboQuad_Extras.mb",
+                "cp" : None, #f"{groups}/dungeons/character/Rigging/Rigs/Bobo_Test/Controls/Bobo_control_curves.json",
+                "sp" : None, #f"{groups}/dungeons/character/Rigging/Rigs/Bobo_Test/Skins/Test_Skins.json",
+                "pp" : None,
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bobo.jpg",
+            },
+            "Gretchen" : {
+                "mp" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Model.mb",
+                "gp" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Guides.mb",
+                "ep" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Gretchen/Weights/Gretchen_Weights.json", 
+                "pp" : None,
+                "im" : f"{groups}/bobo/character/Rigs/Rig_Icon/Gretchen.jpg",
+            },
+            "Susaka" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Susaka/Susaka_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Susaka/Susaka_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Susaka/Susaka_Extras.mb",
+                "cp" : None, 
+                "sp" : None, 
+                "pp" : None,
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            },
         }
         
         self.create_widgets()
@@ -89,46 +125,46 @@ class RigBuildUI(QtWidgets.QDialog):
         
     def create_widgets(self):
         self.char_options = QtWidgets.QComboBox()
-        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz'])
-        self.char_options.setFixedWidth(100)
+        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz', 'Bobo', "BoboQuad", 'Gretchen', 'Susaka'])
+        self.char_options.setFixedWidth(200)
         
         self.model_label = QtWidgets.QLabel('Model:')
-        self.model_label.setFixedWidth(45)
+        self.model_label.setFixedWidth(85)
         self.model_input = QtWidgets.QLineEdit()
         self.model_input.setPlaceholderText('Path to model')
         self.model_search = QtWidgets.QPushButton('search')
         #self.model_search.setFixedHeight(17)
         
         self.guides_label = QtWidgets.QLabel('Guides:')
-        self.guides_label.setFixedWidth(45)
+        self.guides_label.setFixedWidth(85)
         self.guides_input = QtWidgets.QLineEdit()
         self.guides_input.setPlaceholderText('Path to guides')
         self.guides_search = QtWidgets.QPushButton('search')
         #self.guides_search.setFixedHeight(17)
         
         self.extras_label = QtWidgets.QLabel('Extras:')
-        self.extras_label.setFixedWidth(45)
+        self.extras_label.setFixedWidth(85)
         self.extras_input = QtWidgets.QLineEdit()
         self.extras_input.setPlaceholderText('Path to extras')
         self.extras_search = QtWidgets.QPushButton('search')
         #self.extras_search.setFixedHeight(17)
         
         self.curve_label = QtWidgets.QLabel('Controls:')
-        self.curve_label.setFixedWidth(45)
+        self.curve_label.setFixedWidth(85)
         self.curve_input = QtWidgets.QLineEdit()
         self.curve_input.setPlaceholderText('Path to curve data')
         self.curve_search = QtWidgets.QPushButton('search')
         #self.curve_search.setFixedHeight(17)
         
         self.skin_label = QtWidgets.QLabel('Skin:')
-        self.skin_label.setFixedWidth(45)
+        self.skin_label.setFixedWidth(85)
         self.skin_input = QtWidgets.QLineEdit()
         self.skin_input.setPlaceholderText('Path to skin data')
         self.skin_search = QtWidgets.QPushButton('search')
         #self.skin_search.setFixedHeight(17)
         
         self.pose_label = QtWidgets.QLabel('Poses:')
-        self.pose_label.setFixedWidth(45)
+        self.pose_label.setFixedWidth(85)
         self.pose_input = QtWidgets.QLineEdit()
         self.pose_input.setPlaceholderText('Path to pose data')
         self.pose_search = QtWidgets.QPushButton('search')

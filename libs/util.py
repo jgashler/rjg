@@ -1,5 +1,8 @@
 import maya.cmds as mc
+import maya.mel as mel
 import rjg.libs.control.ctrl as rCtrl
+
+import os
 
 def create_pxWrap(*argv):
     a = argv if len(argv) > 1 else argv[0]
@@ -21,6 +24,8 @@ def create_pxPin(x, y, z, target_vtx, n='default', ctrl=False, prop=None):
     mc.select(target_vtx, pin)
     pxPin = mc.ProximityPin()
 
+    grp=None
+
     if ctrl:
         rig_grp = mc.group(empty=True, n=n + '_M', parent='RIG')
         pin_ctrl = rCtrl.Control(parent=rig_grp, name=n, shape='lollipop', side='M', suffix='CTRL', axis='y', group_type='main', rig_type='primary', translate=pin[0], rotate=(0, 0, 0), ctrl_scale=5)
@@ -29,10 +34,14 @@ def create_pxPin(x, y, z, target_vtx, n='default', ctrl=False, prop=None):
         #mc.parentConstraint(pin_ctrl.ctrl, pin[0])
         mc.parentConstraint(pin[0], pin_ctrl.top, mo=True)
         mc.parentConstraint(pin_ctrl.ctrl, prop, mo=True)
+        # grp = mc.group(empty=True, n=n + '_PIN')
+        # mc.select(grp, n)
+        # mel.eval("MatchTransform")
+        # mc.parentConstraint(pin_ctrl.ctrl, grp, mo=True)
 
     mc.delete(pxPin)
 
-    return pin
+    return pin, grp
 
 
 def pvis_blink(jnt, blink, dist):
@@ -97,3 +106,7 @@ def import_poseInterpolator(path):
         mc.parent(pi, 'RIG')
     except Exception as e:
         mc.warning(e)
+
+def inplace_symlink(path):
+    temp = f"{path}\\tmp"
+    os.symlink(path, temp)

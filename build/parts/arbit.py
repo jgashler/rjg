@@ -50,4 +50,4 @@ class Arbitrary(rModule.RigModule):
     def add_plugs(self):
         rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_jnt], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        rAttr.Attribute(node=self.part_grp, type='plug', value=self.par_ctrl, name='pacRigPlugs', children_name=[self.base_name + '_' + self.side + '_CTRL_CNST_GRP'])
+        rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_ctrl], name='pacRigPlugs', children_name=[self.base_name + '_' + self.side + '_CTRL_CNST_GRP'])

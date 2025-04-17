@@ -11,7 +11,7 @@ reload(rChain)
 reload(rFk)
 
 class Finger(rModule.RigModule, rFk.Fk):
-    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=1, model_path=None, guide_path=None, pad='auto', remove_last=True, fk_shape='circle'):
+    def __init__(self, side=None, part=None, guide_list=None, ctrl_scale=1, model_path=None, guide_path=None, pad='auto', remove_last=True, fk_shape='circle', par_ctrl=None):
         super().__init__(side=side, part=part, guide_list=guide_list, ctrl_scale=ctrl_scale, model_path=model_path, guide_path=guide_path)
 
         self.__dict__.update(locals())
@@ -52,9 +52,15 @@ class Finger(rModule.RigModule, rFk.Fk):
         self.tag_bind_joints(self.bind_joints)
 
     def add_plugs(self):
-        rAttr.Attribute(node=self.part_grp, type='plug', value=['hand_' + self.side + '_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
+        #rAttr.Attribute(node=self.part_grp, type='plug', value=['hand_' + self.side + '_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
 
-        driver_list = ['hand_' + self.side + '_01_switch_JNT']
+        if not self.par_ctrl:
+            driver_list = ['hand_' + self.side + '_01_switch_JNT']
+            rAttr.Attribute(node=self.part_grp, type='plug', value=['hand_' + self.side + '_JNT'], name='skeletonPlugs', children_name=[self.bind_joints[0]])
+        else:
+            driver_list = [self.par_ctrl]
+            rAttr.Attribute(node=self.part_grp, type='plug', value=[self.par_ctrl], name='skeletonPlugs', children_name=[self.bind_joints[0]])
+
         driven_list = [self.base_name + '_01_fk_CTRL_CNST_GRP']
 
         rAttr.Attribute(node=self.part_grp, type='plug', value=driver_list, name='pacRigPlugs', children_name=driven_list)

@@ -68,8 +68,8 @@
 # Inspired by mGears CRANK shot sculptor
 #==========================================================================================
 
-
 import pymel.core as pm
+import maya.cmds as mc
 
 
 def editIntFeild(intFeild, amt):
@@ -136,7 +136,7 @@ def createShotSculptNode():
             
             bshpName = sel[i]  + "_"+ ssn  + "_bshp"
             ##create a blendshape
-            pm.blendShape(sel[i],n = bshpName, afterReference=True) 
+            pm.blendShape(sel[i],n = bshpName, foc = False ) 
             BshpsArray.append(bshpName)
             
             pm.connectAttr(ssn + ".envelope" , BshpsArray[i]+ ".envelope" )
@@ -473,6 +473,105 @@ def toggleEnvelope():
         pm.headsUpMessage("Shot Sculpt Enabled")
 
 def setupMenu():
+
+    window_obj = "ms_shotSculptor"
+    window_label = "Shot Sculptor -v1.00 "
+
+    try:
+        if pm.window(window_obj, t= window_label, ex = True):
+            pm.deleteUI(window_obj)
+    except Exception as e:
+        mc.warning(e)
+        
+    MS_shotSculpt_win = pm.window(window_obj, t = window_label, wh = (230,445) , s=False)
+
+    main_frame = pm.frameLayout(lv = False, mw = 10, mh = 10, p = MS_shotSculpt_win)
+    with main_frame:
+        
+        nodePanel = pm.frameLayout(l = "Shot Sculpt Node")
+        with nodePanel:
+            
+            with pm.columnLayout():
+                pm.button(l = "Create Shot Scupt Group",ann = "Select all mesh objects to influnce ", w = 210, h = 30, c = pm.Callback(createShotSculptNode) ) ##create a ShotSculptNode from selection
+                
+                with pm.rowLayout(numberOfColumns = 1):  
+                    ssn_menu = pm.optionMenu("selectedSSNode_menu", l = "Active Group:", w = 210 , cc = pm.Callback(loadShotSculptNode))
+                
+                    with pm.popupMenu() :
+                        pm.menuItem("Select Shot-Sculpt group",ann = "Select the active Shot-Sculpt group" ,c = "import pymel.core as pm ;pm.select(pm.optionMenu('selectedSSNode_menu', q =True, v = True))" )
+                        pm.menuItem("Select Influenced Objects", ann = "Select all objects influenced by the Shot-Sculpt group.",c = "import pymel.core as pm ;ssn = pm.optionMenu('selectedSSNode_menu', q =True, v = True); attr = pm.getAttr(ssn + '.influenceObjs'); pm.select(attr)" )
+                        pm.menuItem("Toggle [On/Off]", ann = "Toggle the Shot-Sculpt group on and off", c = pm.Callback(toggleEnvelope))
+                        pm.menuItem("Delete", ann = "Delete the active Shot-Sculpt group" , c = pm.Callback(deleteShotSculptNode) )
+
+                
+                    
+                pm.textScrollList("SculptLayers_tsl",ann = "Existing Sculpt-Frames",numberOfRows = 14, w = 209 )
+                with pm.popupMenu() :
+                    pm.menuItem("Go to Frame", ann = "Go to the Sculpt-Frame" ,c = "import pymel.core as pm ;frame = pm.textScrollList('SculptLayers_tsl', q=True, si=True); pm.currentTime(int(str(frame[0]).split('_')[1]), e=True)")
+                    pm.menuItem("Edit Sculpt-Frame", ann = "Edit the Sculpt-Frame. (Toggle to exit edit mode)",c = pm.Callback(editSculptFrame))
+                    pm.menuItem("Edit Anim Curves", ann = "Edit the Animation Curves of the Sculpt-Frame", c = pm.Callback(editAnimCurve))
+                    pm.menuItem("Delete Sculpt-Frame",ann = "Delete the Sculpt-Frame"  , c = pm.Callback(deleteShotSculptFrame) )
+            
+        KeyframePanel = pm.frameLayout(l = "Auto Key", )
+        with KeyframePanel:
+            pm.separator(style = "none")
+            with pm.rowLayout(numberOfColumns  =4,  ct4  = ["left", "left", "left", "left" ], co4 = [5, 2,0,2]  ,columnWidth4  = [50,50, 50, 50 ] ):
+            
+                pm.text("Ease In")
+                pm.text("Hold In")
+                pm.text("Hold Out")
+                pm.text("Ease Out")
+                
+                
+                
+                
+            arrowUp = '\u25b2'
+            arrowDown = '\u25bc'
+            
+            with pm.rowLayout(numberOfColumns  =8,  ct4  = ["left", "left", "left", "left" ], co4 = [5, 0,0,0]  ,columnWidth4  = [50, 50, 50, 50 ] ):
+                
+                pm.intField ("EaseInIntFeild",ann = "Ease in time (in frames)" ,v= 1, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
+                with pm.columnLayout():
+                    pm.button(arrowUp,ann = "Add Frame" , w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseInIntFeild",1 ))
+                    pm.button(arrowDown,ann = "Subtract Frame", w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseInIntFeild",-1 ))
+                    
+                pm.intField ("HoldInIntFeild", ann = "Hold in time (in frames)" ,v= 0, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
+                with pm.columnLayout():
+                    pm.button(arrowUp,ann = "Add Frame" , w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldInIntFeild",1 ))
+                    pm.button(arrowDown,ann = "Subtract Frame", w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldInIntFeild",-1 ))
+                    
+                pm.intField ("HoldOutIntFeild ", ann = "Hold out time (in frames)" ,v= 0, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
+                with pm.columnLayout():
+                    pm.button(arrowUp,ann = "Add Frame" ,w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldOutIntFeild",1 ))
+                    pm.button(arrowDown,ann = "Subtract Frame", w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldOutIntFeild",-1 ))
+                    
+                pm.intField ("EaseOutIntFeild", ann = "Ease out time (in frames)", v= 1, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
+                with pm.columnLayout():
+                    pm.button(arrowUp, ann = "Add Frame" ,w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseOutIntFeild",1 ))
+                    pm.button(arrowDown,ann = "Subtract Frame",w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseOutIntFeild",-1 ))
+                
+            with pm.rowLayout(numberOfColumns  =2,  ct2  = ["left", "left"], co2 = [5,0] ,columnWidth2  = [100, 100 ] ):
+                
+                pm.optionMenu("EaseInTangetType_optmenu", ann = "In Tangent Type", l = "In", w = 90, cc = pm.Callback(editAnimCurve) )
+                pm.menuItem( l  = "linear")
+                pm.menuItem( l  = "Auto")
+                pm.menuItem( l  = "spline")
+                
+                            
+                pm.optionMenu("EaseOutTangetType_optmenu", ann = "Out Tangent Type", l = "Out", w = 100, cc = pm.Callback(editAnimCurve))
+                pm.menuItem( l  = "linear")
+                pm.menuItem( l  = "Auto")
+                pm.menuItem( l  = "spline")
+        SculptsPanel = pm.frameLayout(l = "Create and Edit Frames", labelVisible = False )
+        with SculptsPanel:
+            pm.separator()
+            with pm.columnLayout():
+            
+                pm.button("createSculptFrame_b", ann = "Create a new Sculpt-Frame at the current Time" ,l = "Create/Edit Sculpt-Frame",  h=40, w = 210, c = pm.Callback(blendshape_btn))
+                pm.separator()
+                
+        
+    pm.showWindow(window_obj)
     
     objs  = pm.ls(type = 'transform')
     
@@ -498,102 +597,10 @@ def setupMenu():
     
 
             
-window_obj = "ms_shotSculptor"
-window_label = "Shot Sculptor -v1.00 "
-
-if pm.window(window_obj, t= window_label, ex = True):
-    pm.deleteUI(window_obj)
-    
-MS_shotSculpt_win = pm.window(window_obj, t = window_label, wh = (230,445) , s=False)
-
-main_frame = pm.frameLayout(lv = False, mw = 10, mh = 10, p = MS_shotSculpt_win)
-with main_frame:
-    
-    nodePanel = pm.frameLayout(l = "Shot Sculpt Node")
-    with nodePanel:
-        
-        with pm.columnLayout():
-            pm.button(l = "Create Shot Scupt Group",ann = "Select all mesh objects to influnce ", w = 210, h = 30, c = pm.Callback(createShotSculptNode) ) ##create a ShotSculptNode from selection
-            
-            with pm.rowLayout(numberOfColumns = 1):  
-                ssn_menu = pm.optionMenu("selectedSSNode_menu", l = "Active Group:", w = 210 , cc = pm.Callback(loadShotSculptNode))
-            
-                with pm.popupMenu() :
-                    pm.menuItem("Select Shot-Sculpt group",ann = "Select the active Shot-Sculpt group" ,c = "import pymel.core as pm ;pm.select(pm.optionMenu('selectedSSNode_menu', q =True, v = True))" )
-                    pm.menuItem("Select Influenced Objects", ann = "Select all objects influenced by the Shot-Sculpt group.",c = "import pymel.core as pm ;ssn = pm.optionMenu('selectedSSNode_menu', q =True, v = True); attr = pm.getAttr(ssn + '.influenceObjs'); pm.select(attr)" )
-                    pm.menuItem("Toggle [On/Off]", ann = "Toggle the Shot-Sculpt group on and off", c = pm.Callback(toggleEnvelope))
-                    pm.menuItem("Delete", ann = "Delete the active Shot-Sculpt group" , c = pm.Callback(deleteShotSculptNode) )
-
-              
-                
-            pm.textScrollList("SculptLayers_tsl",ann = "Existing Sculpt-Frames",numberOfRows = 14, w = 209 )
-            with pm.popupMenu() :
-                pm.menuItem("Go to Frame", ann = "Go to the Sculpt-Frame" ,c = "import pymel.core as pm ;frame = pm.textScrollList('SculptLayers_tsl', q=True, si=True); pm.currentTime(int(str(frame[0]).split('_')[1]), e=True)")
-                pm.menuItem("Edit Sculpt-Frame", ann = "Edit the Sculpt-Frame. (Toggle to exit edit mode)",c = pm.Callback(editSculptFrame))
-                pm.menuItem("Edit Anim Curves", ann = "Edit the Animation Curves of the Sculpt-Frame", c = pm.Callback(editAnimCurve))
-                pm.menuItem("Delete Sculpt-Frame",ann = "Delete the Sculpt-Frame"  , c = pm.Callback(deleteShotSculptFrame) )
-           
-    KeyframePanel = pm.frameLayout(l = "Auto Key", )
-    with KeyframePanel:
-        pm.separator(style = "none")
-        with pm.rowLayout(numberOfColumns  =4,  ct4  = ["left", "left", "left", "left" ], co4 = [5, 2,0,2]  ,columnWidth4  = [50,50, 50, 50 ] ):
-         
-            pm.text("Ease In")
-            pm.text("Hold In")
-            pm.text("Hold Out")
-            pm.text("Ease Out")
-            
-            
-            
-            
-        arrowUp = '\u25b2'
-        arrowDown = '\u25bc'
-        
-        with pm.rowLayout(numberOfColumns  =8,  ct4  = ["left", "left", "left", "left" ], co4 = [5, 0,0,0]  ,columnWidth4  = [50, 50, 50, 50 ] ):
-            
-            pm.intField ("EaseInIntFeild",ann = "Ease in time (in frames)" ,v= 1, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
-            with pm.columnLayout():
-                pm.button(arrowUp,ann = "Add Frame" , w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseInIntFeild",1 ))
-                pm.button(arrowDown,ann = "Subtract Frame", w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseInIntFeild",-1 ))
-                
-            pm.intField ("HoldInIntFeild", ann = "Hold in time (in frames)" ,v= 0, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
-            with pm.columnLayout():
-                pm.button(arrowUp,ann = "Add Frame" , w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldInIntFeild",1 ))
-                pm.button(arrowDown,ann = "Subtract Frame", w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldInIntFeild",-1 ))
-                
-            pm.intField ("HoldOutIntFeild ", ann = "Hold out time (in frames)" ,v= 0, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
-            with pm.columnLayout():
-                pm.button(arrowUp,ann = "Add Frame" ,w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldOutIntFeild",1 ))
-                pm.button(arrowDown,ann = "Subtract Frame", w = 15 , h = 15, c = pm.Callback (editIntFeild,"HoldOutIntFeild",-1 ))
-                
-            pm.intField ("EaseOutIntFeild", ann = "Ease out time (in frames)", v= 1, w = 30, h = 30, cc = pm.Callback(editAnimCurve))
-            with pm.columnLayout():
-                pm.button(arrowUp, ann = "Add Frame" ,w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseOutIntFeild",1 ))
-                pm.button(arrowDown,ann = "Subtract Frame",w = 15 , h = 15, c = pm.Callback (editIntFeild,"EaseOutIntFeild",-1 ))
-            
-        with pm.rowLayout(numberOfColumns  =2,  ct2  = ["left", "left"], co2 = [5,0] ,columnWidth2  = [100, 100 ] ):
-            
-            pm.optionMenu("EaseInTangetType_optmenu", ann = "In Tangent Type", l = "In", w = 90, cc = pm.Callback(editAnimCurve) )
-            pm.menuItem( l  = "linear")
-            pm.menuItem( l  = "Auto")
-            pm.menuItem( l  = "spline")
-            
-                        
-            pm.optionMenu("EaseOutTangetType_optmenu", ann = "Out Tangent Type", l = "Out", w = 100, cc = pm.Callback(editAnimCurve))
-            pm.menuItem( l  = "linear")
-            pm.menuItem( l  = "Auto")
-            pm.menuItem( l  = "spline")
-    SculptsPanel = pm.frameLayout(l = "Create and Edit Frames", labelVisible = False )
-    with SculptsPanel:
-        pm.separator()
-        with pm.columnLayout():
-           
-            pm.button("createSculptFrame_b", ann = "Create a new Sculpt-Frame at the current Time" ,l = "Create/Edit Sculpt-Frame",  h=40, w = 210, c = pm.Callback(blendshape_btn))
-            pm.separator()
-            
-     
-pm.showWindow(window_obj)
 
 
-#setupMenu()
 
+setupMenu()
+
+# -command "from rjg.libs.softMod import *; from rjg.libs.softMod import ui as smui; smui();"
+# -command "import rjg.libs.shotSculpt as ss; ss.setupMenu();"

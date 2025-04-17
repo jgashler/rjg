@@ -1,0 +1,87 @@
+string $sel[] = `ls -sl` ;
+for ($s in $sel) {
+    lockNode -l off $s ;
+}
+##HIveUnlock
+
+
+##BulkAddAttr
+
+import maya.cmds as mc
+
+def add_attributes():
+    selected_objs = mc.ls(selection=True)
+    if not selected_objs:
+        print("No objects selected.")
+        return
+    
+    attr_list = input("Enter the attribute names separated by spaces: ").split()
+    
+    for obj in selected_objs:
+        for attr in attr_list:
+            mc.addAttr(longName=attr, attributeType='float', keyable=True, min=0, max=1)
+
+add_attributes()
+
+
+## Grab offset groups
+
+import maya.cmds as mc
+
+# Select all objects that match the pattern 'Express_Offset*'
+name = input()
+mc.select(name + '*')
+selected_objects = mc.ls(selection=True)
+
+# List of substrings to filter out
+filter_substrings = [
+    '_rotateX', '_rotateY', '_rotateZ',
+    '_scaleX', '_scaleY', '_scaleZ',
+    '_translateX', '_translateY', '_translateZ'
+]
+
+# Filter out objects that contain any of the filter substrings
+filtered_objects = [
+    obj for obj in selected_objects if not any(sub in obj for sub in filter_substrings)
+]
+
+# Update the selection with the filtered objects
+mc.select(filtered_objects)
+
+
+## retargetPlugin
+
+import animation_retargeting_tool
+
+animation_retargeting_tool.start()
+
+
+##PickerPlugin
+import dwpicker
+dwpicker.show()
+
+## model checker
+from modelChecker import modelChecker_UI
+
+modelChecker_UI.UI.show_UI()
+
+##gs curve tools
+import gs_curvetools.init as ct_init;from imp import reload;reload(ct_init);ct_init.Init();
+
+## Get Children List
+import maya.cmds as cmds
+
+def get_objects_in_group(group_name):
+    if cmds.objExists(group_name) and cmds.nodeType(group_name) == 'transform':
+        children = cmds.listRelatives(group_name, children=True, fullPath=True) or []
+        object_list = [child.split('|')[-1] for child in children if cmds.objectType(child) in ['transform', 'mesh', 'nurbsCurve', 'joint']]
+        print("Objects in '{}':".format(group_name), object_list)
+        return object_list
+    else:
+        print("Group '{}' does not exist or is not a transform node.".format(group_name))
+        return []
+
+# Run the function
+group_name = input()
+objects = get_objects_in_group(group_name)
+

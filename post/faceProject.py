@@ -19,24 +19,27 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     #mc.xform(f_skel, t=[0, tY, 0])
     mc.blendShape(f_model, body, name='main_blendshapes', w=[(0, 1.0)], foc=True)
 
-    mc.select(f_extras, hi=True)
-    f_ex_list = mc.ls(selection=True, type='transform')
-    mc.group(em=True, name='HIDE_FACE_EXTRAS')
-    mc.parent('HIDE_FACE_EXTRAS', 'HIDE_FACE')
-    for f in f_ex_list[:0:-1]:
-        # if 'brows' in f:
-        #     continue
-        try:
-            f = mc.rename(f, f[len(f_extras):]+'_clone')
-            if mc.objExists('Fingernails_clone'):
-                mc.delete('Fingernails_clone')
-                continue
-            mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
-            mc.parent(f, "HIDE_FACE_EXTRAS")
+    try:
+        mc.select(f_extras, hi=True)
+        f_ex_list = mc.ls(selection=True, type='transform')
+        mc.group(em=True, name='HIDE_FACE_EXTRAS')
+        mc.parent('HIDE_FACE_EXTRAS', 'HIDE_FACE')
+        for f in f_ex_list[:0:-1]:
+            try:
+                f = mc.rename(f, f[len(f_extras):]+'_clone')
+                if mc.objExists('Fingernails_clone'):
+                    mc.delete('Fingernails_clone')
+                    continue
+                mc.blendShape(f, f[:-6], name=f[:-6]+'Projection', w=[(0, 1.0)], foc=True)
+                mc.parent(f, "HIDE_FACE_EXTRAS")
 
-            mc.hyperShade(f, assign='standardSurface1')
-        except Exception as e:
-            print(f, ':', e)
+                mc.hyperShade(f, assign='standardSurface1')
+            except Exception as e:
+                print(f, ':', e)
+    except Exception as e:
+        mc.warning('faceProject 42:', e)
+
+    
 
     
     # duplcicate the face rig controls and constrain their root to rig_par
@@ -45,10 +48,13 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     f_rig_clone = mc.duplicate(f_rig, renameChildren=True)
     f_rig_clone = mc.rename(f_rig_clone[0], f_rig_name)
     mc.select(f_rig, hierarchy=True)
+
     f_rig_sel = mc.ls(selection=True, type='transform') #+ mc.ls(selection=True, type='joint') + mc.ls(selection=True, type='follicle')
     mc.select(f_rig_clone, hierarchy=True)
     f_rig_clone_sel = mc.ls(selection=True, type='transform') #+ mc.ls(selection=True, type='joint') + mc.ls(selection=True, type='follicle')
     mc.parentConstraint(rig_par, f_rig_clone_sel[0], mo=True)
+
+    
 
     # tag incoming controls
     new_controls = mc.listRelatives('face_M', ad=True, type='nurbsCurve')
@@ -70,6 +76,39 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         except Exception as e:
             print(e)
             continue
+
+
+#####################################3 
+    '''
+    Bobo Custom Connection needs
+    Ribbon Set up
+    Influence Constraint Set up
+    Cornea Vis
+
+    '''
+    #Ribbon FIX
+
+    try:
+        pass
+
+    except Exception as e:
+        print(e)
+
+
+
+
+
+
+
+######################################
+
+
+    try:
+        mc.rename('squashAndStretch_clone|squashStretch_Wire', 'squashStretch_Wire_clone')
+        mc.rename('squashAndStretch_clone|squashStretch_CRV', 'squashStretch_CRV_clone')
+        mc.rename('squashAndStretch|squashStretch_CRV1', 'squashStretch_CRV')
+    except Exception as e:
+        print("couldn't rename sqst things:", e)
 
     try:
         mc.select('*_driver')
@@ -102,22 +141,34 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
 
     try:
         for s in ['R', 'L']:
-            for attr in ['Blink', 'Blink_Height', 'Blink_Influence', 'Eyelid_Follow']:
+            for attr in ['Blink', 'Blink_Height', 'Blink_Influence', 'Eyelid_Follow', s + '_Iris_Scale']:
                 mc.connectAttr(f'{s}_eyeCTRL.{attr}', f'{s}_eyeCTRL_clone.{attr}')
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     try:
         for attr in ['LipInfluence', 'LipSquishValue']:
             mc.connectAttr(f'jaw_ctrl.{attr}', f'jaw_ctrl_clone.{attr}')
-    except:
-        pass
+    except Exception as e:
+        print(e)
+
+    try:
+        mc.connectAttr('NoseA_CTRL.Nostril_Blend', 'NoseA_CTRL_clone.Nostril_Blend')
+    except Exception as e:
+        print(e)
 
     try:
         for attr in ['L_Lip_Corner_Pinch', 'L_NLF_Crease', 'Pucker', 'R_Lip_Corner_Pinch', 'R_NLF_Crease']:
             mc.connectAttr(f'Mouth_Global_ctrl.{attr}', f'Mouth_Global_ctrl_clone.{attr}')
-    except:
-        pass
+    except Exception as e:
+        print(e)
+    #Bobo Test
+    try:
+        for attr in ['TestShape']:
+            mc.connectAttr(f'pCube1_ctrl.{attr}', f'pCube1_ctrl_clone.{attr}')
+    except Exception as e:
+        print(e)
+    
 
     try:
         mc.select('*_parentConstraint1_clone')
@@ -168,6 +219,19 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
                 continue
     except Exception as e:
         print('103:', e)
+
+
+    #Bobo Fixes
+    try:
+        for attr in ['Elliptical', 'RigScale']:
+            mc.connectAttr(f'Left_Master_ctrl.{attr}', f'Left_Master_ctrl_clone.{attr}')
+    except:
+        pass
+    try:
+        for attr in ['Elliptical', 'RigScale']:
+            mc.connectAttr(f'Right_Master_ctrl.{attr}', f'Right_Master_ctrl_clone.{attr}')
+    except:
+        pass
 
     # try:
     #     orig = mc.select('*ShapeOrig1')

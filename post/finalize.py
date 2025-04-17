@@ -213,10 +213,16 @@ def add_vis_ctrl(x, y, z, utScale):
             part_dict[part] = [side]
 
     for part, sides in part_dict.items():
-        p_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name=part + '_Vis')
+        try:
+            p_vis = rAttr.Attribute(node=vis_ctrl.ctrl, type='bool', value=1, keyable=False, name=part + '_Vis')
+        except Exception as e:
+            pass
         mc.setAttr(p_vis.attr, cb=True)
         for side in sides:
-            mc.connectAttr(p_vis.attr, '{}_{}_CONTROL.visibility'.format(side, part))
+            try:
+                mc.connectAttr(p_vis.attr, '{}_{}_CONTROL.visibility'.format(side, part))
+            except Exception as e:
+                mc.warning(e)
     try:
         mc.setAttr(vis_ctrl.ctrl + '.F_Vis', 0)
     except:

@@ -12,6 +12,8 @@
 class BoneDict:
     def __init__(self):
         self.bone_dict = {     
+            'jaw'                               : ['jaw_M_JNT', 'jaw_M_M_CTRL'],
+
             ### Feet and legs
             'distal_phalanx_foot_1_L_geo'       : ['foot_L_02_JNT', 'foot_L_02_fk_CTRL'],
             'proximal_phalanx_foot_1_L_geo'     : ['foot_L_02_JNT', 'foot_L_02_fk_CTRL'],
@@ -231,10 +233,7 @@ class BoneDict:
             'cervical_disc_c2_geo' : ['neck_M_02_JNT', 'neck_02_FK_M_CTRL'],
 
             'cervical_vertebra_c2_geo' : ['neck_M_03_JNT', 'head_M_01_CTRL'],
-            'cranium_geo' : ['neck_M_03_JNT', 'head_M_01_CTRL'],
-            'mandible_geo' : ['neck_M_03_JNT', 'head_M_01_CTRL'],
-            'teeth_top_geo' : ['neck_M_03_JNT', 'head_M_01_CTRL'],
-            'teeth_bottom_geo' : ['neck_M_03_JNT', 'head_M_01_CTRL'],
+            'head'                      : ['head_M_JNT', 'head_M_01_CTRL'],
 
 
 
