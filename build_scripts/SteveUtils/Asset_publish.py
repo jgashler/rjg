@@ -2,21 +2,52 @@ import maya.cmds as mc
 import maya.mel as mel
 try:
     from PySide6 import QtWidgets, QtCore
+    from PySide6.QtWidgets import QDialog
 except ImportError:
     from PySide2 import QtWidgets, QtCore
+    from PySide2.QtWidgets import QDialog
 import maya.OpenMayaUI as omui
 try:
     from shiboken6 import wrapInstance
 except ImportError:
     from shiboken2 import wrapInstance
 
+try:
+    from modelChecker.modelChecker_UI import UI as MCUI
+except TypeError:
+    # this external code throws errors when in headless mode
+    MCUI = object
 
 import sys, platform
 from importlib import reload
+from pipe.db import DB
+from env_sg import DB_Config
+
+# Define Publisher class first
+class Publisher:
+    def __init__(self, window_class):
+        self._window = window_class()  # Simplified example
+
+# Optional: a simple placeholder dialog for testing
+class PublishAssetDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Dummy Publish Dialog")
+
+# Now define AssetPublisher
+class AssetPublisher(Publisher):
+    _override: bool
+
+    def __init__(self) -> None:
+        super().__init__(PublishAssetDialog)
+
+    def _prepublish(self) -> bool:
+        print("Running prepublish checks...")
+        # Simulate a passed check
+        self._override = True
+        return True
 
 groups = 'G:' if platform.system() == 'Windows' else '/groups'
-
-
 
 '''
 SUDO CODE
@@ -68,19 +99,32 @@ def check_grpname(asset):
 
 def run_checks(asset):
     grpname_check = check_grpname(asset)
-    #run other checks
-    if grpname_check == True:
-        print('Model Passess')
+    # Run other checks as needed
+
+    if grpname_check is True:
+        mc.select(f'{asset}_grp')
+        publisher = AssetPublisher()
+        result = publisher._prepublish()
+
+        if not result:
+            print("Model check failed or was cancelled.")
+            return False
+
+        print("Model check passed or overridden.")
         return True
+
     else:
+        print("Group name check failed.")
         return False
 
 
-def get_production(selected_production):
+
+def get_production(selected_production, conn: DB):
+    asset_list = conn.get_asset_name_list(sorted=True)
     production = selected_production
     #production = DropDown with Bobo, DragonKisser, custom
     if production == 'Bobo':
-        gotten_list = ['BoboTest', 'Gretchen']  #this is where we get the list from shot grid
+        gotten_list = asset_list  #this is where we get the list from shot grid
     elif production == 'DraggonKisser':
         gotten_list = ['Dragon', 'Chicken']  #this is where we get the list from shot grid
     elif production == 'Custom':
@@ -102,16 +146,99 @@ def publish(asset, production):
 
 Productions = ['Select Production', 'Bobo', 'DraggonKisser', 'Custom']
 
+class ModelChecker(MCUI):
+    @classmethod
+    def get(cls):
+        if not cls.qmwInstance or (type(cls.qmwInstance) is not cls):
+            cls.qmwInstance = cls()
+        return cls.qmwInstance
+
+    def configure(self) -> None:
+        self.uncheckAll()
+        commands = [
+            "crossBorder",
+            "hardEdges",
+            "lamina",
+            "missingUVs",
+            "ngons",
+            "noneManifoldEdges",
+            "onBorder",
+            # "selfPenetratingUVs",
+            "zeroAreaFaces",
+            "zeroLengthEdges",
+            "duplicatedNames",
+            "namespaces",
+            "unfrozenTransforms",
+            #"shaders",
+            "history",
+            "emptyGroups",
+
+
+
+        ]
+        for cmd in commands:
+            self.commandCheckBox[cmd].setChecked(True)
+
+    def check_selected(self) -> bool:
+        self.configure()
+        self.sanityCheck(["Selection"], True)
+        self.createReport("Selection")
+
+        # loop and show UI if anything had an error
+        diagnostics = self.contexts["Selection"]["diagnostics"]
+        for error in self.commandsList.keys():
+            if (error in diagnostics) and len(self.parseErrors(diagnostics[error])):
+                self.show_UI()
+                return False
+
+        return True
+
+class AssetPublisher(Publisher):
+    _override: bool
+
+    def __init__(self) -> None:
+        super().__init__(PublishAssetDialog)
+
+    def _prepublish(self) -> bool:
+        checker = ModelChecker.get()
+        self._override = False
+        if not checker.check_selected():
+            checker_fail_dialog = MessageDialogCustomButtons(
+                self._window,
+                "Error. This asset did not pass the model checker. Please "
+                "ensure your model meets the requirements set by the model "
+                "checker.",
+                "Cannot export: Model Checker",
+                has_cancel_button=True,
+                ok_name="Override",
+                cancel_name="Ok",
+            )
+            self._override = bool(checker_fail_dialog.exec_())
+            if not self._override:
+                cursor = QTextCursor(checker.reportOutputUI.textCursor())
+                cursor.setPosition(0)
+                cursor.insertHtml(
+                    "<h1>Asset not exported. Please resolve model checks.</h1>"
+                )
+                return False
+        return True
+
 class RiggedModelPublishUI(QtWidgets.QDialog):
+    conn_: DB
+    
     def __init__(self, parent=get_maya_main_window()):
         super(RiggedModelPublishUI, self).__init__(parent)
         self.setWindowTitle("Rigged Model Publish")
         self.setMinimumWidth(300)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setWindowFlags(self.windowFlags() ^ QtCore.Qt.WindowContextHelpButtonHint)
+        
+        self.conn_ = DB.Get(DB_Config)
 
         self.build_ui()
         self.make_connections()
+        
+
 
     def build_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
@@ -153,7 +280,7 @@ class RiggedModelPublishUI(QtWidgets.QDialog):
 
     def update_assets(self, selected_production):
         self.asset_dropdown.clear()
-        production_name, gotten_list = get_production(selected_production)
+        production_name, gotten_list = get_production(selected_production, self.conn_)
         self.asset_dropdown.addItems(gotten_list)
 
     def handle_check(self):

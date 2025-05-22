@@ -33,6 +33,24 @@ import os, platform, pathlib
 import shared.util as su
 from pipe.m.local import get_main_qt_window
 
+import sys, platform
+from importlib import reload
+from pipe.db import DB
+from env_sg import DB_Config
+import maya.cmds as mc
+import maya.mel as mel
+try:
+    from PySide6 import QtWidgets, QtCore
+    from PySide6.QtWidgets import QDialog
+except ImportError:
+    from PySide2 import QtWidgets, QtCore
+    from PySide2.QtWidgets import QDialog
+import maya.OpenMayaUI as omui
+try:
+    from shiboken6 import wrapInstance
+except ImportError:
+    from shiboken2 import wrapInstance
+
 '''rig_list = [
     "select rig",
     "Bobo",
@@ -48,11 +66,12 @@ from pipe.m.local import get_main_qt_window
 Productions = ['Select Production', 'Bobo', 'DraggonKisser', 'Custom']
 
 
-def get_production(selected_production):
+def get_production(selected_production, conn: DB):
+    asset_list = conn.get_asset_name_list(sorted=True)
     production = selected_production
     #production = DropDown with Bobo, DragonKisser, custom
     if production == 'Bobo':
-        gotten_list = ['BoboTest', 'Gretchen']  #this is where we get the list from shot grid
+        gotten_list = asset_list  #this is where we get the list from shot grid
     elif production == 'DraggonKisser':
         gotten_list = ['Dragon', 'Chicken']  #this is where we get the list from shot grid
     elif production == 'Custom':
