@@ -54,7 +54,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         body_mesh = mc.listRelatives('skeleton_grp', children=True)
     elif character == 'DungeonMonster':
         body_mesh = mc.listRelatives('dungeonmonster_FINAL_GEO', children=True)
-    #elif character = "BoboQuad":
+    #elif character = "BoboQuad":['Robin', 'Rayden', 'Jett', 'Blitz', 'Bobo', "BoboQuad", 'Gretchen', 'Susaka'])
     #   body_mesh = 'Bobo_UBM'
 
     hip = rBuild.build_module(module_type='hip', side='M', part='COG', guide_list=['Hips'], ctrl_scale=50, cog_shape='quad_arrow', waist_shape='circle')
@@ -178,20 +178,10 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         fingers.append(thumb) 
 
     if character == 'Bobo':
-        tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail' + str(t) for t in range(1, 4)], ctrl_scale=15, pad=2)
+        tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail' + str(t) for t in range(1, 4)], ctrl_scale=10, pad=2)
         # for ar in ('BellyLowerM', 'BellyLowerL1', 'BellyLowerL2', 'BellyLowerR1', 'BellyLowerR2'):
-        rb = rBuild.build_module(module_type='arbitrary', side='M', part='BellyHighM', guide_list=mc.getAttr('BellyHighM' + '.translate'), ctrl_scale=1, par_jnt='spine_M_01_JNT', par_ctrl='waist_M_CTRL')
-        #upperbelly = ('BellyHighM', 'BellyHighL1', 'BellyHighL2', 'BellyHighR1', 'BellyHighR2')
-        #lowerbelly = ('BellyLowM', 'BellyLowL1', 'BellyLowL2', 'BellyLowR1', 'BellyLowR2')
-        # for ar in ('BellyHighM', 'BellyHighL1', 'BellyHighL2', 'BellyHighR1', 'BellyHighR2'):
-        #     rb = rBuild.build_module(module_type='arbitrary', side='M', part=f'belly_{ar}', guide_list=mc.getAttr(ar + '.translate'), ctrl_scale=1, par_jnt='spine_M_03_JNT', par_ctrl='spine_03_FK_M_CTRL')
-        # for ar in ('BellyLowM', 'BellyLowL1', 'BellyLowL2', 'BellyLowR1', 'BellyLowR2'):
-        #     rb = rBuild.build_module(module_type='arbitrary', side='M', part=f'belly_{ar}', guide_list=mc.getAttr(ar + '.translate'), ctrl_scale=1, par_jnt='spine_M_02_JNT', par_ctrl='spine_02_FK_M_CTRL')
-        # for ar in ('BellyLowerM', 'BellyLowerL1', 'BellyLowerL2', 'BellyLowerR1', 'BellyLowerR2'):
-        #     rb = rBuild.build_module(module_type='arbitrary', side='M', part=f'belly_{ar}', guide_list=mc.getAttr(ar + '.translate'), ctrl_scale=1, par_jnt='spine_M_01_JNT', par_ctrl='waist_M_CTRL')
-        # rb = rBuild.build_module(module_type='arbitrary', side='M', part=f'belly_CrotchM', guide_list=mc.getAttr('CrotchM' + '.translate'), ctrl_scale=1, par_jnt='spine_M_01_JNT', par_ctrl='COG_M_CTRL')
-        # for ar in ('BellyHigherM', 'BellyHigherL1', 'BellyHigherL2', 'BellyHigherR1', 'BellyHigherR2'):
-        #     rb = rBuild.build_module(module_type='arbitrary', side='M', part=f'belly_{ar}', guide_list=mc.getAttr(ar + '.translate'), ctrl_scale=1, par_jnt='chest_M_JNT', par_ctrl='chest_M_02_CTRL')
+        rb = rBuild.build_module(module_type='arbitrary', side='M', part='BellyHighM', guide_list=mc.getAttr('BellyHighM' + '.translate'), ctrl_scale=15, par_jnt='spine_M_01_JNT', par_ctrl='spine_02_FK_M_CTRL')
+        
         if not not_previs:
             for fs in ['Left', 'Right']:
                 ear = rBuild.build_module(module_type='ear', side=fs[0], part='ear', guide_list=[str(fs) + 'Ear' + str(t) for t in range(1, 4)], ctrl_scale=10, pad=2)
@@ -259,8 +249,10 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         mc.joint('upperarm_twist_01_l_L_Bind_JNT_L_JNT', n='upperarm_twistCor_01_l')
         mc.joint('upperarm_twist_01_r_R_Bind_JNT_R_JNT', n='upperarm_twistCor_01_r')
 
-    if character == 'Susaka':
+    if character in ['Susaka', 'Drummer']:
         mc.parent("UE_Correctives", w=True)
+    if character in ['Bobo', 'Bobo_quad']:
+        mc.parent("CurveNet_Guide_Group", w=True)
 
     mc.delete('Guides')
     
@@ -333,10 +325,15 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             skc = mc.skinCluster(g + '_F_JNT', g, tsb=True)
             bone_skcs.append(skc)
         try:
-            merged = mc.polyUniteSkinned(geo, ch=1, mergeUVSets=1)
-            mc.rename(merged[0], 'skeleton_geo')
-            mc.rename(merged[1], 'skeleton_skc')
-            mc.parent('skeleton_geo', 'MODEL')
+            mc.select(geo)
+            mc.select('eye_L_geo', 'eye_R_geo', deselect=True)
+            geo = mc.ls(selection=True)
+            # merged = mc.polyUniteSkinned(geo, ch=1, mergeUVSets=1)
+            # mc.rename(merged[0], 'skeleton_geo')
+            # mc.rename(merged[1], 'skeleton_skc')
+            # mc.parent('skeleton_geo', 'MODEL')
+            mc.parent('eye_*_geo', 'MODEL')
+            #mc.delete('dungeonmonster_FINAL_GEO')
         except Exception as e:
             mc.warning(e)
 
@@ -956,11 +953,11 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             mc.reorderDeformers( 'pose_blendhapes', 'main_blendshapes', ['Bobo_UBM'])
         except Exception as e:
             print(e)
-        try: 
-            for offsets in ["tail_M_02_fk_CTRL_OFF_GRP", "tail_M_01_fk_CTRL_OFF_GRP"]:
-                mc.setAttr(f"{offsets}.translateY", 2)
-        except Exception as e:
-            print(e)
+        #try: 
+        #    for offsets in ["tail_M_02_fk_CTRL_OFF_GRP", "tail_M_01_fk_CTRL_OFF_GRP"]:
+        #        mc.setAttr(f"{offsets}.translateY", 2)
+        #except Exception as e:
+        #    print(e)
 
     if character == 'Bobo' and not_previs:
         try:
@@ -971,6 +968,16 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             deformer2 = mc.deltaMush('Bobo_UBM')[0]
             mc.setAttr(f"{deformer2}.smoothingIterations", 2)
             mc.setAttr(f"{deformer2}.smoothingStep", .5)
+            mc.deformerWeights("BoboDeltaMush.xml", im=True,  deformer=deformer2, path=f'{groups}/bobo/character/Rigs/Bobo/SkinFiles/')
+            sys.path.append(f'{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/SteveUtils')
+            from CurveNetAtHome import create_curve_net_joints
+            create_curve_net_joints('Body', 'Bobo_UBM') 
+            skin_clusters = "curve_net_skin_cluster"
+            
+
+
+            mc.delete('CurveNet_Guide_Group')
+        
         except Exception as e:
             print(e)
 

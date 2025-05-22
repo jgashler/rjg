@@ -85,3 +85,10 @@ def get_objects_in_group(group_name):
 group_name = input()
 objects = get_objects_in_group(group_name)
 
+
+#MEL command to combine multiple curve shapes into one curve object
+    #selece a null transform, then all of the shapes (not just the transfrom)
+parent -r -s 
+
+from epic_pose_wrangler import main
+pose_wrangler = main.PoseWrangler()

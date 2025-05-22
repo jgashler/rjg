@@ -249,7 +249,7 @@ class BoneDict:
             'extrarock_40_geo' : ['jaw_M_JNT', 'jaw_M_M_CTRL'],
             'extrarock_41_geo' : ['jaw_M_JNT', 'jaw_M_M_CTRL'],
             'lowerteeth_geo' : ['jaw_M_JNT', 'jaw_M_M_CTRL'],
-            'tongue_geo' : ['jaw_M_JNT', 'jaw_M_M_CTRL'],
+            #'tongue_geo' : ['jaw_M_JNT', 'jaw_M_M_CTRL'],
 
 
 

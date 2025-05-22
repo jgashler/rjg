@@ -115,7 +115,7 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         'R_Eyelid_RIBgrp': 8
 }
 
-
+    '''
     for rib_group in [ 'Tounge_Right_RIBgrp', 'Tounge_Left_RIBgrp', 'R_Brow_Cont_RIBgrp', 'L_Brow_Cont_RIBgrp', 'L_Cheek_RIBgrp', 'L_OuterRing_RIBgrp', 'L_LipOuter_RIBgrp', 'L_Lip_RIBgrp', 'R_Cheek_RIBgrp', 'R_OuterRing_RIBgrp', 'R_LipOuter_RIBgrp', 'R_Lip_RIBgrp', 'R_Eyelid_RIBgrp', 'L_Eyelid_RIBgrp', ]:
         try:
             base_name = rib_group.replace("_RIBgrp", "")
@@ -224,21 +224,6 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
 
             print("UV Pinning applied to Ribbon and _grps.")
 
-            '''try:
-                ribbon_object_clone = ribbon_object + "_clone"
-                source_history = mc.listHistory(ribbon_object_clone)
-                source_skin = mc.ls(source_history, type="skinCluster")
-                target_history = mc.listHistory(ribbon_object_clone)
-                #target_skin = mc.ls(target_history, type="skinCluster")
-                influences = mc.skinCluster(source_skin, query=True, influence=True)
-                target_skin = mc.skinCluster(influences, ribbon_object, toSelectedBones=True)[0]
-                mc.copySkinWeights(
-                ss=source_skin[0],
-                ds=target_skin[0],
-                noMirror=True,
-                surfaceAssociation="closestPoint",)
-            except Exception as e:
-                print(e)'''
         except Exception as e:
             print(e)
 
@@ -256,7 +241,7 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
                  mc.connectAttr(f'{cnt}.{attr}', f'{cnt}_clone.{attr}')
             except Exception as e:
                 print(e)
-
+    '''
 
 
 
@@ -325,8 +310,9 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         pass
     #Bobo Test
     try:
-        for attr in ['TestShape']:
-            mc.connectAttr(f'pCube1_ctrl.{attr}', f'pCube1_ctrl_clone.{attr}')
+        for attr in ['Pupil_Size', 'Iris_Size']:
+            mc.connectAttr(f'L_Eye_ctrl.{attr}', f'L_Eye_ctrl_clone.{attr}')
+            mc.connectAttr(f'R_Eye_ctrl.{attr}', f'R_Eye_ctrl_clone.{attr}')
     except:
         pass
     
