@@ -112,7 +112,7 @@ class RigBuildUI(QtWidgets.QDialog):
                 "gp" : f"{groups}/Bobo/character/Rigs/Susaka/Susaka_Guides.mb",
                 "ep" : f"{groups}/Bobo/character/Rigs/Susaka/Susaka_Extras.mb",
                 "cp" : None, 
-                "sp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Susaka/SkinFiles/Susaka_Skin.json",  
                 "pp" : None,
                 "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
             },

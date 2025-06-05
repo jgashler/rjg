@@ -90,5 +90,45 @@ objects = get_objects_in_group(group_name)
     #selece a null transform, then all of the shapes (not just the transfrom)
 parent -r -s 
 
+
+## Launches UE pose editor
 from epic_pose_wrangler import main
 pose_wrangler = main.PoseWrangler()
+
+
+
+
+## Grab Parents of Selected and prints it as a list 
+
+import maya.cmds as cmds
+
+def print_selected_objects():
+    selection = cmds.ls(selection=True)
+    if selection:
+        return selection
+    #    print("Selected objects:")
+    #    print(selection)
+    else:
+        print("No objects selected.")
+
+# Run the function
+print_selected_objects()
+
+
+def get_parents(object_list):
+    parent_list = []
+    for obj in object_list:
+        parent = cmds.listRelatives(obj, parent=True)
+        if parent:
+            parent_list.append(parent[0])
+        else:
+            parent_list.append(None)  # No parent (probably a top node)
+    return parent_list
+
+# Example usage:
+# Replace this list with your own or connect it to a selection
+#example_list = ['Body_sculpt_02BackM_ctrl', 'Body_sculpt_02FrontR_ctrl', 'Body_sculpt_04BackR_ctrl', 'Body_sculpt_01legL_ctrl', 'Body_sculpt_02ShdrR_ctrl', 'Body_sculpt_04RShoulder_ctrl', 'Body_sculpt_02BackL_ctrl', 'Body_sculpt_05FrontM_ctrl', 'Body_sculpt_03BackR_ctrl', 'Body_sculpt_04FrontM_ctrl', 'Body_sculpt_02SideR_ctrl', 'Body_sculpt_06BackM_ctrl', 'Body_sculpt_02BackR_ctrl', 'Body_sculpt_02FrontM_ctrl', 'Body_sculpt_06ShdrR_ctrl', 'Body_sculpt_03FrontM_ctrl', 'Body_sculpt_03legR_ctrl', 'Body_sculpt_05BackM_ctrl', 'Body_sculpt_05FrontR_ctrl', 'Body_sculpt_02FrontL_ctrl', 'Body_sculpt_06FrontR_ctrl', 'Body_sculpt_01ShdrR_ctrl', 'Body_sculpt_01FrontL_ctrl', 'Body_sculpt_03BackL_ctrl', 'Body_sculpt_01BackR_ctrl', 'Body_sculpt_03BackM_ctrl', 'Body_sculpt_01SideL_ctrl', 'Body_sculpt_02legR_ctrl', 'Body_sculpt_03ClavR_ctrl', 'Body_sculpt_02SideL_ctrl', 'Body_sculpt_04FrontL_ctrl', 'Body_sculpt_02Under_ctrl', 'Body_sculpt_01SideR_ctrl', 'Body_sculpt_01BackL_ctrl', 'Body_sculpt_05BackL_ctrl', 'Body_sculpt_02ClavL_ctrl', 'Body_sculpt_09BackM_ctrl', 'Body_sculpt_05ShdrR_ctrl', 'Body_sculpt_08BackM_ctrl', 'Body_sculpt_03FrontR_ctrl', 'Body_sculpt_04BackL_ctrl', 'Body_sculpt_03ShdrL_ctrl', 'Body_sculpt_03SideR_ctrl', 'Body_sculpt_07BackM_ctrl', 'Body_sculpt_03legL_ctrl', 'Body_sculpt_06FrontL_ctrl', 'Body_sculpt_03Under_ctrl', 'Body_sculpt_01BackM_ctrl', 'Body_sculpt_06FrontM_ctrl', 'Body_sculpt_01legR_ctrl', 'Body_sculpt_03SideL_ctrl', 'Body_sculpt_06ShdrL_ctrl', 'Body_sculpt_02legL_ctrl', 'Body_sculpt_05FrontL_ctrl', 'Body_sculpt_03ShdrR_ctrl', 'Body_sculpt_01FrontR_ctrl', 'Body_sculpt_01Under_ctrl', 'Body_sculpt_07FrontM_ctrl', 'Body_sculpt_03FrontL_ctrl', 'Body_sculpt_05BackR_ctrl', 'Body_sculpt_02ClavR_ctrl', 'Body_sculpt_05ShdrL_ctrl', 'Body_sculpt_04FrontR_ctrl', 'Body_sculpt_01FrontM_ctrl', 'Body_sculpt_03ClavL_ctrl', 'Body_sculpt_02ShdrL_ctrl', 'Body_sculpt_04BackM_ctrl', 'Body_sculpt_01ClavR_ctrl', 'Body_sculpt_01ClavL_ctrl']
+Selected_objects = print_selected_objects()
+parents = get_parents(Selected_objects)
+print("Selected Objects:", Selected_objects)
+print("Parent list:", parents)

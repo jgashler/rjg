@@ -311,11 +311,34 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     #Bobo Test
     try:
         for attr in ['Pupil_Size', 'Iris_Size']:
-            mc.connectAttr(f'L_Eye_ctrl.{attr}', f'L_Eye_ctrl_clone.{attr}')
-            mc.connectAttr(f'R_Eye_ctrl.{attr}', f'R_Eye_ctrl_clone.{attr}')
+            mc.connectAttr(f'L_Aim_ctrl.{attr}', f'L_Eye_ctrl_clone.{attr}')
+            mc.connectAttr(f'R_Aim_ctrl.{attr}', f'R_Eye_ctrl_clone.{attr}')
     except:
         pass
-    
+    '''
+    try:
+        parent_list = []
+        for control in ['R_Eye_upper_ctrl', 'R_Eye_outer_ctrl', 'R_Eye_lower_ctrl', 'R_Eye_inner_ctrl', 'R_EyeRing_Inner__ctrl', 'R_EyeRing_Lower__ctrl', 'R_EyeRing_Outer__ctrl', 'R_EyeRing_Upper__ctrl', 'L_Eye_inner_ctrl', 'L_EyeRing_Inner__ctrl', 'L_Eye_upper_ctrl', 'L_EyeRing_Upper__ctrl', 'L_Eye_outer_ctrl', 'L_EyeRing_Outer__ctrl', 'L_EyeRing_Lower__ctrl', 'L_Eye_lower_ctrl', 'L_Brow1_ctrl', 'L_Brow2_ctrl', 'L_Brow3_ctrl', 'R_Brow1_ctrl', 'R_Brow2_ctrl', 'R_Brow3_ctrl', 'R_Jaw_Null9_ctrl', 'R_Snout_04_jnt_ctrl', 'R_Lip_04_jnt_ctrl', 'L_Lip_04_jnt_ctrl', 'L_Jaw_Null9_ctrl', 'L_Snout_04_jnt_ctrl']:
+            parent = mc.listRelatives(control, parent=True)
+            if parent:
+                parent_list.append(parent[0])
+            else:
+                parent_list.append(None)  # No parent (probably a top node)
+        mc.select(clear=True)
+        mc.select("Bobo_UBM")
+        mc.select(parent_list, add=True)
+
+        # Run the UVPin command
+        mc.UVPin()
+        for obj in parent_list:
+            mc.setAttr(f"{obj}.translate", 0, 0, 0, type="double3")
+            mc.setAttr(f"{obj}.rotate", 0, 0, 0, type="double3")
+    except Exception as e:
+        print(e)
+    '''
+
+
+
 
     try:
         mc.select('*_parentConstraint1_clone')
