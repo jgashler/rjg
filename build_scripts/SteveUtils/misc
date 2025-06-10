@@ -132,3 +132,11 @@ Selected_objects = print_selected_objects()
 parents = get_parents(Selected_objects)
 print("Selected Objects:", Selected_objects)
 print("Parent list:", parents)
+
+
+
+#Write Contols
+import rjg.post.dataIO.controls as rCtrlIO
+import rjg.libs.control.draw as draw
+
+rCtrlIO.write_ctrls("G:/bobo/character/Rigs/Bobo/Controls", force=True, name='bobo_control_curves')

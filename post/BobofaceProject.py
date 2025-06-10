@@ -87,6 +87,14 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
             print(e)
             continue
 
+    ####### Cutom Channel Connections #######
+    print("Try Eye thing")
+    try:
+        for attr in ['Pupil_Size', 'Iris_Size', 'Blink']:
+            mc.connectAttr(f'L_Aim_ctrl.{attr}', f'L_Aim_ctrl_clone.{attr}')
+            mc.connectAttr(f'R_Aim_ctrl.{attr}', f'R_Aim_ctrl_clone.{attr}')
+    except Exception as e:
+        print(e)  
 
     #####################################3 
     '''
@@ -310,7 +318,7 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         pass
     #Bobo Test
     try:
-        for attr in ['Pupil_Size', 'Iris_Size']:
+        for attr in ['Pupil_Size', 'Iris_Size', 'Blink']:
             mc.connectAttr(f'L_Aim_ctrl.{attr}', f'L_Eye_ctrl_clone.{attr}')
             mc.connectAttr(f'R_Aim_ctrl.{attr}', f'R_Eye_ctrl_clone.{attr}')
     except:
