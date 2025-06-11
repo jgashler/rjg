@@ -29,6 +29,13 @@ reload(rWeightNgIO)
 reload(rWeightIO)
 reload(rCtrlIO)
 
+def clean_claws():
+    hide_controls = ['fingerIndex_L_04_fk_CTRL', 'fingerMiddle_L_04_fk_CTRL', 'fingerRing_L_04_fk_CTRL', 'fingerIndex_R_04_fk_CTRL', 'fingerRing_R_04_fk_CTRL', 'fingerMiddle_R_04_fk_CTRL']
+    for obj in hide_controls:
+        if mc.objExists(obj):
+            mc.hide(obj)
+    rWeightNgIO.read_skin("HandClaws", f'{groups}/bobo/character/Rigs/Bobo/SkinFiles', 'Bobo_HandClaws_Skin')
+
 def rename_group_objects(group_name):
     """
     Replaces 'curvenet' with 'sculpt' in the names of all descendants under the specified group.

@@ -182,10 +182,10 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         tail = rBuild.build_module(module_type='tail', side='M', part='tail', guide_list=['Tail' + str(t) for t in range(1, 4)], ctrl_scale=10, pad=2)
         # for ar in ('BellyLowerM', 'BellyLowerL1', 'BellyLowerL2', 'BellyLowerR1', 'BellyLowerR2'):
         rb = rBuild.build_module(module_type='arbitrary', side='M', part='BellyHighM', guide_list=mc.getAttr('BellyHighM' + '.translate'), ctrl_scale=15, par_jnt='spine_M_01_JNT', par_ctrl='spine_02_FK_M_CTRL')
+        for toe in ['Innertoe', 'Middletoe', 'Outertoe']:
+            for side in ['L', 'R']:
+                toes = rBuild.build_module(module_type='arbitrary2', side=side, part=f'{side}_{toe}', guide_list=f'{side}_{toe}', ctrl_scale=10, par_jnt=f'foot_{side}_02_JNT', par_ctrl=f'foot_{side}_01_L_CTRL')
         
-        if not not_previs:
-            for fs in ['Left', 'Right']:
-                ear = rBuild.build_module(module_type='ear', side=fs[0], part='ear', guide_list=[str(fs) + 'Ear' + str(t) for t in range(1, 4)], ctrl_scale=10, pad=2)
     #Legacy UE Correctives build       
     if character in ['Jett', 'Blitz']:
         rBuild.build_module(module_type='UeCorrective', side='L', part='upperarmCorrective', guide_list=['upperarm_out_l', 'upperarm_fwd_l', 'upperarm_bck_l', 'upperarm_in_l', 'upperarm_twist_02_l', 'upperarm_twist_01_l' ], ctrl_scale=1, par_jnt='arm_L_01_JNT', par_ctrl='arm_L_01_fk_CTRL', root_loc='LeftArm')
@@ -690,7 +690,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         rUEJnt.unrealJntRename()
         # Build UE Correctives 
         import sys
-        sys.path.append(f'{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
+        sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
         from UnrealCorrectives import BuildCorrectives
         from UnrealCorrectives import build_parents 
         CorrGuides2 = ["upperarm_twistCor_01", "lowerarm_correctiveRoot", "upperarm_correctiveRoot", "thigh_correctiveRoot", "calf_correctiveRoot"]
@@ -747,7 +747,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         
         # Import UE Pose Interp Poses
         POSE_FILE = r"G:/bobo/character/Rigs/Susaka/Poses/Poses_01.json"
-        sys.path.append(f'{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
+        sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
         from UEPoseImport import CleanImport
         CleanImport(POSE_FILE)
         mc.delete("UE_Correctives")
@@ -872,15 +872,17 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             mc.setAttr(f"{deformer2}.smoothingIterations", 2)
             mc.setAttr(f"{deformer2}.smoothingStep", .5)
             mc.deformerWeights("BoboDeltaMush.xml", im=True,  deformer=deformer2, path=f'{groups}/bobo/character/Rigs/Bobo/SkinFiles/')
-            sys.path.append(f'{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/SteveUtils')
+            sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/SteveUtils')
             #Add Sculpt points
             from CurveNetAtHome import create_curve_net_joints
             create_curve_net_joints('Body', 'Bobo_UBM') 
             skin_clusters = "curve_net_skin_cluster"
             mc.delete('CurveNet_Guide_Group')
-            sys.path.append(f'{groups}/dungeons/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
+            sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
             from Bobo_Build_Scripts import Clean_up_SculptJoints
+            from Bobo_Build_Scripts import clean_claws
             Clean_up_SculptJoints()
+            clean_claws()
 
         except Exception as e:
             print(e)

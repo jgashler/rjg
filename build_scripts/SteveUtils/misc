@@ -140,3 +140,13 @@ import rjg.post.dataIO.controls as rCtrlIO
 import rjg.libs.control.draw as draw
 
 rCtrlIO.write_ctrls("G:/bobo/character/Rigs/Bobo/Controls", force=True, name='bobo_control_curves')
+
+#Print Selection as a List
+import maya.cmds as mc
+
+def print_selected_list():
+    selection = mc.ls(selection=True)
+    print(selection)
+
+# Run it
+print_selected_list()
