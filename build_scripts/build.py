@@ -874,14 +874,17 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
             mc.deformerWeights("BoboDeltaMush.xml", im=True,  deformer=deformer2, path=f'{groups}/bobo/character/Rigs/Bobo/SkinFiles/')
             sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts/SteveUtils')
             #Add Sculpt points
-            from CurveNetAtHome import create_curve_net_joints
-            create_curve_net_joints('Body', 'Bobo_UBM') 
-            skin_clusters = "curve_net_skin_cluster"
-            mc.delete('CurveNet_Guide_Group')
             sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
-            from Bobo_Build_Scripts import Clean_up_SculptJoints
+            if face:
+                from CurveNetAtHome import create_curve_net_joints
+                create_curve_net_joints('Body', 'Bobo_UBM') 
+                skin_clusters = "curve_net_skin_cluster"
+                sys.path.append(f'{groups}/bobo/pipeline/pipeline/software/maya/scripts/rjg/build_scripts')
+                from Bobo_Build_Scripts import Clean_up_SculptJoints
+    
+                Clean_up_SculptJoints()
+            mc.delete('CurveNet_Guide_Group')
             from Bobo_Build_Scripts import clean_claws
-            Clean_up_SculptJoints()
             clean_claws()
 
         except Exception as e:
