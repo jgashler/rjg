@@ -17,7 +17,8 @@ try:
 except TypeError:
     # this external code throws errors when in headless mode
     MCUI = object
-
+    
+import os, platform, pathlib
 import sys, platform
 from importlib import reload
 from pipe.db import DB

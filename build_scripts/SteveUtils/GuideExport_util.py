@@ -22,6 +22,17 @@ char_menu = None
 model_checkbox = None
 guides_checkbox = None
 extras_checkbox = None
+all_checkbox = None
+
+def export_all(selected_char):
+    # Construct the object name
+    obj_name = f"{selected_char}_UBM"
+
+    # Check if the object exists in the scene
+    if mc.objExists(obj_name):
+        mc.file(f"{groups}/bobo/character/Rigs/{selected_char}/{selected_char}_all.mb", force=True, options="v=0;", type="mayaBinary")
+    else:
+        print(f"Warning: Object '{obj_name}' not found in the scene.")
 
 def export_model(selected_char):
     # Construct the object name
@@ -38,14 +49,17 @@ def export_model(selected_char):
 def export_guides(selected_char):
     # Construct the object name
     obj_name = f"Guides"
-
+    char_check = f"{selected_char}_UBM"
     # Check if the object exists in the scene
-    if mc.objExists(obj_name):
-        mc.select(obj_name)
-        print(f"Selected object: {obj_name}")
-        mc.file(f"{groups}/bobo/character/Rigs/{selected_char}/{selected_char}_Guides.mb", force=True, options="v=0;", type="mayaBinary", exportSelected=True)
+    if mc.objExists(char_check):
+        if mc.objExists(obj_name):
+            mc.select(obj_name)
+            print(f"Selected object: {obj_name}")
+            mc.file(f"{groups}/bobo/character/Rigs/{selected_char}/{selected_char}_Guides.mb", force=True, options="v=0;", type="mayaBinary", exportSelected=True)
+        else:
+            print(f"Warning: Object '{obj_name}' not found in the scene.")
     else:
-        print(f"Warning: Object '{obj_name}' not found in the scene.")
+        print(f"Warning: Object '{char_check}' not found in the scene.")
 
 def export_extras(selected_char):
     # Construct the object name
@@ -67,6 +81,7 @@ def export_character(*args):
     selected_model = mc.checkBox(model_checkbox, query=True, value=True)
     selected_guides = mc.checkBox(guides_checkbox, query=True, value=True)
     selected_extras = mc.checkBox(extras_checkbox, query=True, value=True)
+    selected_all = mc.checkBox(all_checkbox, query=True, value=True)
 
     print(f"Exporting character: {selected_char}")
     print(f"Model: {'Yes' if selected_model else 'No'}, Guides: {'Yes' if selected_guides else 'No'}, Extras: {'Yes' if selected_extras else 'No'}")
@@ -84,6 +99,10 @@ def export_character(*args):
         export_extras(selected_char)
     else:
         print("Not exporting Extras")
+    if selected_all == True:
+        export_all(selected_char)
+    else:
+        print("Not exporting Extras")
 
 def cancel_export(*args):
     """Closes the export window."""
@@ -93,7 +112,7 @@ def cancel_export(*args):
 
 def create_export_window():
     """Creates the character export UI window."""
-    global export_window, char_menu, model_checkbox, guides_checkbox, extras_checkbox
+    global export_window, char_menu, model_checkbox, guides_checkbox, extras_checkbox, all_checkbox
 
     # Close existing window if it exists
     if mc.window("exportWindow", exists=True):
@@ -116,6 +135,7 @@ def create_export_window():
     model_checkbox = mc.checkBox(label="Model", value=True)
     guides_checkbox = mc.checkBox(label="Guides", value=True)
     extras_checkbox = mc.checkBox(label="Extras", value=True)
+    all_checkbox = mc.checkBox(label="ALL File", value=True)
 
     # Buttons
     mc.separator(height=10, style='none')

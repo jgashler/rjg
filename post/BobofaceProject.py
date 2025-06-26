@@ -251,9 +251,44 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
                 print(e)
     '''
 
+    ######################################
+    try:
+        # Full list of objects
+        grp_list = [
+        'ToungeRight_ribbon_point6_DEF_grp', 'ToungeRight_ribbon_point3_DEF_grp',
+        'ToungeLeft_ribbon_point5_DEF_grp', 'ToungeLeft_ribbon_point3_DEF_grp',
+        'ToungeRight_ribbon_point7_DEF_grp', 'ToungeRight_ribbon_point8_DEF_grp',
+        'ToungeRight_ribbon_point1_DEF_grp', 'ToungeRight_ribbon_point4_DEF_grp',
+        'ToungeLeft_ribbon_point8_DEF_grp', 'ToungeLeft_ribbon_point7_DEF_grp',
+        'ToungeLeft_ribbon_point10_DEF_grp', 'ToungeLeft_ribbon_point6_DEF_grp',
+        'ToungeRight_ribbon_point5_DEF_grp', 'ToungeLeft_ribbon_point4_DEF_grp'
+        ]
 
+        # Separate them based on name
+        right_target = 'ToungeRight_ribbon'
+        left_target = 'ToungeLeft_ribbon'
 
+        right_grp = [grp for grp in grp_list if 'ToungeRight' in grp]
+        left_grp = [grp for grp in grp_list if 'ToungeLeft' in grp]
 
+        # Pin to the right ribbon
+        for grp in right_grp:
+            if mc.objExists(grp) and mc.objExists(right_target):
+                mc.select(clear=True)
+                mc.select(right_target, grp)
+                mc.UVPin()
+            else:
+                mc.warning(f"Missing object: {grp} or {right_target}")
+        # Pin to the left ribbon
+        for grp in left_grp:
+            if mc.objExists(grp) and mc.objExists(left_target):
+                mc.select(clear=True)
+                mc.select(left_target, grp)
+                mc.UVPin()
+            else:
+                mc.warning(f"Missing object: {grp} or {left_target}")
+    except Exception as e:
+                print(e)
     ######################################
 
 

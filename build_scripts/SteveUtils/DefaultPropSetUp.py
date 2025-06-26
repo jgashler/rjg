@@ -1,6 +1,21 @@
 import maya.cmds as mc
 
-import maya.cmds as mc
+try:
+    from PySide6 import QtWidgets, QtCore
+    from PySide6.QtWidgets import QDialog
+except ImportError:
+    from PySide2 import QtWidgets, QtCore
+    from PySide2.QtWidgets import QDialog
+
+import maya.OpenMayaUI as omui
+try:
+    from shiboken6 import wrapInstance
+except ImportError:
+    from shiboken2 import wrapInstance
+
+def get_maya_main_window():
+    main_window_ptr = omui.MQtUtil.mainWindow()
+    return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
 def build_basic_control(name='Main', shape='circle', size=5.0, color_rgb=(1, 1, 0), position=(0, 0, 0), rotation=(0, 0, 0)):
     """
@@ -87,6 +102,88 @@ def get_model_center(model_grp):
     center_z = (min_z + max_z) / 2.0
 
     return [center_x, center_y, center_z]
+
+def build_roll_rig(rig_prefix, rig_size):
+    
+    build_basic_control(
+        name=f'{rig_prefix}_Roll',
+        size=1 * rig_size,
+        color_rgb=(1, .05, .05),
+        position=(0, 0, 0),  # Positioned at the origin
+        rotation=(0, 0, 0)   # No rotation
+        )
+    
+    build_basic_control(
+        name=f'{rig_prefix}_RollPath',  # Name with rig_prefix
+        size=3 * rig_size,  # 3 times the rig_size argument
+        color_rgb=(0.90, 0.38, 0.34),  # #e66057 in RGB
+        position=(0, 0, 0),  # Positioned at the origin
+        rotation=(0, 0, 0)   # No rotation
+    )
+
+    roll = f'{rig_prefix}_Roll_CTRL'
+    roll_path =f'{rig_prefix}_RollPath_CTRL'
+    main = f'{rig_prefix}_Main_CTRL'
+    main_jnt = f'{rig_prefix}_main_jnt'
+    roll_shape = f'{rig_prefix}_RollPath_CTRLShape'
+
+    loc = mc.spaceLocator(name='pivot_loc')[0]
+
+    # Create the Nearest Point on Curve node
+    npc_node = mc.createNode('nearestPointOnCurve', name='roll_nearestPointOnCurve')
+
+    # Connect the world space output of the curve shape to the inputCurve
+    mc.connectAttr(f'{roll_shape}.worldSpace[0]', f'{npc_node}.inputCurve', force=True)
+
+    # Connect the transform of roll[0] into the inPosition of the nearestPointOnCurve
+    mc.connectAttr(f'{roll}.translate', f'{npc_node}.inPosition', force=True)
+
+    mc.connectAttr(f'{npc_node}.position', f'{loc}.translate', force=True)
+
+    # Connect loc.translate to main.rotatePivot
+    mc.connectAttr(f'{loc}.translate', f'{main}.rotatePivot', force=True)
+
+    # Connect loc.translate to main_jnt.rotatePivot
+    mc.connectAttr(f'{loc}.translate', f'{main_jnt}.rotatePivot', force=True)
+
+    md1 = mc.createNode('multiplyDivide', name='roll_translateY_mult1')
+    md2 = mc.createNode('multiplyDivide', name='roll_translateY_mult2')
+
+    # Get the Y translate from roll[0]
+    # Connect roll[0].translateY → md1.input1X, input1Y, input1Z
+    mc.connectAttr(f'{roll}.translateY', f'{md1}.input1X', force=True)
+    mc.connectAttr(f'{roll}.translateY', f'{md1}.input1Y', force=True)
+    mc.connectAttr(f'{roll}.translateY', f'{md1}.input1Z', force=True)
+
+    # Set md1.input2 values to (-0.2, 0.2, 0.2)
+    mc.setAttr(f'{md1}.input2X', -0.2)
+    mc.setAttr(f'{md1}.input2Y',  0.2)
+    mc.setAttr(f'{md1}.input2Z',  0.2)
+
+    # Connect md1.output → md2.input2
+    mc.connectAttr(f'{md1}.output', f'{md2}.input2', force=True)
+
+    # Connect roll[0].translate → md2.input1
+    mc.connectAttr(f'{roll}.translate', f'{md2}.input1', force=True)
+
+    # Connect md2.outputX → main.rotateZ
+    mc.connectAttr(f'{md2}.outputX', f'{main}.rotateZ', force=True)
+
+    # Connect md2.outputX → main.rotateX
+    mc.connectAttr(f'{md2}.outputZ', f'{main}.rotateX', force=True)
+
+    mc.hide(loc)
+    mc.parent(f'{rig_prefix}_Roll_GRP', f'{rig_prefix}_Offset_CTRL')
+    mc.parent(f'{rig_prefix}_RollPath_GRP', f'{rig_prefix}_Offset_CTRL')
+    mc.parent(loc, f'{rig_prefix}_Offset_CTRL')
+
+
+
+
+
+
+    
+
 
 
 def build_simple_prop_rig(
@@ -193,6 +290,9 @@ def build_simple_prop_rig(
         #mc.error('Ha, you thought Steve was smart enough to figure this part out')
             MainControlPos = get_model_center('MODEL')
             MainControlRot = [0, 0, 0]  # Usually we assume neutral rotation for center placement
+    elif pivot == 'roll':
+         MainControlPos = [0, 0, 0]
+         MainControlRot = [0, 0, 0]
     else:
         mc.error('Pivot not set correctly in the arguments. Defaulting to "origin".')
         MainControlPos = [0, 0, 0]
@@ -291,14 +391,88 @@ def build_simple_prop_rig(
     create_display_layer("MODEL_Display", "MODEL", 13, is_reference=True)  # Yellow and reference
     #create_display_layer("RIG_Display", "RIG", 0)       # Blue
     #create_display_layer("SKEL_Display", "SKEL", 20)    # Purple
+    if pivot == 'roll':
+        build_roll_rig(rig_prefix, rig_size)
+
+
+class SimplePropAutoRiggerUI(QDialog):
+    def __init__(self, parent=get_maya_main_window()):
+        super().__init__(parent)
+        self.setWindowTitle("Simple Prop Auto Rigger")
+        self.setMinimumWidth(300)
+        self.setWindowFlags(self.windowFlags() ^ QtCore.Qt.WindowContextHelpButtonHint)
+
+        self.build_ui()
+        self.create_connections()
+
+    def build_ui(self):
+        # Widgets
+        self.geo_input = QtWidgets.QLineEdit()
+        self.prefix_input = QtWidgets.QLineEdit()
+        self.rig_size_input = QtWidgets.QDoubleSpinBox()
+        self.rig_size_input.setValue(2.0)
+        self.rig_size_input.setSingleStep(0.1)
+        self.rig_size_input.setMinimum(0.0)
+
+        self.pivot_dropdown = QtWidgets.QComboBox()
+        self.pivot_dropdown.addItems(["center", "guide", "origin", "roll"])
+
+        self.auto_skin_checkbox = QtWidgets.QCheckBox("Auto Skin")
+        self.clear_cache_checkbox = QtWidgets.QCheckBox("Clear Cache")
+        self.clear_guide_checkbox = QtWidgets.QCheckBox("Clear Guide")
+
+        self.build_button = QtWidgets.QPushButton("Build Rig")
+
+        # Layouts
+        form_layout = QtWidgets.QFormLayout()
+        form_layout.addRow("Geo Group Name:", self.geo_input)
+        form_layout.addRow("Pivot:", self.pivot_dropdown)
+        form_layout.addRow("Rig Size:", self.rig_size_input)
+        form_layout.addRow("Rig Prefix:", self.prefix_input)
+        form_layout.addRow(self.auto_skin_checkbox)
+        form_layout.addRow(self.clear_cache_checkbox)
+        form_layout.addRow(self.clear_guide_checkbox)
+        form_layout.addRow(self.build_button)
+
+        self.setLayout(form_layout)
+
+    def create_connections(self):
+        self.build_button.clicked.connect(self.run_rig_function)
+
+    def run_rig_function(self):
+        geo_name = self.geo_input.text()
+        pivot = self.pivot_dropdown.currentText()
+        rig_size = self.rig_size_input.value()
+        rig_prefix = self.prefix_input.text()
+        auto_skin = self.auto_skin_checkbox.isChecked()
+        clear_cache = self.clear_cache_checkbox.isChecked()
+        clear_guide = self.clear_guide_checkbox.isChecked()
+
+        build_simple_prop_rig(
+            geo_grp_name=geo_name,
+            pivot=pivot,
+            rig_size=rig_size,
+            rig_prefix=rig_prefix,
+            auto_skin=auto_skin,
+            clear_cache=clear_cache,
+            clear_guide=clear_guide
+        )
 
 
 
+def show_simple_prop_rigger():
+    global simple_prop_rigger_win
+    try:
+        simple_prop_rigger_win.close()
+        simple_prop_rigger_win.deleteLater()
+    except:
+        pass
+
+    simple_prop_rigger_win = SimplePropAutoRiggerUI()
+    simple_prop_rigger_win.show()
+
+show_simple_prop_rigger()
 
 
 
-
-
-
-
-build_simple_prop_rig(geo_grp_name='test_grp', pivot='center', rig_size = 2, zootools = True, rig_prefix='Cubes', auto_skin=True, clear_cache=True, clear_guide=True )
+#build_simple_prop_rig(geo_grp_name='test_grp', pivot='center', rig_size = 2, zootools = True, rig_prefix='Cubes', auto_skin=True, clear_cache=True, clear_guide=True )

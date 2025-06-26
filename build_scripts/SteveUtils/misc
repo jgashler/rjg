@@ -150,3 +150,198 @@ def print_selected_list():
 
 # Run it
 print_selected_list()
+
+
+import rjg.build_scripts.SteveUtils.RibbonUtilsMenu as rib 
+rib.show_ribbon_utils()
+
+
+
+#ShotSculpt for anim
+
+import rjg.libs.shotSculpt as ss; ss.setupMenu();import rjg.libs.shotSculpt as ss; ss.setupMenu();
+
+from rjg.libs.softMod import *; from rjg.libs.softMod import ui as smui; smui();
+
+
+
+#Print All Channels
+
+import maya.cmds as mc
+
+def print_all_channels(obj):
+    if not mc.objExists(obj):
+        print(f"Object '{obj}' does not exist.")
+        return
+
+    print(f"--- Channels for: {obj} ---")
+
+    # Keyable channels
+    keyable_attrs = mc.listAttr(obj, keyable=True) or []
+    print("Keyable Attributes:")
+    for attr in keyable_attrs:
+        print(f"  {attr}")
+
+    # Non-keyable but visible attributes
+    visible_attrs = mc.listAttr(obj, channelBox=True) or []
+    print("Channel Box Only Attributes:")
+    for attr in visible_attrs:
+        if attr not in keyable_attrs:
+            print(f"  {attr}")
+
+    # All user-defined attributes
+    user_attrs = mc.listAttr(obj, userDefined=True) or []
+    if user_attrs:
+        print("User-Defined Attributes:")
+        for attr in user_attrs:
+            print(f"  {attr}")
+
+# Run the function on the currently selected object
+selection = mc.ls(selection=True)
+if selection:
+    print_all_channels(selection[0])
+else:
+    print("Please select an object.")
+
+
+#from guide build joint matches translation rotate and adopts name, so M_hand1_guide2 will become M_hand1_2_jnt
+
+import maya.cmds as mc
+
+def create_joints_from_guides():
+    selection = mc.ls(sl=True, long=True)
+    if not selection:
+        mc.warning("Nothing selected.")
+        return
+
+    created_joints = []
+
+    for obj in selection:
+        # Get the base name and generate joint name
+        base_name = obj.split('|')[-1].replace('guide', '')
+        joint_name = f"{base_name}_jnt"
+
+        # Clear selection before creating the joint to avoid parenting
+        mc.select(clear=True)
+        joint = mc.joint(name=joint_name)
+        created_joints.append(joint)
+
+        # Match translation and rotation in world space
+        pos = mc.xform(obj, q=True, ws=True, t=True)
+        rot = mc.xform(obj, q=True, ws=True, ro=True)
+        mc.xform(joint, ws=True, t=pos)
+        mc.xform(joint, ws=True, ro=rot)
+
+    mc.select(created_joints)
+    print(f"Created joints: {created_joints}")
+
+# Run it
+create_joints_from_guides()
+
+
+#Bulk Control to jnt constrain 
+
+import maya.cmds as mc
+
+def constrain_controls_to_joints(ctrl_suffix="_ctrl", jnt_suffix="_jnt"):
+    selection = mc.ls(sl=True, long=True)
+    if not selection:
+        mc.warning("No controls selected.")
+        return
+
+    for ctrl in selection:
+        short_name = ctrl.split('|')[-1]
+
+        if not short_name.endswith(ctrl_suffix):
+            mc.warning(f"Skipped: {short_name} does not end with expected suffix '{ctrl_suffix}'")
+            continue
+
+        # Replace suffix to get joint name
+        joint_name = short_name.replace(ctrl_suffix, jnt_suffix)
+
+        # Check if joint exists by short name
+        joint = mc.ls(joint_name, type="joint")
+        if not joint:
+            mc.warning(f"Joint not found for control: {short_name} → {joint_name}")
+            continue
+
+        joint = joint[0]  # Get the full path if needed
+
+        # Apply constraints
+        try:
+            mc.parentConstraint(ctrl, joint, mo=True)
+            mc.scaleConstraint(ctrl, joint, mo=True)
+            print(f"Constrained {joint} to {ctrl}")
+        except Exception as e:
+            mc.warning(f"Constraint failed for {ctrl} → {joint}: {e}")
+
+# Example usage:
+constrain_controls_to_joints(ctrl_suffix="_ctrl", jnt_suffix="_jnt")
+
+
+#bulk mirror joints
+
+import maya.cmds as mc
+
+def mirror_selected_joints(mirror_type='behavior', search_for='L_', replace_with='R_', mirror_across='yz'):
+    """
+    Mirrors selected joints with customizable mirror type, naming, and mirror axis.
+
+    Args:
+        mirror_type (str): 'behavior' or 'orientation'
+        search_for (str): Substring to search for in joint names (e.g., 'L_')
+        replace_with (str): Substring to replace with (e.g., 'R_')
+        mirror_across (str): Axis to mirror across: 'xy', 'yz', or 'xz' (default: 'yz')
+    """
+    mirror_type = mirror_type.lower()
+    mirror_across = mirror_across.lower()
+
+    # Validate mirror_type
+    if mirror_type not in ['behavior', 'orientation']:
+        mc.warning("mirror_type must be 'behavior' or 'orientation'")
+        return
+
+    # Map axis strings to mirror flags
+    mirror_plane_flags = {
+        'xy': (True, False, False),
+        'yz': (False, True, False),
+        'xz': (False, False, True),
+    }
+
+    if mirror_across not in mirror_plane_flags:
+        mc.warning("mirror_across must be one of: 'xy', 'yz', 'xz'")
+        return
+
+    mirrorXY, mirrorYZ, mirrorXZ = mirror_plane_flags[mirror_across]
+
+    selection = mc.ls(sl=True, type='joint')
+    if not selection:
+        mc.warning("No joints selected.")
+        return
+
+    mirrored_joints = []
+
+    for joint in selection:
+        try:
+            mirrored = mc.mirrorJoint(
+                joint,
+                mirrorBehavior=(mirror_type == 'behavior'),
+                mirrorXY=mirrorXY,
+                mirrorYZ=mirrorYZ,
+                mirrorXZ=mirrorXZ,
+                searchReplace=(search_for, replace_with)
+            )
+
+            if mirrored:
+                mirrored_joints.extend(mirrored)
+                print(f"Mirrored {joint} to {mirrored[0]}")
+            else:
+                mc.warning(f"Failed to mirror {joint}")
+
+        except Exception as e:
+            mc.warning(f"Error mirroring {joint}: {e}")
+
+    mc.select(mirrored_joints, replace=True)
+
+# 🔧 Example usage:
+mirror_selected_joints(mirror_type='behavior', search_for='L_', replace_with='R_', mirror_across='yz')

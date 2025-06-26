@@ -116,6 +116,15 @@ class RigBuildUI(QtWidgets.QDialog):
                 "pp" : None,
                 "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
             },
+            "Drummer" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Drummer/Drummer_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Drummer/Drummer_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Drummer/Drummer_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Drummer/SkinFiles/Drummer_Skin.json",  
+                "pp" : None,
+                "im" : None, #f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            },
         }
         
         self.create_widgets()
@@ -125,7 +134,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
     def create_widgets(self):
         self.char_options = QtWidgets.QComboBox()
-        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz', 'Bobo', "BoboQuad", 'Gretchen', 'Susaka'])
+        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz', 'Bobo', "BoboQuad", 'Gretchen', 'Susaka', 'Drummer'])
         self.char_options.setFixedWidth(200)
         
         self.model_label = QtWidgets.QLabel('Model:')
