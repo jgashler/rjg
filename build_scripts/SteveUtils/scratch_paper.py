@@ -1,2 +1,8 @@
+Ok, next I want to make a look control for the actuall eye, so lets build this in a new function, we are going to look for these two guides,  L_eye_EyeCenterPivot, and L_eye_Aim, so we are going to create a joint at the centerpivot, then we are going to build a control at the L_eye_aim and set the rotate of the offsetgroup to 90 on the x, then at the position of the look control we are also going to build a locacotor and call it something related to eyelid_look(shouold have the group suffix in it). next we are going to create another locator (with the name 'LookNULL_loc') at the same postion exept where the x = 0 (this may also exist in the scene already, so if it already does, we will just reference this intead of creating a new one) 
+
+step 2 is to clean up the eyelid, what i want to do it create a offset group at the eye_center guide called {sufix}_look_offset. next i want to parent these objects (use the suffix on these names) into this new group,  (['L_eye_Socket_Upper_GRP', 'L_eye_Socket_InnerUpper01_GRP', 'L_eye_Socket_Lower_GRP', 'L_eye_Socket_OuterCorner_GRP', 'L_eye_Socket_OuterLower01_GRP', 'L_eye_Socket_InnerCorner_GRP', 'L_eye_Socket_OuterUpper01_GRP', 'L_eye_Socket_InnerLower01_GRP', 'L_eye_Eyelid_Lower_BlinkOffset3', 'L_eye_InnerCorner_Major_GRP', 'L_eye_Eyelid_Upper_BlinkOffset3', 'L_eye_OuterCorner_Major_GRP'])
 
 
+
+
+now the constraints, we are going to set and aim constraint (with maintain offset) from the look control to the eyejoint, next we are going to set a parent from the look control to the eyelid look locator, then a parent from the LookNull_loc to the to the same eyelid look locator.  ok last we are going to set an aim constraint from the eyelid look locator to the eyelid look offset group

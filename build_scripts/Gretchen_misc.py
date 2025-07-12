@@ -36,20 +36,25 @@ def Gretchen_extras(skin_src, skin_trg_grp):
 
     sk_g = []
 
-    geo = [
-        'Eyeball',
-        'Cornea',
-        'Bandanna',
-        #'Shirt',
-        'Boots',
-        'Hair',
-        'Glasses',
-        #'Tongue',
-        #'TopTeeth',
-        #'BottomTeeth',
+    geo = [ 'banddanna2',
+            'knot1','knot2',
+            'knot', 
+            'loopleather', 
+            'beltLeather', 
+            'pockets', 
+            'metalclip', 
+            'beltloops', 
+            'button1',
+            'hair', 
+            'bun', 
+            'eyebrows', 
+            'eylashes', 
+            'earings', 
+            'Righteye', 
+            'Lefteye'
     ]
 
-    rUtil.create_pxWrap('Shirt', 'Pants', 'Gretchen_UBM')
+    rUtil.create_pxWrap('shirt1', 'pantsCreased1', 'boots', 'Gretchen_UBM')
     #rUtil.create_pxWrap('VestFluff', 'Clothes')
     #mc.parent('Fingernails', 'Rayden_EXTRAS')
 
@@ -57,10 +62,10 @@ def Gretchen_extras(skin_src, skin_trg_grp):
         sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
         sk_g.append(sk)
 
-    mc.skinCluster('head_M_JNT', 'Hair', tsb=True, skinMethod=1, n='hairSkc') #skin the hair to only the head joint in order to avoid weird stretching
-        
+    #mc.skinCluster('head_M_JNT', 'Hair', tsb=True, skinMethod=1, n='hairSkc') #skin the hair to only the head joint in order to avoid weird stretching
+
     for g in sk_g:
-        pass
+        #pass
         mc.copySkinWeights(ss='skinCluster1', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
         #rUtil.create_pxWrap([g, 'Rayden_UBM'])
 

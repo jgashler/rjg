@@ -142,7 +142,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
         eyes = rBuild.build_module(module_type='look_eyes', side='M', part='lookEyes', guide_list=['eye_L', 'eye_R', 'look_L', 'look_R'], ctrl_scale=1, par_ctrl='head_M_01_CTRL', par_jnt='head_M_JNT')
     
     #Ue Face
-    if character in ['Susaka', 'Drummer' ]:
+    if character in []: #['Susaka', 'Drummer' ]:
         arbit_guides = mc.listRelatives('FaceGuides', children=True)
         for ag in arbit_guides:
             if ag in ['lipLower', 'lipLowerL', 'lipLowerR']:#, 'lipLeft', 'lipRight']:
@@ -413,7 +413,7 @@ def run(character, mp=None, gp=None, ep=None, cp=None, sp=None, pp=None, face=Tr
                 pass
         else:
             try:
-                rc.Gretchen_misc_pvis(body_mesh, ['Eyeball','Cornea','Bandanna','Shirt','Boots','Hair', 'Glasses', 'Pants'])
+                rc.Gretchen_misc_pvis(body_mesh, ['Bandanna','Shirt','Boots','Hair', 'Glasses', 'Pants', 'banddanna2','knot1','knot2', 'knot', 'boots', 'loopleather', 'beltLeather', 'pockets', 'metalclip', 'pantsCreased1', 'beltloops', 'button1', 'shirt1', 'hair', 'bun', 'eyebrows', 'eylashes', 'earings', 'Righteye', 'Lefteye'])
             except:
                 pass
 

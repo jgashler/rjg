@@ -49,10 +49,10 @@ def fix_position():
     mc.setAttr(root_fix, fix_amount)
 
     for d in ['L', "R"]:
-        mc.setAttr(f"fingerRing_{d}_01_fk_CTRL_OFF_GRP.scaleY", .8)
+        #mc.setAttr(f"fingerRing_{d}_01_fk_CTRL_OFF_GRP.scaleY", .8)
         for fing in ['fingerThumb', 'fingerIndex', 'fingerMiddle', 'fingerRing']:
             mc.setAttr(f'{fing}_{d}_03_fk_CTRL_OFF_GRP.translateY', 2)
-        mc.setAttr(f'fingerRing_{d}_02_fk_CTRL_OFF_GRP.scaleY', 1.2)
+        #mc.setAttr(f'fingerRing_{d}_02_fk_CTRL_OFF_GRP.scaleY', 1.2)
 
 
 def clean_claws():
