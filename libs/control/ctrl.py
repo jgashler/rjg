@@ -15,7 +15,8 @@ reload(rXform)
 
 class Control(rDraw.Draw, rGroup.Group):
     def __init__(self, ctrl=None, parent=None, shape='circle', side='M', suffix='CTRL', name='default', axis='y', 
-                 group_type='main', rig_type='primary', ctrl_scale=1, translate=(0, 0, 0), rotate=(0, 0, 0), scale=(1, 1, 1)):
+                 group_type='main', rig_type='primary', ctrl_scale=1, translate=(0, 0, 0), rotate=(0, 0, 0), scale=(1, 1, 1),
+                 color_rgb=None):
         self.group_dict = {
                            "main": ["CNST", "SDK", "OFF"],
                            "offset": ["CNST", "OFF"],
@@ -26,6 +27,7 @@ class Control(rDraw.Draw, rGroup.Group):
         self.rotate = rotate
         self.scale = scale
         self.fail = False
+        self.color_rgb = color_rgb
 
         self.ctrl = ctrl
         if not self.ctrl:
@@ -54,6 +56,15 @@ class Control(rDraw.Draw, rGroup.Group):
     '''
     def create(self):
         self.create_curve(name=self.ctrl_name, shape=self.shape, axis=self.axis, scale=self.ctrl_scale)
+        self.ctrl = self.curve
+
+        if self.color_rgb:
+            shapes = mc.listRelatives(self.ctrl, shapes=True, fullPath=True) or []
+            for shape in shapes:
+                mc.setAttr(shape + ".overrideEnabled", 1)
+                mc.setAttr(shape + ".overrideRGBColors", 1)
+                mc.setAttr(shape + ".overrideColorRGB", *self.color_rgb)
+
         self.ctrl = self.curve
 
         if isinstance(self.group_type, str):
@@ -96,6 +107,8 @@ class Control(rDraw.Draw, rGroup.Group):
         self.rig_type = self.control_dict['rig_type']
         self.ctrl_scale = self.control_dict['ctrl_scale']
 
+        self.color_rgb = self.control_dict.get('color_rgb', None)
+
         if self.side:
             self.ctrl_name = '{}_{}_{}'.format(self.name, self.side, self.suffix)
         else:
@@ -117,7 +130,8 @@ class Control(rDraw.Draw, rGroup.Group):
                              "axis" : self.axis,
                              "rig_groups" : self.group_list,
                              "rig_type" : self.rig_type,
-                             "ctrl_scale" : self.ctrl_scale
+                             "ctrl_scale" : self.ctrl_scale,
+                             "color_rgb": self.color_rgb
                             }
         tag_string = str(self.control_dict)
 

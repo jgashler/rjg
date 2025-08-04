@@ -51,15 +51,23 @@ def fix_position():
     for d in ['L', "R"]:
         #mc.setAttr(f"fingerRing_{d}_01_fk_CTRL_OFF_GRP.scaleY", .8)
         for fing in ['fingerThumb', 'fingerIndex', 'fingerMiddle', 'fingerRing']:
-            mc.setAttr(f'{fing}_{d}_03_fk_CTRL_OFF_GRP.translateY', 2)
+            try:
+                value = 2 if d == 'L' else -2
+                mc.setAttr(f'{fing}_{d}_03_fk_CTRL_OFF_GRP.translateY', value)
+                mc.setAttr(f'{fing}_{d}_04_fk_CTRL_OFF_GRP.translateY', value)
+            except:
+                pass
         #mc.setAttr(f'fingerRing_{d}_02_fk_CTRL_OFF_GRP.scaleY', 1.2)
+
+    mc.scaleConstraint('BellyHighM_M_M_CTRL', 'BellyHighM_M_JNT')
 
 
 def clean_claws():
     hide_controls = ['fingerIndex_L_04_fk_CTRL', 'fingerMiddle_L_04_fk_CTRL', 'fingerRing_L_04_fk_CTRL', 'fingerIndex_R_04_fk_CTRL', 'fingerRing_R_04_fk_CTRL', 'fingerMiddle_R_04_fk_CTRL']
     for obj in hide_controls:
         if mc.objExists(obj):
-            mc.hide(obj)
+            #mc.hide(obj)
+            pass
     rWeightNgIO.read_skin("HandClaws", f'{groups}/bobo/character/Rigs/Bobo/SkinFiles', 'Bobo_HandClaws_Skin')
     #proxywrap_fur(['FootClaws', 'HandClaws'])
 

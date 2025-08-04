@@ -347,6 +347,15 @@ def mirror_selected_joints(mirror_type='behavior', search_for='L_', replace_with
 mirror_selected_joints(mirror_type='behavior', search_for='L_', replace_with='R_', mirror_across='yz')
 
 
+import sys
+modules = [name for name in sys.modules.keys() if name.startswith("rjg")]
+for name in modules:
+    del sys.modules[name]
+import rjg
+
+
+
+
 
 
 import maya.cmds as mc

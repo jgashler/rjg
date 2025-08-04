@@ -25,6 +25,9 @@ def CleanImport(POSE_FILE):
     # Iterate through solvers from the file, rebuild and load them
     for solver_name in solvers_in_file:
         print("\n--- Processing Solver:", solver_name)
+            solver_data = pose_data["solvers"][solver_name]
+            print("Solver data keys:", list(solver_data.keys()))
+            print("Solver data:", solver_data)
 
         # Delete existing solver if present
         if mc.objExists(solver_name):

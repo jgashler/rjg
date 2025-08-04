@@ -127,7 +127,7 @@ def create_export_window():
     # Character selection dropdown
     mc.text(label="Select Character:")
     char_menu = mc.optionMenu()
-    for character in ["Bobo", "Gretchen", "BoboQuad", "Susaka"]:
+    for character in ["Bobo", "Gretchen", "Luciana", "Susaka", 'Domingo', 'Drummer']:
         mc.menuItem(label=character)
 
     # Export type checkboxes
