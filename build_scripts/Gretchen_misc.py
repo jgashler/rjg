@@ -36,25 +36,20 @@ def Gretchen_extras(skin_src, skin_trg_grp):
 
     sk_g = []
 
-    geo = [ 'banddanna2',
-            'knot1','knot2',
-            'knot', 
-            'loopleather', 
-            'beltLeather', 
-            'pockets', 
-            'metalclip', 
-            'beltloops', 
-            'button1',
-            'hair', 
-            'bun', 
-            'eyebrows', 
-            'eylashes', 
-            'earings', 
-            'Righteye', 
-            'Lefteye'
-    ]
+    #geo = ['hair', 'bandanna', 'eyebrows', 'eyelashes', 'earrrings', 'honey_pin', 'gloves', 'beltloops', 
+    #       'RightEye', 'RightPupil', 'RightCornea', 'LeftEye', 'LeftCornea', 'LeftPupil', 'topteeth', 'tounge', 'bottomteeth', 
+    #       'hinge', 'frame', 'glasses', 'lenses', 'button', 'button3', 'pPlane4', 'pPlane3', 'pPlane5', 'pPlane6', 'belt', 'buckle', 
+    #       'loopleather', 'buckle2', 'backpockets', 'sidepocket', 'frontpockets']
+    
+    geo = ['belt', 'buckle', 'loopleather', 'buckle2', 'beltloops', 'frontpockets', 'sidepocket', 'backpockets', 
+           'button', 'button3', 'thread1', 'thread', 'gloves', 'honey_pin', 'hinge', 'frame', 'glasses', 
+           'lenses', 'topteeth', 'tounge', 'bottomteeth', 'RightEye', 'RightPupil', 'RightCornea', 'LeftEye', 'LeftCornea', 
+           'LeftPupil', 'earrrings', 'eyelashes', 'eyebrows', 'hair', 'bandanna']
 
-    rUtil.create_pxWrap('shirt1', 'pantsCreased1', 'boots', 'Gretchen_UBM')
+    
+
+    #rUtil.create_pxWrap('shirt1', 'pantsCreased1', 'boots', 'Gretchen_UBM')
+    rUtil.create_pxWrap('shirt', 'pants', 'boots', 'Gretchen_UBM')
     #rUtil.create_pxWrap('VestFluff', 'Clothes')
     #mc.parent('Fingernails', 'Rayden_EXTRAS')
 

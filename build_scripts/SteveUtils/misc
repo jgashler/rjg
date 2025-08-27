@@ -410,3 +410,58 @@ def create_driver_joints(default_mult=10.0, ctrl_suffix="_CTRL", joint_suffix="_
 create_driver_joints(default_mult=10.0, ctrl_suffix="_CTRL", joint_suffix="_Driver")
 
 
+import maya.cmds as mc
+import math
+
+def bake_offset_parent_matrix(obj):
+    if not mc.objExists(obj):
+        raise RuntimeError(f"Object '{obj}' does not exist.")
+
+    # Get world position and rotation
+    world_pos = mc.xform(obj, q=True, ws=True, t=True)
+    world_rot = mc.xform(obj, q=True, ws=True, ro=True)
+
+    # Reset offsetParentMatrix
+    mc.setAttr(f"{obj}.offsetParentMatrix", [1,0,0,0,
+                                              0,1,0,0,
+                                              0,0,1,0,
+                                              0,0,0,1], type="matrix")
+
+    # Reapply world position and rotation (bake it in)
+    mc.xform(obj, ws=True, t=world_pos)
+    mc.xform(obj, ws=True, ro=world_rot)
+
+    print(f"Baked offsetParentMatrix into '{obj}' and reset it.")
+
+# Apply to selected objects
+selection = mc.ls(selection=True, long=True)
+for obj in selection:
+    bake_offset_parent_matrix(obj)
+
+
+
+
+# Debugger
+
+import sys
+
+# Replace with your actual venv site-packages path
+venv_site = r"G:\bobo\character\Rigs\Virtual\venv\Lib\site-packages"
+
+if venv_site not in sys.path:
+    sys.path.append(venv_site)
+    
+import os
+import debugpy
+
+
+#overwrite the default python executable
+maya_location = os.path.join(os.environ.get("MAYA_LOCATION"), "bin", "mayapy")
+debugpy.configure({'python': maya_location})
+
+# 5678 is the default attach port in the VS Code debug configurations. Unless a host and port are specified, host defaults to 127.0.0.1
+try:
+    debugpy.listen(('localhost', 5678))
+except RuntimeError as e:
+    if 'listen() has already been called' not in str(e):
+        raise  # Only suppress the specific error, re-raise others

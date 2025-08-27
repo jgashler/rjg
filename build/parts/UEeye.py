@@ -457,7 +457,7 @@ class UEeye(UEface):
             mc.xform(looknull_loc, ws=True, translation=pos_with_zero_x)
         
         # Aim constraint from look control to eye joint (maintain offset)
-        mc.aimConstraint(look_ctrl, eye_joint, maintainOffset=True, aimVector=(1,0,0), upVector=(0,1,0), worldUpType="scene")
+        mc.aimConstraint(look_ctrl, eye_joint, maintainOffset=True, aimVector=(1,0,0), upVector=(0,1,0), worldUpType="objectrotation", worldUpObject ='head_M_01_CTRL' ) #head_M_01_CTRL
         mc.pointConstraint(f'{suffix}_MasterControl_{side}_CTRL', f'{suffix}_JNT', maintainOffset=True,)
         # Parent look control offset and LookNULL_loc under eyelid look locator
         mc.parentConstraint(look_ctrl, eyelid_look_loc, maintainOffset=True)
@@ -465,7 +465,8 @@ class UEeye(UEface):
         mc.setAttr(f"{suffix}_eyelid_look_loc_parentConstraint1.{suffix}_Look_{side}_CTRLW0", 0.05)
         # Aim constraint from eyelid look locator to master control group
         if mc.objExists(master_ctrl_grp):
-            mc.aimConstraint(eyelid_look_loc, master_ctrl_grp, maintainOffset=True, aimVector=(1,0,0), upVector=(0,1,0), worldUpType="scene")
+            print('1')
+            mc.aimConstraint(eyelid_look_loc, master_ctrl_grp, maintainOffset=True, aimVector=(1,0,0), upVector=(0,1,0), worldUpType="objectrotation", worldUpObject ='head_M_01_CTRL')
         else:
             print(f"Warning: Master control group '{master_ctrl_grp}' not found, skipping aimConstraint.")
 
@@ -693,7 +694,7 @@ class UEeye(UEface):
         mc.parent(socket_grp, f'{prefix}_MasterControl_{side}_CTRL')
         mc.parent(f'{prefix}_InnerCorner_Major_{side}_CTRL_CNST_GRP', f'{prefix}_OuterCorner_Major_{side}_CTRL_CNST_GRP', f'{prefix}_eyelid_grp')
         mc.parent(f'{prefix}_eyelid_grp', f'{prefix}_MasterControl_{side}_CTRL')
-        mc.aimConstraint(f'{prefix}_eyelid_look_loc', f'{prefix}_look_offset', mo = True)
+        mc.aimConstraint(f'{prefix}_eyelid_look_loc', f'{prefix}_look_offset', mo = True, worldUpType="objectrotation", worldUpObject ='head_M_01_CTRL')
         mc.group(surfs[0], surfs[1], f'{prefix}_eyelid_Control_GRP', f'{prefix}_Eyelid_OuterCorner_Major_JNT', f'{prefix}_Eyelid_Upper_Major_JNT',f'{prefix}_Eyelid_InnerCorner_Major_JNT',f'{prefix}_Eyelid_Lower_Major_JNT', name=f'{prefix}_eyelid_extra_offset')
         mc.parent(f'{prefix}_eyelid_extra_offset', 'RIG')
 

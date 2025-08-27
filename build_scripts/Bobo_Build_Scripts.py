@@ -173,6 +173,11 @@ def Fix_Colors():
         shading_group2 = shading_groups2[0]
 
     mc.sets(Left, edit=True, forceElement=shading_group2)
+    try:
+        mc.connectAttr('L_EyeMaster_ctrl.L_Eye_SAS', 'L_ASAeyeCont_grp.visibility')
+        mc.connectAttr('R_EyeMaster_ctrl.R_Eye_SAS', 'R_ASAeyeCont_grp.visibility')
+    except:
+        pass
 
 def make_sets():
     #Eye, Brow, Snout, Cheek, Ear, Hand, Body, Leg

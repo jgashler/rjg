@@ -103,7 +103,7 @@ class RigBuildUI(QtWidgets.QDialog):
                 "gp" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Guides.mb",
                 "ep" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Extras.mb",
                 "cp" : None, 
-                "sp" : f"{groups}/bobo/character/Rigs/Gretchen/Weights/Gretchen_Weights_05.json", 
+                "sp" : f"{groups}/bobo/character/Rigs/Gretchen/Weights/Gretchen_Weights_07.json", 
                 "pp" : None,
                 "im" : f"{groups}/bobo/character/Rigs/Rig_Icon/Gretchen.jpg",
             },
@@ -155,6 +155,16 @@ class RigBuildUI(QtWidgets.QDialog):
                 "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
             },
 
+            "Fisherman" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Fisherman/Fisherman_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Fisherman/Fisherman_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Fisherman/Fisherman_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Susaka/SkinFiles/Susaka_Skin.json",  
+                "pp" : None,
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            }
+
 
         }
         
@@ -165,7 +175,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
     def create_widgets(self):
         self.char_options = QtWidgets.QComboBox()
-        self.char_options.addItems([ 'Bobo', 'Gretchen', 'Susaka', 'Drummer', 'Luciana', 'Domingo', 'Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz',])
+        self.char_options.addItems([ 'Bobo', 'Gretchen', 'Luciana', 'Domingo', 'Susaka', 'Drummer', 'Fisherman', 'Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz',])
         self.char_options.setFixedWidth(200)
         
         self.model_label = QtWidgets.QLabel('Model:')
