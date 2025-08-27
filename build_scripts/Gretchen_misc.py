@@ -36,20 +36,20 @@ def Gretchen_extras(skin_src, skin_trg_grp):
 
     sk_g = []
 
-    geo = [
-        'Eyeball',
-        'Cornea',
-        'Bandanna',
-        #'Shirt',
-        'Boots',
-        'Hair',
-        'Glasses',
-        #'Tongue',
-        #'TopTeeth',
-        #'BottomTeeth',
-    ]
+    #geo = ['hair', 'bandanna', 'eyebrows', 'eyelashes', 'earrrings', 'honey_pin', 'gloves', 'beltloops', 
+    #       'RightEye', 'RightPupil', 'RightCornea', 'LeftEye', 'LeftCornea', 'LeftPupil', 'topteeth', 'tounge', 'bottomteeth', 
+    #       'hinge', 'frame', 'glasses', 'lenses', 'button', 'button3', 'pPlane4', 'pPlane3', 'pPlane5', 'pPlane6', 'belt', 'buckle', 
+    #       'loopleather', 'buckle2', 'backpockets', 'sidepocket', 'frontpockets']
+    
+    geo = ['belt', 'buckle', 'loopleather', 'buckle2', 'beltloops', 'frontpockets', 'sidepocket', 'backpockets', 
+           'button', 'button3', 'thread1', 'thread', 'gloves', 'honey_pin', 'hinge', 'frame', 'glasses', 
+           'lenses', 'topteeth', 'tounge', 'bottomteeth', 'RightEye', 'RightPupil', 'RightCornea', 'LeftEye', 'LeftCornea', 
+           'LeftPupil', 'earrrings', 'eyelashes', 'eyebrows', 'hair', 'bandanna']
 
-    rUtil.create_pxWrap('Shirt', 'Pants', 'Gretchen_UBM')
+    
+
+    #rUtil.create_pxWrap('shirt1', 'pantsCreased1', 'boots', 'Gretchen_UBM')
+    rUtil.create_pxWrap('shirt', 'pants', 'boots', 'Gretchen_UBM')
     #rUtil.create_pxWrap('VestFluff', 'Clothes')
     #mc.parent('Fingernails', 'Rayden_EXTRAS')
 
@@ -57,10 +57,10 @@ def Gretchen_extras(skin_src, skin_trg_grp):
         sk = mc.skinCluster(bind_joints, g, tsb=True, skinMethod=1, n='clothingSkc')[0]
         sk_g.append(sk)
 
-    mc.skinCluster('head_M_JNT', 'Hair', tsb=True, skinMethod=1, n='hairSkc') #skin the hair to only the head joint in order to avoid weird stretching
-        
+    #mc.skinCluster('head_M_JNT', 'Hair', tsb=True, skinMethod=1, n='hairSkc') #skin the hair to only the head joint in order to avoid weird stretching
+
     for g in sk_g:
-        pass
+        #pass
         mc.copySkinWeights(ss='skinCluster1', ds=g, surfaceAssociation='closestPoint', noMirror=True, )
         #rUtil.create_pxWrap([g, 'Rayden_UBM'])
 

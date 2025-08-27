@@ -7,6 +7,68 @@ import rjg.libs.control.ctrl as rCtrl
 reload(rFile)
 reload(rCtrl)
 
+def disconnect_clone_transforms(group_list):
+    for group in group_list:
+        clone = f"{group}_clone"
+        if not mc.objExists(clone):
+            print(f"Clone '{clone}' does not exist. Skipping.")
+            continue
+
+        for attr in ['translate', 'rotate', 'scale']:
+            source_attr = f"{group}.{attr}"
+            dest_attr = f"{clone}.{attr}"
+
+            if mc.isConnected(source_attr, dest_attr):
+                try:
+                    mc.disconnectAttr(source_attr, dest_attr)
+                    print(f"Disconnected {source_attr} -> {dest_attr}")
+                except Exception as e:
+                    print(f"Failed to disconnect {source_attr} -> {dest_attr}: {e}")
+            else:
+                print(f"No connection to disconnect: {source_attr} -> {dest_attr}")
+
+
+def setup_proximity_pins(offset_groups, geo):
+    shape_name = geo  # Can be changed later
+
+    for group in offset_groups:
+        try:
+            if not mc.objExists(group):
+                print(f"Object '{group}' does not exist. Skipping.")
+                continue
+
+            # Create proximityPin node
+            prox_node = mc.createNode('proximityPin', name=f'{group}_proximityPin')
+            mc.setAttr(f"{prox_node}.coordMode", 1)
+            mc.setAttr(f"{prox_node}.normalAxis", 1)
+            mc.setAttr(f"{prox_node}.tangentAxis", 0)
+
+            # Connect proximityPin.outputMatrix[0] to group's offsetParentMatrix
+            mc.connectAttr(f'{prox_node}.outputMatrix[0]', f'{group}.offsetParentMatrix', force=True)
+
+            # Connect FaceAtOriginOrig.outMesh to proximityPin.originalGeometry
+            mc.connectAttr(f'{shape_name}ShapeOrig.outMesh', f'{prox_node}.originalGeometry', force=True)
+
+            # Connect FaceAtOriginShape.worldMesh[0] to proximityPin.deformedGeometry
+            mc.connectAttr(f'{shape_name}Shape.worldMesh[0]', f'{prox_node}.deformedGeometry', force=True)
+
+            # Get worldMatrix of the group
+            world_matrix = mc.getAttr(f'{group}.worldMatrix[0]')
+
+            # Set inputMatrix[0] to the group's worldMatrix
+            mc.setAttr(f'{prox_node}.inputMatrix[0]', *world_matrix, type='matrix')
+
+            # Now zero out translation and rotation, and set scale to 1 on the offset group itself
+            mc.setAttr(f"{group}.translate", 0, 0, 0)
+            mc.setAttr(f"{group}.rotate", 0, 0, 0)
+            mc.setAttr(f"{group}.scale", 1, 1, 1)
+
+            print(f"Connected proximityPin and zeroed transforms for: {group}")
+
+        except Exception as e:
+            print(f"Error processing {group}: {e}")
+
+
 def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=None, f_extras=None, rig_par='head_M_02_CTRL_CNST_GRP', tY=0):
     # reparent face sections to main rig
     mc.group(em=True, name='HIDE_FACE')
@@ -87,6 +149,63 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
             print(e)
             continue
 
+    ####### Cutom Channel Connections #######
+    try:
+        for attr in ['Pupil_Size', 'Iris_Size', 'Blink']:
+            mc.connectAttr(f'L_Aim_ctrl.{attr}', f'L_Aim_ctrl_clone.{attr}')
+            mc.connectAttr(f'R_Aim_ctrl.{attr}', f'R_Aim_ctrl_clone.{attr}')
+    except Exception as e:
+        print(e)  
+
+    ##### Sub Controls ###
+
+
+    offset_groups = ['L_subLowerLip_02_grp', 'L_subEye_01_grp', 'L_subEye_07_grp', 'R_subUpperLip_09_grp', 'L_subLowerLip_03_grp', 'L_subEye_14_grp', 'R_subEye_09_grp', 'R_subEye_10_grp', 'L_subEye_05_grp', 'L_subUpperLip_06_grp', 'L_subEye_11_grp', 'R_subLowerLip_05_grp', 'L_subLowerLip_04_grp', 'R_subEye_02_grp', 'L_subEye_03_grp', 'R_subUpperLip_07_grp', 'L_subUpperLip_04_grp', 'L_subUpperLip_05_grp', 'R_subUpperLip_10_grp', 'R_subEye_03_grp', 'L_subEye_10_grp', 'R_subLowerLip_03_grp', 'R_subEye_04_grp', 'L_subEye_13_grp', 'L_subUpperLip_10_grp', 'R_subUpperLip_08_grp', 'R_subLowerLip_02_grp', 'R_subEye_13_grp', 'L_subLowerLip_05_grp', 'R_subLowerLip_08_grp', 'R_subEye_16_grp', 'L_subUpperLip_07_grp', 'R_subLowerLip_04_grp', 'L_subUpperLip_03_grp', 'M_subUpperLip_01_grp', 'L_subEye_02_grp', 'L_subEye_16_grp', 'R_subUpperLip_04_grp', 'L_subEye_04_grp', 'R_subUpperLip_11_grp', 'L_subLowerLip_06_grp', 'R_subEye_01_grp', 'L_subEye_08_grp', 'L_subLowerLip_07_grp', 'R_subUpperLip_05_grp', 'M_subLowerLip_01_grp', 'R_subEye_15_grp', 'R_subEye_06_grp', 'R_subLowerLip_06_grp', 'L_subEye_12_grp', 'L_subLowerLip_09_grp', 'R_subEye_11_grp', 'L_subUpperLip_02_grp', 'R_subUpperLip_02_grp', 'L_subUpperLip_09_grp', 'R_subEye_05_grp', 'R_subEye_08_grp', 'R_subEye_12_grp', 'L_subEye_15_grp', 'R_subLowerLip_07_grp', 'R_subUpperLip_06_grp', 'L_subUpperLip_08_grp', 'R_subLowerLip_09_grp', 'L_subLowerLip_08_grp', 'L_subEye_06_grp', 'R_subEye_14_grp', 'R_subEye_07_grp', 'L_subUpperLip_11_grp', 'L_subEye_09_grp', 'R_subUpperLip_03_grp']
+
+
+
+    #offset_groups = ['L_subLowerLip_02_grp', 'L_subEye_01_grp', 'L_subEye_07_grp', 'R_subUpperLip_09_grp', 'L_subLowerLip_03_grp', 'L_subEye_14_grp', 'R_subEye_09_grp', 'R_subEye_10_grp', 'L_subEye_05_grp', 'L_subUpperLip_06_grp', 'L_subEye_11_grp', 'R_subLowerLip_05_grp', 'L_subLowerLip_04_grp', 'R_subEye_02_grp', 'L_subEye_03_grp', 'R_subUpperLip_07_grp', 'L_subUpperLip_04_grp', 'L_subUpperLip_05_grp', 'R_subUpperLip_10_grp', 'R_subEye_03_grp', 'L_subEye_10_grp', 'R_subLowerLip_03_grp', 'R_subEye_04_grp', 'L_subEye_13_grp', 'L_subUpperLip_10_grp', 'R_subUpperLip_08_grp', 'R_subLowerLip_02_grp', 'R_subEye_13_grp', 'L_subLowerLip_05_grp', 'R_subLowerLip_08_grp', 'R_subEye_16_grp', 'L_subUpperLip_07_grp', 'R_subLowerLip_04_grp', 'L_subUpperLip_03_grp', 'M_subUpperLip_01_grp', 'L_subEye_02_grp', 'L_subEye_16_grp', 'R_subUpperLip_04_grp', 'L_subEye_04_grp', 'R_subUpperLip_11_grp', 'L_subLowerLip_06_grp', 'R_subEye_01_grp', 'L_subEye_08_grp', 'L_subLowerLip_07_grp', 'R_subUpperLip_05_grp', 'M_subLowerLip_01_grp', 'R_subEye_15_grp', 'R_subEye_06_grp', 'R_subLowerLip_06_grp', 'L_subEye_12_grp', 'L_subLowerLip_09_grp', 'R_subEye_11_grp', 'L_subUpperLip_02_grp', 'R_subUpperLip_02_grp', 'L_subUpperLip_09_grp', 'R_subEye_05_grp', 'R_subEye_08_grp', 'R_subEye_12_grp', 'L_subEye_15_grp', 'R_subLowerLip_07_grp', 'R_subUpperLip_06_grp', 'L_subUpperLip_08_grp', 'R_subLowerLip_09_grp', 'L_subLowerLip_08_grp', 'L_subEye_06_grp', 'R_subEye_14_grp', 'R_subEye_07_grp', 'L_subUpperLip_11_grp', 'L_subEye_09_grp', 'R_subUpperLip_03_grp']
+    disconnect_clone_transforms(offset_groups)
+    
+    left_eye = ['L_subEye_10_grp', 'L_subEye_03_grp', 'L_subEye_11_grp', 'L_subEye_01_grp', 'L_subEye_09_grp', 'L_subEye_15_grp', 'L_subEye_04_grp', 'L_subEye_06_grp', 'L_subEye_16_grp', 'L_subEye_07_grp', 'L_subEye_13_grp', 'L_subEye_14_grp', 'L_subEye_08_grp', 'L_subEye_12_grp', 'L_subEye_05_grp', 'L_subEye_02_grp']
+    right_eye = ['R_subEye_15_grp', 'R_subEye_05_grp', 'R_subEye_07_grp', 'R_subEye_13_grp', 'R_subEye_02_grp', 'R_subEye_14_grp', 'R_subEye_12_grp', 'R_subEye_09_grp', 'R_subEye_01_grp', 'R_subEye_06_grp', 'R_subEye_16_grp', 'R_subEye_11_grp', 'R_subEye_08_grp', 'R_subEye_04_grp', 'R_subEye_03_grp', 'R_subEye_10_grp']
+    Upper_mouth = ['R_subUpperLip_10_grp', 'R_subUpperLip_11_grp', 'R_subUpperLip_09_grp', 'R_subUpperLip_08_grp', 'R_subUpperLip_07_grp', 'R_subUpperLip_05_grp', 'R_subUpperLip_06_grp', 'R_subUpperLip_04_grp', 'L_subUpperLip_03_grp', 'R_subUpperLip_03_grp', 'L_subUpperLip_04_grp', 'M_subUpperLip_01_grp', 'R_subUpperLip_02_grp', 'L_subUpperLip_02_grp', 'L_subUpperLip_05_grp', 'L_subUpperLip_06_grp', 'L_subUpperLip_07_grp', 'L_subUpperLip_08_grp', 'L_subUpperLip_09_grp', 'L_subUpperLip_10_grp', 'L_subUpperLip_11_grp']
+    Lower_Lip = [
+    'L_subLowerLip_08_grp', 'R_subLowerLip_06_grp', 'L_subLowerLip_02_grp',
+    'R_subLowerLip_05_grp', 'R_subLowerLip_02_grp', 'R_subLowerLip_08_grp',
+    'L_subLowerLip_06_grp', 'R_subLowerLip_07_grp', 'R_subLowerLip_04_grp',
+    'L_subLowerLip_03_grp', 'M_subLowerLip_01_grp', 'R_subLowerLip_09_grp',
+    'L_subLowerLip_04_grp', 'R_subLowerLip_03_grp', 'L_subLowerLip_05_grp',
+    'L_subLowerLip_09_grp', 'L_subLowerLip_07_grp'
+]
+    eye_sub = ['L_SubEye02_grp', 'L_SubEye03_grp', 'L_SubEye04_grp', 'L_SubEye05_grp', 'L_SubEye06_grp', 'L_SubEye07_grp', 'L_SubEye08_grp', 'L_SubEye01_grp', 'R_SubEye02_grp', 'R_SubEye01_grp', 'R_SubEye08_grp', 'R_SubEye07_grp', 'R_SubEye06_grp', 'R_SubEye05_grp', 'R_SubEye04_grp', 'R_SubEye03_grp']
+
+    setup_proximity_pins(eye_sub, 'ProximityHelper_clone')
+    #setup_proximity_pins(right_eye, 'ProximityHelper_clone')
+    setup_proximity_pins(Upper_mouth, 'ProximityHelper3_clone')
+    setup_proximity_pins(Lower_Lip, 'ProximityHelper2_clone')
+    #setup_proximity_pins(offset_groups)
+    #disconnect_clone_transforms(offset_groups)
+    #mc.parent('SubControls', 'RIG')
+
+    ###### Jaw ####
+
+    try:
+        # Create remapValue node
+        remap_node = mc.createNode('remapValue', name='jawRotateToTranslate_remap')
+
+        # Set input/output max values
+        mc.setAttr(f'{remap_node}.inputMax', 180)
+        mc.setAttr(f'{remap_node}.outputMax', 26)
+
+        # Connect input and output
+        mc.connectAttr('L_Jaw_Base_jnt_ctrl.rotateX', f'{remap_node}.inputValue', force=True)
+        mc.connectAttr(f'{remap_node}.outValue', 'L_Jaw_Translate_Offset.translateZ', force=True)
+
+        print(f'Remap node created: {remap_node}') 
+    except Exception as e:
+        print(e)
+
 
     #####################################3 
     '''
@@ -98,154 +217,45 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
     '''
     #Ribbon FIX
     # Define a dictionary where each rib group has a fixed number of control pins
-    rib_group_pin_counts = {
-        'Tounge_Right_RIBgrp': 10,
-        'Tounge_Left_RIBgrp': 10,
-        'R_Brow_Cont_RIBgrp': 6,
-        'L_Brow_Cont_RIBgrp': 6,
-        'L_Cheek_RIBgrp': 9,
-        'L_OuterRing_RIBgrp': 4,
-        'L_LipOuter_RIBgrp': 10,
-        'L_Lip_RIBgrp': 14,
-        'R_Cheek_RIBgrp': 9,
-        'R_OuterRing_RIBgrp': 4,
-        'R_LipOuter_RIBgrp': 10,
-        'R_Lip_RIBgrp': 14,
-        'L_Eyelid_RIBgrp': 8,
-        'R_Eyelid_RIBgrp': 8
-}
 
-    '''
-    for rib_group in [ 'Tounge_Right_RIBgrp', 'Tounge_Left_RIBgrp', 'R_Brow_Cont_RIBgrp', 'L_Brow_Cont_RIBgrp', 'L_Cheek_RIBgrp', 'L_OuterRing_RIBgrp', 'L_LipOuter_RIBgrp', 'L_Lip_RIBgrp', 'R_Cheek_RIBgrp', 'R_OuterRing_RIBgrp', 'R_LipOuter_RIBgrp', 'R_Lip_RIBgrp', 'R_Eyelid_RIBgrp', 'L_Eyelid_RIBgrp', ]:
-        try:
-            base_name = rib_group.replace("_RIBgrp", "")
-            print(rib_group)
-            
-            # Define the ribbon object name
-            ribbon_object = f"{base_name}_ribbon"
-            dic_num = rib_group_pin_counts.get(rib_group, 10)
-            print('get stuff')
-            # Get the child objects in the group
-            children = mc.listRelatives(rib_group, children=True) or []
-            
-            # Filter objects that have the suffix "_grp"
-            #try:
-            #    ctrl_pins = [obj for obj in children if obj.endswith("_grp")]
-            #except:
-            #    ctrl_pins = 10
-            
-            # Sort the groups numerically (if they have _PIN_##_grp format)
-            #ctrl_pins.sort(key=lambda x: int(x.split("_")[-2]))  
-            
-            # Determine the number of groups
-            #print(ctrl_pins)
-            #num_pins = len(ctrl_pins)
-            print('get control numbers')
-            # Generate the pin locations list (normalized values between 0 and 1)
-            #pin_locations = [i / float(num_pins - 1) for i in range(num_pins)]
-            
-            # List to store world-space positions
-            #pin_positions = []
-
-            # Get the world-space positions of the pins using UV coordinates (U varies, V is 0.5)
-            #for u in pin_locations:
-            #    position = mc.pointOnSurface(ribbon_object, position=True, parameterU=u, parameterV=0.5)
-            #    pin_positions.append(position) R_Lip_14_ctrl
-            
-            # Generate a list for points (formatted like 'NAME_point##_cjnt')
-            point_cjnts = [f"{base_name}_{str(i+1).zfill(2)}_cjnt" for i in range(dic_num)]
-            ctrl_pins = [f"{base_name}_{str(i+1).zfill(2)}_grp" for i in range(dic_num)]
-            ctrlz = [f"{base_name}_{str(i+1).zfill(2)}_ctrl" for i in range(dic_num)]
-            print(ctrlz)
-            # Get the world position and world rotation (orientation) for each joint
-            world_positions = []
-            world_orientations = []
-            
-            for cjnt in point_cjnts:
-                # Get world position using xform
-                position = mc.xform(cjnt, q=True, ws=True, t=True)
-                world_positions.append(position)
-                
-                # Get world orientation (rotation in world space)
-                rotation = mc.xform(cjnt, q=True, ws=True, ro=True)
-                world_orientations.append(rotation)
-            
-            # Now, match the world positions and rotations of the joints to the _grps
-            for i, grp in enumerate(ctrl_pins):
-                # Match corresponding cjnt's world position and orientation
-                target_pos = world_positions[i]
-                target_rot = world_orientations[i]
-                
-                # Apply the world position and orientation to the _grp
-                mc.xform(grp, ws=True, t=target_pos)  # Set the world position
-                mc.xform(grp, ws=True, ro=target_rot)  # Set the world orientation
-            
-            # Perform UV pinning on the Ribbon and _grps
-            # Iterate through the control pin _grps and pin them to the Ribbon's surface
-            #for i, grp in enumerate(ctrl_pins):
-            #    u_value = pin_locations[i]  # Use the corresponding U value from the pin locations
-            #    v_value = 0.5  # Fixed V value for UV pinning
-
-                # Pin the control pin (group) to the ribbon surface using UV coordinates
-            mc.select(f'{ribbon_object}_clone')  # Add ribbon object to selection
-            mc.select(ctrl_pins, add=True)
-            mc.UVPin()  # Pin the selected objects to the ribbon
-            try:
-                if rib_group in ['R_Eyelid_RIBgrp']:
-                    for obj in ctrlz:
-                        parent = mc.listRelatives(obj, parent=True)
-                        #if obj == "R_Eyelid_05_ctrl":
-                        #    parent = mc.rename(parent, "RBlinkOffset_PLEASE1")
-                        #elif obj == "R_Eyelid_01_ctrl":
-                        #    parent = mc.rename(parent, "RBlinkOffset_PLEASE2")
-                        offset_grp = mc.group(empty=True, name=f"{obj}_offset")
-                        mc.matchTransform(offset_grp, obj)  # Match position and rotation
-                        mc.parent(obj, offset_grp)
-                        mc.parent(offset_grp, parent[0])
-                        mc.setAttr(f"{offset_grp}.scaleY", -1)
-                        mc.select(clear=True)
-                        print('Did the Thing')
-            except Exception as e:
-                print(e)
-
-            if rib_group in ['L_Cheek_RIBgrp', 'L_OuterRing_RIBgrp', 'L_LipOuter_RIBgrp', 'L_Lip_RIBgrp', 'R_Cheek_RIBgrp', 'R_OuterRing_RIBgrp', 'R_LipOuter_RIBgrp', 'R_Lip_RIBgrp',]:
-                for obj in ctrlz:
-                    parent = mc.listRelatives(obj, parent=True)
-                    offset_grp = mc.group(empty=True, name=f"{obj}_offset")
-                    mc.matchTransform(offset_grp, obj)  # Match position and rotation
-                    mc.parent(obj, offset_grp)
-                    mc.parent(offset_grp, parent[0])
-                    mc.setAttr(f"{offset_grp}.rotateX", -90)
-                    mc.select(clear=True)
-                    print('Did the Thing')
-
-            
-                 
-
-            print("UV Pinning applied to Ribbon and _grps.")
-
-        except Exception as e:
-            print(e)
-
-    
+    ######################################
     try:
-        mc.connectAttr(f'Look_ctrl.Cornea_Vis', f'LeftCornea.visibility')
-        mc.connectAttr(f'Look_ctrl.Cornea_Vis', f'RightCornea.visibility')
+        # Full list of objects
+        grp_list = [
+        'ToungeRight_ribbon_point6_DEF_grp', 'ToungeRight_ribbon_point3_DEF_grp',
+        'ToungeLeft_ribbon_point5_DEF_grp', 'ToungeLeft_ribbon_point3_DEF_grp',
+        'ToungeRight_ribbon_point7_DEF_grp', 'ToungeRight_ribbon_point8_DEF_grp',
+        'ToungeRight_ribbon_point1_DEF_grp', 'ToungeRight_ribbon_point4_DEF_grp',
+        'ToungeLeft_ribbon_point8_DEF_grp', 'ToungeLeft_ribbon_point7_DEF_grp',
+        'ToungeLeft_ribbon_point10_DEF_grp', 'ToungeLeft_ribbon_point6_DEF_grp',
+        'ToungeRight_ribbon_point5_DEF_grp', 'ToungeLeft_ribbon_point4_DEF_grp'
+        ]
 
+        # Separate them based on name
+        right_target = 'ToungeRight_ribbon'
+        left_target = 'ToungeLeft_ribbon'
+
+        right_grp = [grp for grp in grp_list if 'ToungeRight' in grp]
+        left_grp = [grp for grp in grp_list if 'ToungeLeft' in grp]
+
+        # Pin to the right ribbon
+        for grp in right_grp:
+            if mc.objExists(grp) and mc.objExists(right_target):
+                mc.select(clear=True)
+                mc.select(right_target, grp)
+                mc.UVPin()
+            else:
+                mc.warning(f"Missing object: {grp} or {right_target}")
+        # Pin to the left ribbon
+        for grp in left_grp:
+            if mc.objExists(grp) and mc.objExists(left_target):
+                mc.select(clear=True)
+                mc.select(left_target, grp)
+                mc.UVPin()
+            else:
+                mc.warning(f"Missing object: {grp} or {left_target}")
     except Exception as e:
-        print(e)
-
-    for cnt in ['R_Eye_ctrl', 'L_Eye_ctrl']:
-        for attr in ['Pupil_Size', 'Iris_Size']:
-            try:
-                 mc.connectAttr(f'{cnt}.{attr}', f'{cnt}_clone.{attr}')
-            except Exception as e:
                 print(e)
-    '''
-
-
-
-
     ######################################
 
 
@@ -310,7 +320,7 @@ def project(body=None, char=None, f_model=None, f_rig=None, f_skel=None, extras=
         pass
     #Bobo Test
     try:
-        for attr in ['Pupil_Size', 'Iris_Size']:
+        for attr in ['Pupil_Size', 'Iris_Size', 'Blink']:
             mc.connectAttr(f'L_Aim_ctrl.{attr}', f'L_Eye_ctrl_clone.{attr}')
             mc.connectAttr(f'R_Aim_ctrl.{attr}', f'R_Eye_ctrl_clone.{attr}')
     except:

@@ -103,7 +103,7 @@ class RigBuildUI(QtWidgets.QDialog):
                 "gp" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Guides.mb",
                 "ep" : f"{groups}/bobo/character/Rigs/Gretchen/Gretchen_Extras.mb",
                 "cp" : None, 
-                "sp" : f"{groups}/bobo/character/Rigs/Gretchen/Weights/Gretchen_Weights.json", 
+                "sp" : f"{groups}/bobo/character/Rigs/Gretchen/Weights/Gretchen_Weights_07.json", 
                 "pp" : None,
                 "im" : f"{groups}/bobo/character/Rigs/Rig_Icon/Gretchen.jpg",
             },
@@ -116,6 +116,56 @@ class RigBuildUI(QtWidgets.QDialog):
                 "pp" : None,
                 "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
             },
+            "Drummer" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Drummer/Drummer_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Drummer/Drummer_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Drummer/Drummer_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Drummer/SkinFiles/Drummer_Skin.json",  
+                "pp" : None,
+                "im" : None, #f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            },
+            "Luciana" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Luciana/Luciana_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Luciana/Luciana_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Luciana/Luciana_Extras.mb",
+                "cp" : None, 
+                "sp" : None,#f"{groups}/bobo/character/Rigs/Drummer/SkinFiles/Drummer_Skin.json",  
+                "pp" : None,
+                "im" : None, #f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            },
+
+            "NPC" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/NPC/NPC_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/NPC/NPC_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/NPC/NPC_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/NPC/SkinFiles/NPC_Skin.json",  
+                "pp" : None,
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            },
+
+            "Domingo" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Domingo/Domingo_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Domingo/Domingo_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Domingo/Domingo_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Domingo/SkinFiles/Domingo_Skin.json",  
+                "pp" : None,
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            },
+
+            "Fisherman" : {
+                "mp" : f"{groups}/Bobo/character/Rigs/Fisherman/Fisherman_Model.mb",
+                "gp" : f"{groups}/Bobo/character/Rigs/Fisherman/Fisherman_Guides.mb",
+                "ep" : f"{groups}/Bobo/character/Rigs/Fisherman/Fisherman_Extras.mb",
+                "cp" : None, 
+                "sp" : f"{groups}/bobo/character/Rigs/Susaka/SkinFiles/Susaka_Skin.json",  
+                "pp" : None,
+                "im" : f"{groups}/Bobo/character/Rigs/Rig_Icon/Bee.jpg",
+            }
+
+
         }
         
         self.create_widgets()
@@ -125,7 +175,7 @@ class RigBuildUI(QtWidgets.QDialog):
         
     def create_widgets(self):
         self.char_options = QtWidgets.QComboBox()
-        self.char_options.addItems(['Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz', 'Bobo', "BoboQuad", 'Gretchen', 'Susaka'])
+        self.char_options.addItems([ 'Bobo', 'Gretchen', 'Luciana', 'Domingo', 'Susaka', 'Drummer', 'Fisherman', 'Rayden', 'Robin', 'DungeonMonster', 'Skeleton', 'Jett', 'Blitz',])
         self.char_options.setFixedWidth(200)
         
         self.model_label = QtWidgets.QLabel('Model:')

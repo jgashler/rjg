@@ -29,6 +29,48 @@ reload(rWeightNgIO)
 reload(rWeightIO)
 reload(rCtrlIO)
 
+def fix_position():
+    side = ['L', 'R']
+    cog_fix = "COG_M_CTRL_CNST_GRP_parentConstraint1.target[2].targetOffsetTranslateY"
+    cog_fixamount = 111.614
+    #hand_fix = f"hand_{s}_01_CTRL_CNST_GRP_parentConstraint1.target[2].targetOffsetTranslateY"
+    hand_fix_amount = 236.446
+    #leg_fix = f"foot_{s}_01_{s}_CTRL_CNST_GRP_parentConstraint1.target[2].targetOffsetTranslateY"
+    leg_fix_amount = 15.863
+    fix_amount = 11.5
+    root_fix = "root_M_CONTROL.translateY"
+
+    mc.setAttr(cog_fix, cog_fixamount)
+    for s in side:
+        hand_fix = f"hand_{s}_01_CTRL_CNST_GRP_parentConstraint1.target[2].targetOffsetTranslateY"
+        leg_fix = f"foot_{s}_01_{s}_CTRL_CNST_GRP_parentConstraint1.target[2].targetOffsetTranslateY"
+        mc.setAttr(hand_fix, hand_fix_amount)
+        mc.setAttr(leg_fix, leg_fix_amount)
+    mc.setAttr(root_fix, fix_amount)
+
+    for d in ['L', "R"]:
+        #mc.setAttr(f"fingerRing_{d}_01_fk_CTRL_OFF_GRP.scaleY", .8)
+        for fing in ['fingerThumb', 'fingerIndex', 'fingerMiddle', 'fingerRing']:
+            try:
+                value = 2 if d == 'L' else -2
+                mc.setAttr(f'{fing}_{d}_03_fk_CTRL_OFF_GRP.translateY', value)
+                mc.setAttr(f'{fing}_{d}_04_fk_CTRL_OFF_GRP.translateY', value)
+            except:
+                pass
+        #mc.setAttr(f'fingerRing_{d}_02_fk_CTRL_OFF_GRP.scaleY', 1.2)
+
+    mc.scaleConstraint('BellyHighM_M_M_CTRL', 'BellyHighM_M_JNT')
+
+
+def clean_claws():
+    hide_controls = ['fingerIndex_L_04_fk_CTRL', 'fingerMiddle_L_04_fk_CTRL', 'fingerRing_L_04_fk_CTRL', 'fingerIndex_R_04_fk_CTRL', 'fingerRing_R_04_fk_CTRL', 'fingerMiddle_R_04_fk_CTRL']
+    for obj in hide_controls:
+        if mc.objExists(obj):
+            #mc.hide(obj)
+            pass
+    rWeightNgIO.read_skin("HandClaws", f'{groups}/bobo/character/Rigs/Bobo/SkinFiles', 'Bobo_HandClaws_Skin')
+    #proxywrap_fur(['FootClaws', 'HandClaws'])
+
 def rename_group_objects(group_name):
     """
     Replaces 'curvenet' with 'sculpt' in the names of all descendants under the specified group.
@@ -46,6 +88,61 @@ def rename_group_objects(group_name):
                 mc.rename(obj, new_name)
             except RuntimeError as e:
                 mc.warning(f"Couldn't rename {obj}: {e}")
+
+def proxywrap_fur(*argv):
+    a = argv if len(argv) > 1 else argv[0]
+
+    driven = a
+    driver = 'Bobo_UBM'
+
+    #print(f"adding driver: {driver} to driven: {driven}")
+    mc.select(driven)
+    pxWrap = mc.proximityWrap()
+    mc.proximityWrap(pxWrap, e=True, addDrivers=driver)
+    mc.setAttr(pxWrap[0] + '.falloffScale', 20.0)
+    mc.setAttr(f"{pxWrap[0]}.smoothInfluences", 9)
+    mc.setAttr(f"{pxWrap[0]}.softNormalization", 1)
+
+def Clean_Fur():
+    # Correctly paired objects and attributes
+    charater = 'Bobo'
+    connections = [
+        ('ArmsFur', 'arm_fur_vis'),
+        ('BellyFur', 'Body_Fur_Vis'),
+        ('FootFur', 'Foot_Guide_Vis'),
+        ('HandFur', 'Hand_Guide_Vis'),
+        ('HeadFur', 'Head_Chest_Fur'),
+        ('LegFur', 'Leg_Fur_Vis'),
+        ('SnoutFur', 'Face_Fur_Vis')
+    ]
+
+    control_object = 'Options_ctrl'
+
+    # Check if control exists
+    if not mc.objExists(control_object):
+        raise RuntimeError(f"Control object '{control_object}' does not exist in the scene.")
+
+    # Connect attributes
+    for obj, attr in connections:
+        if not mc.objExists(obj):
+            print(f"Skipping: '{obj}' does not exist.")
+            continue
+
+        full_attr = f"{control_object}.{attr}"
+        if not mc.objExists(full_attr):
+            print(f"Skipping: '{full_attr}' attribute does not exist.")
+            continue
+
+        try:
+            mc.connectAttr(full_attr, f"{obj}.visibility", force=True)
+            print(f"Connected {full_attr} -> {obj}.visibility")
+        except Exception as e:
+            print(f"Failed to connect {full_attr} -> {obj}.visibility: {e}")
+
+    proxywrap_fur(['HeadFur', 'ArmsFur', 'LegFur', 'BellyFur', 'SnoutFur', 'FootFur', 'HandFur'])
+
+
+
 
 
 def Fix_Colors():
@@ -76,6 +173,11 @@ def Fix_Colors():
         shading_group2 = shading_groups2[0]
 
     mc.sets(Left, edit=True, forceElement=shading_group2)
+    try:
+        mc.connectAttr('L_EyeMaster_ctrl.L_Eye_SAS', 'L_ASAeyeCont_grp.visibility')
+        mc.connectAttr('R_EyeMaster_ctrl.R_Eye_SAS', 'R_ASAeyeCont_grp.visibility')
+    except:
+        pass
 
 def make_sets():
     #Eye, Brow, Snout, Cheek, Ear, Hand, Body, Leg

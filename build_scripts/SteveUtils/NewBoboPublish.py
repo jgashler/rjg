@@ -143,7 +143,8 @@ class RigPublishUI(QtWidgets.QDialog):
         self.cancel_btn.clicked.connect(self.on_cancel)
 
     def on_publish(self):
-        asset = self._conn.get_asset_by_name("Rayden")
+        #### ---- Replace "Bobo" with a rig from your maya's prodctuion, so "Rayden", or "Blitz", "Letty", ETC ---- ####
+        asset = self._conn.get_asset_by_name("bobo") 
         su.get_production_path() / asset.path / "rig" / "rig.mb"
         file_name = self.rig_options.currentText()
 
